@@ -11,6 +11,14 @@ const Login = () => {
             email: '',
             password: ''
         },
+        validationSchema: Yup.object({
+            email: Yup.string()
+                            .email('El email no es válido')
+                            .required('Campo obligatorio'),
+            password: Yup.string()
+                            .required('Campo obligatorio')
+                            .min(6,'El password debe ser de al menos 6 caracteres')
+        }),
         onSubmit: valores => {
             console.log('enviando');
             console.log(valores);
@@ -28,6 +36,7 @@ const Login = () => {
                             className="bg-white rounded shadow-md px-8 pb-8 pt-6 mb-4"
                             onSubmit={formik.handleSubmit}
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                         >
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="email">
@@ -42,6 +51,12 @@ const Login = () => {
                                 />
                             </div>
 
+                            {formik.touched.email && formik.errors.email ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                                    <p>{formik.errors.email} </p>
+                                </div>
+                            ): null}
+
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="password">
                                     Password
@@ -54,6 +69,12 @@ const Login = () => {
                                     placeholder="Password Usuario"
                                 />
                             </div>
+
+                            {formik.touched.password && formik.errors.password ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                                    <p>{formik.errors.password} </p>
+                                </div>
+                            ): null}
 
                             <input
                                 type="submit"
