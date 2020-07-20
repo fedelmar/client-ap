@@ -5,7 +5,7 @@ export default function Index() {
   return (
     <div>
       <Layout>
-        <h1 className="text-2xl text-gray-800 font-light">Clientes</h1>
+        <h1 className="text-2xl text-gray-800 font-light">Inicio</h1>
       </Layout>
     </div>
   )
