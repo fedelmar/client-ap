@@ -1,7 +1,22 @@
 import React from 'react';
 import Layout from '../components/Layout';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Login = () => {
+
+    // Validacion del formulario
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: ''
+        },
+        onSubmit: valores => {
+            console.log('enviando');
+            console.log(valores);
+        }
+    });
+
     return (
         <>
             <Layout>
@@ -11,6 +26,8 @@ const Login = () => {
                     <div className="w-full max-w-sm">
                         <form
                             className="bg-white rounded shadow-md px-8 pb-8 pt-6 mb-4"
+                            onSubmit={formik.handleSubmit}
+                            onChange={formik.handleChange}
                         >
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="email">
