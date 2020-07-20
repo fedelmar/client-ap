@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -18,6 +18,8 @@ const NUEVO_USUARIO = gql`
 
 const Registro = () => {
 
+    // State del mensaje
+    const[mensaje, guardarMensaje] = useState(null);
 
     // Mutation de nuevo usuario
     const [ nuevoUsuario ] = useMutation(NUEVO_USUARIO);
@@ -60,15 +62,28 @@ const Registro = () => {
                 });
                 console.log(data);
             } catch (error) {
-                console.log(error)
-                
+                guardarMensaje(error.message);
+
+                setTimeout(() => {
+                    guardarMensaje(null);
+                }, 3000);
             }
         }
     });
 
+    const mostrarMensaje = () => {
+        return (
+            <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+                <p>{mensaje}</p>
+            </div>
+        )
+    }
+
     return (
         <>
             <Layout>
+                {mensaje && mostrarMensaje() }
+
                 <h1 className="text-center text-2xl text-white font-ligth">Registro</h1> 
 
                 <div className="flex justify-center mt-5">
