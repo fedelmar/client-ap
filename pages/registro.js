@@ -1,7 +1,24 @@
 import React from 'react';
 import Layout from '../components/Layout';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Registro = () => {
+
+    // Validacion del formulario
+    const formik = useFormik({
+        initialValues: {
+            nombre: '',
+            apellido: '',
+            email: '',
+            password: ''
+        },
+        onSubmit: valores => {
+            console.log('enviando');
+            console.log(valores);
+        }
+    });
+
     return (
         <>
             <Layout>
@@ -11,6 +28,8 @@ const Registro = () => {
                     <div className="w-full max-w-sm">
                         <form
                             className="bg-white rounded shadow-md px-8 pb-8 pt-6 mb-4"
+                            onSubmit={formik.handleSubmit}
+                            onChange={formik.handleChange}
                         >
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="nombre">
@@ -22,6 +41,7 @@ const Registro = () => {
                                     id="nombre"
                                     type="text"
                                     placeholder="Nombre"
+                                    value={formik.values.nombre}
                                 />
                             </div>
 
@@ -35,6 +55,7 @@ const Registro = () => {
                                     id="apellido"
                                     type="text"
                                     placeholder="Apellido"
+                                    value={formik.values.apellido}
                                 />
                             </div>    
 
@@ -48,6 +69,7 @@ const Registro = () => {
                                     id="email"
                                     type="email"
                                     placeholder="Email Usuario"
+                                    value={formik.values.email}
                                 />
                             </div>
 
@@ -61,6 +83,7 @@ const Registro = () => {
                                     id="password"
                                     type="password"
                                     placeholder="Password Usuario"
+                                    value={formik.values.password}
                                 />
                             </div>
 
