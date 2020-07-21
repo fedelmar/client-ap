@@ -35,8 +35,6 @@ const Login = () => {
                         <form
                             className="bg-white rounded shadow-md px-8 pb-8 pt-6 mb-4"
                             onSubmit={formik.handleSubmit}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
                         >
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="email">
@@ -48,6 +46,9 @@ const Login = () => {
                                     id="email"
                                     type="email"
                                     placeholder="Email Usuario"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.email}
                                 />
                             </div>
 
@@ -67,6 +68,9 @@ const Login = () => {
                                     id="password"
                                     type="password"
                                     placeholder="Password Usuario"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.password}
                                 />
                             </div>
 

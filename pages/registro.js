@@ -101,8 +101,6 @@ const Registro = () => {
                         <form
                             className="bg-white rounded shadow-md px-8 pb-8 pt-6 mb-4"
                             onSubmit={formik.handleSubmit}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
                         >
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="nombre">
@@ -114,6 +112,8 @@ const Registro = () => {
                                     id="nombre"
                                     type="text"
                                     placeholder="Nombre"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                     value={formik.values.nombre}
                                 />
                             </div>
@@ -134,6 +134,8 @@ const Registro = () => {
                                     id="apellido"
                                     type="text"
                                     placeholder="Apellido"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                     value={formik.values.apellido}
                                 />
                             </div>
@@ -154,6 +156,8 @@ const Registro = () => {
                                     id="email"
                                     type="email"
                                     placeholder="Email Usuario"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                     value={formik.values.email}
                                 />
                             </div>
@@ -174,6 +178,8 @@ const Registro = () => {
                                     id="password"
                                     type="password"
                                     placeholder="Password Usuario"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                     value={formik.values.password}
                                 />
                             </div>
