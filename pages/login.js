@@ -56,11 +56,9 @@ const Login = () => {
                 localStorage.setItem('token', token);
 
 
-                // Redireccionar al inicio
-                setTimeout(() => {
-                    guardarMensaje(null);
-                    router.push('/')
-                }, 2000);
+                // Redireccionar al inicio 
+                guardarMensaje(null);
+                router.push('/')
 
             } catch (error) {
                 guardarMensaje(error.message);
