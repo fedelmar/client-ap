@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useMutation, gql } from '@apollo/client';
+
+const AUTENTICAR = gql`
+    mutation autenticarUsuario($input: AutenticarInput){
+        autenticarUsuario(input: $input){
+            token
+        }
+    }
+`;
 
 const Login = () => {
+
+    const [mensaje, guardarMensaje] = useState(null);
+
+    // Mutation para autentificar usuario
+    const [ autenticarUsuario ] = useMutation(AUTENTICAR);
+
+    // Routing
+    const router = useRouter();
 
     // Validacion del formulario
     const formik = useFormik({
@@ -19,24 +37,63 @@ const Login = () => {
                             .required('Campo obligatorio')
                             .min(6,'El password debe ser de al menos 6 caracteres')
         }),
-        onSubmit: valores => {
-            console.log('enviando');
-            console.log(valores);
+        onSubmit: async valores => {
+
+            const { email, password } = valores;
+
+            try {
+                const { data } = await autenticarUsuario({
+                    variables: {
+                        input: {
+                            email,
+                            password
+                        }
+                    }
+                })
+
+                // Guardar token
+                const { token } = data.autenticarUsuario;
+                localStorage.setItem('token', token);
+
+
+                // Redireccionar al inicio
+                setTimeout(() => {
+                    guardarMensaje(null);
+                    router.push('/')
+                }, 2000);
+
+            } catch (error) {
+                guardarMensaje(error.message);
+                console.log(error.message)
+                setTimeout(() => {
+                    guardarMensaje(null);
+                }, 3000);
+
+            }
         }
     });
+
+    const mostrarMensaje = () => {
+        return (
+            <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto text-gray-70">
+                <p>{mensaje}</p>
+            </div>
+        )
+    }
 
     return (
         <>
             <Layout>
+                
                 <h1 className="text-center text-2xl text-white font-ligth">Login</h1> 
-
+                
+                {mensaje && mostrarMensaje()}
+                
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-sm">
                         <form
                             className="bg-white rounded shadow-md px-8 pb-8 pt-6 mb-4"
                             onSubmit={formik.handleSubmit}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
                         >
                             <div className="mb-4">
                                 <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="email">
@@ -48,6 +105,9 @@ const Login = () => {
                                     id="email"
                                     type="email"
                                     placeholder="Email Usuario"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.email}
                                 />
                             </div>
 
@@ -67,6 +127,9 @@ const Login = () => {
                                     id="password"
                                     type="password"
                                     placeholder="Password Usuario"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.password}
                                 />
                             </div>
 
