@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -14,8 +15,13 @@ const AUTENTICAR = gql`
 
 const Login = () => {
 
+    const [mensaje, guardarMensaje] = useState(null);
+
     // Mutation para autentificar usuario
     const [ autenticarUsuario ] = useMutation(AUTENTICAR);
+
+    // Routing
+    const router = useRouter();
 
     // Validacion del formulario
     const formik = useFormik({
@@ -44,18 +50,45 @@ const Login = () => {
                         }
                     }
                 })
-                console.log(data);
+
+                // Guardar token
+                const { token } = data.autenticarUsuario;
+                localStorage.setItem('token', token);
+
+
+                // Redireccionar al inicio
+                setTimeout(() => {
+                    guardarMensaje(null);
+                    router.push('/')
+                }, 2000);
+
             } catch (error) {
-                console.log(error);
+                guardarMensaje(error.message);
+                console.log(error.message)
+                setTimeout(() => {
+                    guardarMensaje(null);
+                }, 3000);
+
             }
         }
     });
 
+    const mostrarMensaje = () => {
+        return (
+            <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto text-gray-70">
+                <p>{mensaje}</p>
+            </div>
+        )
+    }
+
     return (
         <>
             <Layout>
+                
                 <h1 className="text-center text-2xl text-white font-ligth">Login</h1> 
-
+                
+                {mensaje && mostrarMensaje()}
+                
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-sm">
                         <form

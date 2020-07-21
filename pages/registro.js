@@ -73,7 +73,7 @@ const Registro = () => {
 
             } catch (error) {
                 guardarMensaje(error.message);
-
+                console.log(error.message)
                 setTimeout(() => {
                     guardarMensaje(null);
                 }, 3000);
@@ -92,9 +92,10 @@ const Registro = () => {
     return (
         <>
             <Layout>
-                {mensaje && mostrarMensaje() }
-
+                
                 <h1 className="text-center text-2xl text-white font-ligth">Registro</h1> 
+
+                {mensaje && mostrarMensaje() }
 
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-sm">
