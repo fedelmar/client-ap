@@ -2,7 +2,7 @@ import Layout from '../components/Layout';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-const OBTENER_CLIENTES   = gql `
+const OBTENER_CLIENTES = gql `
 query obtenerClientesVendedor {
     obtenerClientesVendedor{
         id
@@ -14,14 +14,15 @@ query obtenerClientesVendedor {
     }
 `;
 
-export default function Index() {
+const Index = () => {
+
+  const router = useRouter();
 
   const router = useRouter();
 
   // Consulta de apollo
   const { data, loading, error} = useQuery(OBTENER_CLIENTES);
 
-  //console.log(data.obtenerClientesVendedor);
   //console.log(loading);
   //console.log(error);
 
@@ -30,14 +31,14 @@ export default function Index() {
       <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
     </Layout>
   );
-
-  const vistaProtegida = () => {
-    router.push('/login');
+  
+  if( !data.obtenerClientesVendedor ) {
+    console.log('redireccionar');
+    return router.push('/login');
   }
-
+  
   return (
     <>
-    { data.obtenerClientesVendedor ? (
       <div>
         <Layout>
           <h1 className="text-2xl text-gray-800 font-light">Inicio</h1>
@@ -63,7 +64,9 @@ export default function Index() {
         
         </Layout>
       </div>
-    ) : vistaProtegida() }
   </>
   )
+  
 }
+
+export default Index;
