@@ -1,6 +1,7 @@
 import Layout from '../components/Layout';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const OBTENER_CLIENTES = gql `
 query obtenerClientesVendedor {
@@ -39,6 +40,11 @@ const Index = () => {
     <div>
       <Layout>
         <h1 className="text-2xl text-gray-800 font-light">Inicio</h1>
+        
+        <Link href="/nuevocliente">
+          <a className="bg-blue-800 py-2 px-5 mt-3 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Nuevo Cliente</a>
+        </Link>
+        
         <table className="table-auto shadow-md mt-10 w-full w-lg">
           <thead className="bg-gray-800">
             <tr className="text-white">

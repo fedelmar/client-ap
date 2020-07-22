@@ -11,8 +11,9 @@ const Layout = ({children}) => {
 
     return (
       <>  
-        <title>Sistema AP</title>
         <Head>
+            <link rel="icon" type="image/ico" href="src/public/favicon.ico" />
+            <title>Sistema AP</title>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
             <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
         </Head>
