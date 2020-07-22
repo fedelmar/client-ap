@@ -57,10 +57,8 @@ const Login = () => {
 
 
                 // Redireccionar al inicio
-                setTimeout(() => {
-                    guardarMensaje(null);
-                    router.push('/')
-                }, 2000);
+                guardarMensaje(null);
+                router.push('/')
 
             } catch (error) {
                 guardarMensaje(error.message);

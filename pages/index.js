@@ -1,6 +1,6 @@
-import Head from 'next/head'
 import Layout from '../components/Layout';
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 
 const OBTENER_CLIENTES   = gql `
 query obtenerClientesVendedor {
@@ -16,18 +16,25 @@ query obtenerClientesVendedor {
 
 export default function Index() {
 
+  const router = useRouter();
+
   // Consulta de apollo
   const { data, loading, error} = useQuery(OBTENER_CLIENTES);
 
-  //console.log(data);
   //console.log(loading);
   //console.log(error);
 
   if(loading) return (
     <Layout>
       <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
-    </Layout>);
-
+    </Layout>
+  );
+  
+  if(!data.obtenerClientesVendedor) {
+    console.log('redireccionar');
+    return router.push('/login');
+  }
+  
   return (
     <div>
       <Layout>
@@ -55,4 +62,5 @@ export default function Index() {
       </Layout>
     </div>
   )
+  
 }
