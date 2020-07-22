@@ -55,8 +55,6 @@ const Login = () => {
                 const { token } = data.autenticarUsuario;
                 localStorage.setItem('token', token);
 
-
-                // Redireccionar al inicio
                 guardarMensaje(null);
                 router.push('/')
 
