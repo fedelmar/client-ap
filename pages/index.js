@@ -2,7 +2,7 @@ import Layout from '../components/Layout';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-const OBTENER_CLIENTES   = gql `
+const OBTENER_CLIENTES = gql `
 query obtenerClientesVendedor {
     obtenerClientesVendedor{
         id
@@ -14,7 +14,7 @@ query obtenerClientesVendedor {
     }
 `;
 
-export default function Index() {
+const Index = () => {
 
   const router = useRouter();
 
@@ -30,7 +30,7 @@ export default function Index() {
     </Layout>
   );
   
-  if(!data.obtenerClientesVendedor) {
+  if( !data.obtenerClientesVendedor ) {
     console.log('redireccionar');
     return router.push('/login');
   }
@@ -64,3 +64,5 @@ export default function Index() {
   )
   
 }
+
+export default Index;
