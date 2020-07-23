@@ -39,7 +39,7 @@ const Header = () => {
  
     return (
         <div className="flex justify-between mb-5">
-            <p className="text-2xl text-gray-800 font-light">Hola: {nombre} {apellido}</p>
+            <p className="text-2xl text-gray-800 font-light">Hola {nombre} {apellido}!</p>
 
             <button
                 onClick={() => cerrarSesion()}
