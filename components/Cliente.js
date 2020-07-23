@@ -1,6 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation } from '@apollo/client';
+import Router from 'next/router';
 
 const ELIMINAR_CLIENTE = gql`
     mutation eliminarCliente($id: ID!) {
@@ -72,6 +73,13 @@ const Cliente = ({cliente}) => {
           })
     }
 
+    const editarCliente = () => {
+        Router.push({
+            pathname: "/editarcliente/[id]",
+            query: { id }
+        })
+    }
+
     return (
         <tr>
             <td className="border px-4 py-2 ">{nombre} {apellido} </td>
@@ -84,8 +92,19 @@ const Cliente = ({cliente}) => {
                     className="flex justify-center item-center bg-red-800 py-2 px-4 w-full text-white rounded uppercase font-bold text-xs"    
                 >
                     Eliminar
-                    <svg fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 ml-2"><path d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"></path></svg>
+                    <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4 ml-2"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </button>
+            </td>
+            <td className="border px-4 py-2">
+                    <button
+                        type="button"
+                        className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                        onClick={() => editarCliente() }
+                    >
+                        Editar
+
+                        <svg fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 ml-2"><path d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"></path></svg>
+                    </button>
             </td>
         </tr>
     );
