@@ -7,9 +7,35 @@ const ELIMINAR_CLIENTE = gql`
         eliminarCliente(id: $id)
     }
 `;
+const OBTENER_CLIENTES = gql `
+    query obtenerClientesVendedor {
+        obtenerClientesVendedor{
+            id
+            nombre
+            apellido
+            empresa
+            email
+        }
+        }
+`;
 const Cliente = ({cliente}) => {
 
-    const [eliminarCliente] = useMutation(ELIMINAR_CLIENTE);
+
+    // Mutation de eliminar cliente
+    const [eliminarCliente] = useMutation(ELIMINAR_CLIENTE, {
+        update(cache) {
+            // Obtener copia del objeto en cache
+            const { obtenerClientesVendedor } = cache.readQuery({ query: OBTENER_CLIENTES });
+
+            // Reescribir el cache
+            cache.writeQuery({
+                query: OBTENER_CLIENTES,
+                data: {
+                    obtenerClientesVendedor : obtenerClientesVendedor.filter( clienteActual => clienteActual.id !== id )
+                }
+            })
+
+        }});
     
     const { nombre, apellido, empresa, email, id } = cliente;
    
