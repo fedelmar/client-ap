@@ -26,7 +26,7 @@ const Header = () => {
     if(loading) return null;
 
     //Redireccionar si no hay informacion
-    if(!data) {
+    if(!data.obtenerUsuario) {
         return router.push('/login');
     }
 

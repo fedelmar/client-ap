@@ -33,7 +33,6 @@ const Index = () => {
   );
   
   if( !data.obtenerClientesVendedor ) {
-    console.log('redireccionar');
     return router.push('/login');
   }
   
