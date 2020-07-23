@@ -20,8 +20,6 @@ const Index = () => {
 
   const router = useRouter();
 
-  const router = useRouter();
-
   // Consulta de apollo
   const { data, loading, error} = useQuery(OBTENER_CLIENTES);
 
@@ -70,7 +68,6 @@ const Index = () => {
         
         </Layout>
       </div>
-  </>
   )
   
 }
