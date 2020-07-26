@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 const OBTENER_PRODUCTOS = gql`
   query obtenerProductos {
     obtenerProductos{
+      id
       nombre
       categoria
       cantidad
