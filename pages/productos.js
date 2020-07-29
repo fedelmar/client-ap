@@ -28,9 +28,10 @@ const Productos = () => {
     </Layout>
   );
 
-  if( !data.obtenerProductos ) {
+  if(!data) {
     return router.push('/login');
   }
+
   return (
     <div>
       <Layout>
