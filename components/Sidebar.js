@@ -34,6 +34,11 @@ const Sidebar = () => {
                         <a className="text-white block">Pedidos</a>
                     </Link>
                 </li>
+                <li className={router.pathname === "/clientes" ? "bg-blue-800 p-2" : "p-2"}>    
+                    <Link href="/clientes">
+                        <a className="text-white block">Clientes</a>
+                    </Link>
+                </li>
             </nav>
         </aside>
     );
