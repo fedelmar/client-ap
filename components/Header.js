@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router';
 
@@ -14,23 +14,28 @@ const OBTENER_USUARIO = gql `
 
 const Header = () => {
 
+    const [usuario, setUsuario] = useState({});
     const router = useRouter();
-
-    // Query de apollo
     const {data, loading, error } = useQuery(OBTENER_USUARIO);
 
-    //console.log(data)
-    //console.log(loading)
-    //console.log(error)
+    useEffect(() => {
+        function getUser(){
 
-    if(loading) return null;
+            if(loading) return "Cargando...";
 
-    //Redireccionar si no hay informacion
-    if(!data.obtenerUsuario) {
-        return router.push('/login');
-    }
+            if(error) return error;
 
-    const { nombre, apellido } = data.obtenerUsuario;
+            if(!data.obtenerUsuario) {
+                    return router.push('/login');
+                }
+
+            setUsuario(data.obtenerUsuario)
+        }
+        getUser();
+    }, [data, loading, error])
+
+  
+    const { nombre, apellido } = usuario;
 
     const cerrarSesion = () => {
         localStorage.removeItem('token');
