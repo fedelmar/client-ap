@@ -47,7 +47,11 @@ const EditarProducto = () => {
                     
     });
     
-    if(loading) return 'Cargando...';
+    if(loading) return (   
+        <Layout>
+            Cargando...   
+        </Layout>
+    );
 
     const { obtenerProducto } = data;
 

@@ -47,7 +47,11 @@ const EditarInsumo = () => {
                     
     });
     
-    if(loading) return 'Cargando...';
+    if(loading) return (   
+        <Layout>
+            Cargando...   
+        </Layout>
+    );
 
     const { obtenerInsumo } = data;
 

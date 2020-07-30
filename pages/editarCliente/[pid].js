@@ -57,7 +57,11 @@ const EditarCliente = () => {
     });
 
 
-    if(loading) return 'Cargando...';
+    if(loading) return (   
+        <Layout>
+            Cargando...   
+        </Layout>
+    );
 
     // console.log(data.obtenerCliente)
 
