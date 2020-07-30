@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router';
+import client from '../config/apollo';
 
 const OBTENER_USUARIO = gql `
     query obtenerUsuario {
@@ -37,8 +38,9 @@ const Header = () => {
   
     const { nombre, apellido } = usuario;
 
-    const cerrarSesion = () => {
+    const cerrarSesion = client => {
         localStorage.removeItem('token');
+        client.resetStore();
         router.push('/login');
     }
  
@@ -47,7 +49,7 @@ const Header = () => {
             <p className="text-2xl text-gray-800 font-light">Hola {nombre} {apellido}!</p>
 
             <button
-                onClick={() => cerrarSesion()}
+                onClick={() => cerrarSesion(client)}
                 className="uppercase shadow-md text-white text-xs  sm:w-auto p-2 font-black bg-red-700 rounded" 
                 type="button"
             >
