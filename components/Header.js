@@ -27,7 +27,7 @@ const Header = () => {
 
             if(error) return error;
 
-            console.log('data', data.obtenerUsuario)
+            //console.log('data', data.obtenerUsuario)
 
             if(!data || !data.obtenerUsuario) {
                 return router.push('/login');
@@ -42,12 +42,13 @@ const Header = () => {
     const { nombre, apellido } = usuario;
 
     const cerrarSesion = client => {
+        localStorage.removeItem('token');
         sessionStorage.clear()
         client.clearStore().then(() => {
             client.resetStore();
             router.push('/login');
         });
-        // localStorage.removeItem('token');
+       
         //client.cache.reset();
     }
  

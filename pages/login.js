@@ -4,6 +4,7 @@ import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useMutation, gql } from '@apollo/client';
+import client from '../config/apollo';
 
 const AUTENTICAR = gql`
     mutation autenticarUsuario($input: AutenticarInput){
@@ -12,6 +13,7 @@ const AUTENTICAR = gql`
         }
     }
 `;
+
 
 const Login = () => {
 
@@ -51,6 +53,8 @@ const Login = () => {
                     }
                 })
 
+                client.resetStore();
+
                 // Guardar token
                 const { token } = data.autenticarUsuario;
                 localStorage.setItem('token', token);
@@ -81,7 +85,7 @@ const Login = () => {
         <>
             <Layout>
                 
-                <h1 className="text-center text-2xl text-white font-ligth">Login</h1> 
+                <h1 className="text-center text-2xl text-white font-ligth">Log In</h1> 
                 
                 {mensaje && mostrarMensaje()}
                 
