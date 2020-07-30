@@ -20,28 +20,35 @@ const Header = () => {
     const {data, loading, error } = useQuery(OBTENER_USUARIO);
 
     useEffect(() => {
-        function getUser(){
-
+        
+        const getUser = () => {
+        
             if(loading) return "Cargando...";
 
             if(error) return error;
 
-            if(!data.obtenerUsuario) {
-                    return router.push('/login');
-                }
+            console.log('data', data.obtenerUsuario)
+
+            if(!data || !data.obtenerUsuario) {
+                return router.push('/login');
+            }
 
             setUsuario(data.obtenerUsuario)
-        }
+            }
+
         getUser();
     }, [data, loading, error])
 
-  
     const { nombre, apellido } = usuario;
 
     const cerrarSesion = client => {
-        localStorage.removeItem('token');
-        client.resetStore();
-        router.push('/login');
+        sessionStorage.clear()
+        client.clearStore().then(() => {
+            client.resetStore();
+            router.push('/login');
+        });
+        // localStorage.removeItem('token');
+        //client.cache.reset();
     }
  
     return (

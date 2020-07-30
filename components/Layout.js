@@ -3,11 +3,14 @@ import Head from 'next/head';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { useRouter } from 'next/router';
+import client from '../config/apollo';
 
 const Layout = ({children}) => {
 
     // Routing de next
     const router = useRouter();
+
+    client.resetStore()
 
     return (
       <>  

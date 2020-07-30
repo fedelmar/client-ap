@@ -9,10 +9,10 @@ const Index = () => {
   return (
     <Layout>
 
-      <h1 className="text-2xl text-gray-800 font-light">Inicio</h1>
+      <div className="flex justify-center  " >
+        <img src='/imagenAP.png' />
+      </div>
 
-      <img src='/imagenAP.png' />
-      
     </Layout>
   )
   
