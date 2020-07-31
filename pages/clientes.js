@@ -5,15 +5,15 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 const OBTENER_CLIENTES = gql `
-query obtenerClientesVendedor {
-    obtenerClientesVendedor{
-        id
-        nombre
-        apellido
-        empresa
-        email
+  query obtenerClientesVendedor {
+      obtenerClientesVendedor{
+          id
+          nombre
+          apellido
+          empresa
+          email
+        }
       }
-    }
 `;
 
 const Clientes = () => {
