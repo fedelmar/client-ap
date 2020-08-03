@@ -14,22 +14,55 @@ const PedidoState = ({children}) => {
     // State de pedidos
     const initialState = {
         cliente: {},
-        productos: [],
-        total: 0
+        productos: []
     }
 
     const [ state, dispatch ] = useReducer(PedidoReducer, initialState);
 
     // Modificando el cliente
     const agregarCliente = cliente => {
-        console.log(cliente)
+        //console.log(cliente)
+        dispatch({
+            type: SELECCIONAR_CLIENTE,
+            payload: cliente
+        })
+    }
+
+    // Modificando productos
+    const agregarProducto = productosSeleccionados => {
+
+        let nuevoState;
+        if( state.productos.length > 0 ) {
+            nuevoState = productosSeleccionados.map( producto => {
+                const nuevoObjeto = state.productos.find( productoState => productoState.id === producto.id );
+                return {...producto, ...nuevoObjeto}
+            })
+        } else {
+            nuevoState = productosSeleccionados;
+        }
+
+        dispatch({
+            type: SELECCIONAR_PRODUCTO,
+            payload: nuevoState
+        })
+    }
+
+    // Modificando cantidades de productos
+    const cantidadProductos = nuevoProducto => {
+        dispatch({
+            type: CANTIDAD_PRODUCTO,
+            payload: nuevoProducto
+        })
     }
 
     return (
         <PedidoContext.Provider
             value={{
-
-                agregarCliente
+                productos: state.productos,
+                cliente: state.cliente,
+                agregarCliente,
+                agregarProducto,
+                cantidadProductos
             }}
         >
             {children}
