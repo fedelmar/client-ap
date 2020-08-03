@@ -60,7 +60,7 @@ const Cliente = ({cliente}) => {
                             id
                         }
                     })
-                    console.log(data);
+                    //console.log(data);
                     Swal.fire(
                         'Eliminado!',
                         data.eliminarCliente,

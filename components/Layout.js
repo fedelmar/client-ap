@@ -10,8 +10,6 @@ const Layout = ({children}) => {
     // Routing de next
     const router = useRouter();
 
-    client.resetStore()
-
     return (
       <>  
         <Head>
