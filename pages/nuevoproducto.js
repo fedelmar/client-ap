@@ -167,6 +167,7 @@ const NuevoProducto = () => {
                                     placeholder="Cantidad"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
+                                    value={formik.values.cantidad}
                                 />
                             </div>
 
