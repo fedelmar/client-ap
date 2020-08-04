@@ -183,7 +183,7 @@ const NuevoInsumo = () => {
                             <input
                                 type="submit"
                                 className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
-                                value="Crear producto"
+                                value="Crear insumo"
                             />
                     </form>
                 </div>
