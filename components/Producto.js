@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation } from '@apollo/client';
