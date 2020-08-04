@@ -42,7 +42,6 @@ const Header = () => {
     const { nombre, apellido } = usuario;
 
     const cerrarSesion = client => {
-        localStorage.removeItem('token');
         sessionStorage.clear()
         client.clearStore().then(() => {
             client.resetStore();
@@ -53,12 +52,12 @@ const Header = () => {
     }
  
     return (
-        <div className="flex justify-between mb-5">
-            <p className="text-2xl text-gray-800 font-light">Hola {nombre} {apellido}!</p>
+        <div className="sm:flex sm:justify-between mb-5">
+            <p className="mb-5 lg:mb-0 text-2xl text-gray-800 font-light">Hola {nombre} {apellido}!</p>
 
             <button
                 onClick={() => cerrarSesion(client)}
-                className="uppercase shadow-md text-white text-xs  sm:w-auto p-2 font-black bg-red-700 rounded" 
+                className="uppercase shadow-md text-white text-xs  sm:w-auto p-2 font-black bg-red-700 rounded w-full lg:w-auto text-center" 
                 type="button"
             >
                 Cerrar Sessión
