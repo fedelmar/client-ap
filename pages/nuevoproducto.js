@@ -52,7 +52,7 @@ const NuevoProducto = () => {
         initialValues: {
             nombre: '',
             categoria: '',
-            cantidad: ''
+            cantidad: 0
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required('El nombre del producto es obligatorio'),
