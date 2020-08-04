@@ -1,3 +1,5 @@
+
+import React from 'react'
 import Layout from '../components/Layout';
 import Insumo from '../components/Insumo';
 import { gql, useQuery } from '@apollo/client';
@@ -19,7 +21,7 @@ export default function Pedidos() {
 
   const router = useRouter();
   
-  const { data, loading, error } = useQuery(OBTENER_INSUMOS);
+  const { data, loading } = useQuery(OBTENER_INSUMOS);
 
   if(loading) return (
     <Layout>

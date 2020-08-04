@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Layout from '../components/Layout'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
 
 const NUEVO_INSUMO = gql`
@@ -65,6 +65,7 @@ const NuevoInsumo = () => {
             const { nombre, categoria, cantidad } = valores
 
             try {
+                // eslint-disable-next-line no-unused-vars
                 const { data } = await nuevoInsumo({
                     variables: {
                         input: {
