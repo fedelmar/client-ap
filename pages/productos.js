@@ -1,3 +1,4 @@
+import React from 'react'
 import Layout from '../components/Layout';
 import Producto from '../components/Producto';
 import { gql, useQuery } from '@apollo/client';
@@ -20,7 +21,7 @@ const Productos = () => {
 
   const router = useRouter();
 
-  const { data, loading, error} = useQuery(OBTENER_PRODUCTOS);
+  const { data, loading } = useQuery(OBTENER_PRODUCTOS);
 
   if(loading) return (
     <Layout>

@@ -1,7 +1,8 @@
+/* eslint react/prop-types: 0 */
 import React from 'react';
-import { useRouter } from 'next/router'
+import { useRouter} from 'next/router'
 import Layout from '../../components/Layout';
-import { Formik } from 'formik'
+import { Formik} from 'formik'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import * as Yup from 'yup'
 import Swal from 'sweetalert2';
@@ -32,7 +33,7 @@ const EditarInsumo = () => {
     const router = useRouter();
     const { query: { id } } = router;
 
-    const { data, loading, error } = useQuery(OBTENER_INSUMO, {
+    const { data, loading } = useQuery(OBTENER_INSUMO, {
         variables: {
             id
         }
@@ -59,6 +60,7 @@ const EditarInsumo = () => {
         const { nombre, categoria, cantidad } = valores;
 
         try {
+            // eslint-disable-next-line no-unused-vars
             const { data } = await actualizarInsumo({
                 variables: {
                     id,
@@ -191,7 +193,7 @@ const EditarInsumo = () => {
                             </form>      
                         )
                     }}
-                    </Formik> 
+                    </Formik>
                 </div>
             </div> 
         </Layout>        
