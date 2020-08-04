@@ -42,7 +42,7 @@ const Header = () => {
     const { nombre, apellido } = usuario;
 
     const cerrarSesion = client => {
-        localStorage.removeItem('token');
+        //localStorage.removeItem('token');
         sessionStorage.clear()
         client.clearStore().then(() => {
             client.resetStore();
