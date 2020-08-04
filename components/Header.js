@@ -27,7 +27,7 @@ const Header = () => {
 
             if(error) return error;
 
-            //console.log('data', data.obtenerUsuario)
+            console.log('data', data.obtenerUsuario)
 
             if(!data || !data.obtenerUsuario) {
                 return router.push('/login');
