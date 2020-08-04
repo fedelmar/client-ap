@@ -142,11 +142,13 @@ const EditarInsumo = () => {
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
                                         >
-                                            <option value={props.values.categoria} label={props.values.categoria} />
+                                            <option value="" label="Seleccione una categoria" />
                                             <option value="Esponjas" label="Esponjas" />
                                             <option value="Placas" label="Placas" />
-                                            <option value="Geles" label="Geles" />
-                                            <option value="Sistemas" label="Sistemas" />
+                                            <option value="EPS" label="EPS" />
+                                            <option value="Polietileno" label="Polietileno" />
+                                            <option value="Quimico" label="Quimico" />
+                                            <option value="Cartón" label="Cartón" />
                                         </select>
                                     </div>
 

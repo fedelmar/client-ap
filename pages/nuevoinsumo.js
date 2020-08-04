@@ -52,7 +52,7 @@ const NuevoInsumo = () => {
         initialValues: {
             nombre: '',
             categoria: '',
-            cantidad: ''
+            cantidad: 0
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required('El nombre del insumo es obligatorio'),
@@ -169,6 +169,7 @@ const NuevoInsumo = () => {
                                     placeholder="Cantidad"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
+                                    value={formik.values.cantidad}
                                 />
                             </div>
 
