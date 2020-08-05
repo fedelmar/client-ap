@@ -1,10 +1,11 @@
 
-import React from 'react'
+import React, { useContext } from 'react'
 import Layout from '../components/Layout';
 import Insumo from '../components/Insumo';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import UsuarioContext from '../context/usuarios/UsuarioContext';
 
 const OBTENER_INSUMOS = gql`
    query obtenerInsumos {
@@ -22,6 +23,9 @@ export default function Pedidos() {
   const router = useRouter();
   
   const { data, loading } = useQuery(OBTENER_INSUMOS);
+
+  const pedidoContext = useContext(UsuarioContext);
+  const { rol } = pedidoContext.usuario;
 
   if(loading) return (
     <Layout>
@@ -48,8 +52,12 @@ export default function Pedidos() {
               <th className="w-1/5 py-2">Nombre</th>
               <th className="w-1/5 py-2">Categoria</th>
               <th className="w-1/5 py-2">Cantidad</th>
-              <th className="w-1/5 py-2">Eliminar</th>
-              <th className="w-1/5 py-2">Editar</th>   
+              {rol === "Admin" ? (
+                <>
+                  <th className="w-1/5 py-2">Eliminar</th>
+                  <th className="w-1/5 py-2">Editar</th>
+                </>  
+              ) : null}   
             </tr>
           </thead>
           <tbody className="bg-white">
@@ -57,6 +65,7 @@ export default function Pedidos() {
                 <Insumo
                   key={insumo.id}
                   insumo={insumo}
+                  rol={rol}
                 />
             ))}
           </tbody>  

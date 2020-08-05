@@ -24,7 +24,7 @@ const AsignarCliente = () => {
     const { agregarCliente } = pedidoContext;
     
     // Consultar la base de datos
-    const { data, loading, error } = useQuery(OBTENER_CLIENTES_USUARIO);
+    const { data, loading } = useQuery(OBTENER_CLIENTES_USUARIO);
 
     useEffect(() => {
         agregarCliente(cliente);

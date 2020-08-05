@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { useRouter } from 'next/router'
+import {useRouter} from 'next/router'
 import Layout from '../../components/Layout';
 import { useQuery, gql, useMutation } from '@apollo/client'
-import { Formik } from 'formik'
+import {Formik} from 'formik'
 import * as Yup from 'yup'
 import Swal from 'sweetalert2';
 
@@ -34,7 +35,7 @@ const EditarCliente = () => {
     // console.log(id)
 
     // Consultar para obtener el cliente
-    const { data, loading, error } = useQuery(OBTENER_CLIENTE, {
+    const { data, loading } = useQuery(OBTENER_CLIENTE, {
         variables: {
             id
         }
@@ -65,13 +66,14 @@ const EditarCliente = () => {
 
     // console.log(data.obtenerCliente)
 
-    const { obtenerCliente } = data;
+    const {obtenerCliente} = data;
 
     // Modifica el cliente en la BD
     const actualizarInfoCliente = async valores => {
         const { nombre, apellido, empresa, email, telefono } = valores;
 
         try {
+            // eslint-disable-next-line no-unused-vars
             const { data} = await actualizarCliente({
                 variables: {
                     id,
@@ -111,7 +113,7 @@ const EditarCliente = () => {
                     <Formik
                         validationSchema={ schemaValidacion }
                         enableReinitialize
-                        initialValues={ obtenerCliente  }
+                        initialValues={ obtenerCliente}
                         onSubmit={ ( valores ) => {
                             actualizarInfoCliente(valores)
                         }}
@@ -241,7 +243,7 @@ const EditarCliente = () => {
                             </form>      
                         )
                     }}
-                    </Formik> 
+                    </Formik>
                 </div>
             </div>
 

@@ -21,7 +21,7 @@ const AsignarProductos = () => {
     const pedidoContext = useContext(PedidoContext);
     const { agregarProducto } = pedidoContext;
 
-    const { data, loading, error } = useQuery(OBTENER_PRODUCTOS);
+    const { data, loading} = useQuery(OBTENER_PRODUCTOS);
 
     useEffect(() => {
         agregarProducto(productos)

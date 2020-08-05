@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Layout from '../components/Layout';
 import Producto from '../components/Producto';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import UsuarioContext from '../context/usuarios/UsuarioContext';
 
 const OBTENER_PRODUCTOS = gql`
   query obtenerProductos {
@@ -22,6 +23,9 @@ const Productos = () => {
   const router = useRouter();
 
   const { data, loading } = useQuery(OBTENER_PRODUCTOS);
+
+  const pedidoContext = useContext(UsuarioContext);
+  const { rol } = pedidoContext.usuario;
 
   if(loading) return (
     <Layout>
@@ -49,8 +53,12 @@ const Productos = () => {
                 <th className="w-1/5 py-2">Nombre</th>
                 <th className="w-1/5 py-2">Categoria</th>
                 <th className="w-1/5 py-2">Cantidad</th>
-                <th className="w-1/5 py-2">Eliminar</th>
-                <th className="w-1/5 py-2">Editar</th>   
+                {rol === "Admin" ? (
+                  <>
+                    <th className="w-1/5 py-2">Eliminar</th>
+                    <th className="w-1/5 py-2">Editar</th>
+                  </>                  
+                ) : null}   
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -58,6 +66,7 @@ const Productos = () => {
                   <Producto
                     key={producto.id}
                     producto={producto}
+                    rol={rol}
                   />
               ))}  
             </tbody>  
