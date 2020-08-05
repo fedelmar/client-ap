@@ -12,6 +12,7 @@ const NUEVO_USUARIO = gql`
             nombre
             apellido
             email
+            rol
         }
   }
 `;
@@ -34,6 +35,7 @@ const Registro = () => {
             nombre: '',
             apellido: '',
             email: '',
+            rol: '',
             password: ''
         },
         validationSchema: Yup.object({
@@ -44,13 +46,15 @@ const Registro = () => {
             email: Yup.string()
                             .email('El email no es válido')
                             .required('Campo obligatorio'),
+            rol: Yup.string()
+                            .required('Campo obligatorio'),
             password: Yup.string()
                             .required('Campo obligatorio')
                             .min(6,'El password debe ser de al menos 6 caracteres')
         }),
         onSubmit: async valores => {
 
-            const {nombre, apellido, email, password} = valores
+            const {nombre, apellido, email, rol, password} = valores
 
             try {
                 const { data } = await nuevoUsuario({
@@ -59,6 +63,7 @@ const Registro = () => {
                             nombre,
                             apellido,
                             email,
+                            rol,
                             password
                         }
                     }
@@ -144,6 +149,31 @@ const Registro = () => {
                             {formik.touched.apellido && formik.errors.apellido ? (
                                 <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
                                     <p>{formik.errors.apellido} </p>
+                                </div>
+                            ): null}
+
+                            <div className="mb-4">
+                                <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="rol">
+                                    Rol
+                                </label>
+                                
+                                <select
+                                    className="shadow appearence-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="rol"
+                                    type="text"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.rol}
+                                >
+                                    <option value="" label="Seleccione una rol" />
+                                    <option value="Admin" label="Admin" />
+                                    <option value="Operario" label="Operario" />
+                                </select>
+                            </div>
+
+                            {formik.touched.rol && formik.errors.rol ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                                    <p>{formik.errors.rol} </p>
                                 </div>
                             ): null}    
 
