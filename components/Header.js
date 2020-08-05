@@ -9,6 +9,7 @@ const OBTENER_USUARIO = gql `
             id
             nombre
             apellido
+            rol
         }
     }
 `;
@@ -27,7 +28,7 @@ const Header = () => {
 
             if(error) return error;
 
-            console.log('data', data.obtenerUsuario)
+            //console.log('data', data.obtenerUsuario)
 
             if(!data || !data.obtenerUsuario) {
                 return router.push('/login');
@@ -39,7 +40,7 @@ const Header = () => {
         getUser();
     }, [data, loading, error])
 
-    const { nombre, apellido } = usuario;
+    const { nombre, apellido, rol } = usuario;
 
     const cerrarSesion = client => {
         
@@ -55,7 +56,7 @@ const Header = () => {
  
     return (
         <div className="sm:flex sm:justify-between mb-5">
-            <p className="mb-5 lg:mb-0 text-2xl text-gray-800 font-light">Hola {nombre} {apellido}!</p>
+            <p className="mb-5 lg:mb-0 text-2xl text-gray-800 font-light">Hola {nombre} {apellido}! rol: {rol}</p>
 
             <button
                 onClick={() => cerrarSesion(client)}

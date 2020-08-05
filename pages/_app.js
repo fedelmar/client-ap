@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+import React from 'react'
 import { ApolloProvider } from '@apollo/client';
 import client from '../config/apollo';
 import PedidoState from '../context/pedidos/PedidoState';
