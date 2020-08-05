@@ -3,14 +3,17 @@ import React from 'react'
 import { ApolloProvider } from '@apollo/client';
 import client from '../config/apollo';
 import PedidoState from '../context/pedidos/PedidoState';
+import UsuarioState from '../context/usuarios/UsuarioState';
 
 const MyApp = ({Component, pageProps}) => {
 
     return (
         <ApolloProvider client={client}>
-            <PedidoState>
-                <Component {...pageProps} />               
-            </PedidoState>
+            <UsuarioState>
+                <PedidoState>
+                    <Component {...pageProps} />               
+                </PedidoState>
+            </UsuarioState>
         </ApolloProvider>
     );
 }

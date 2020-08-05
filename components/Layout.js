@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import Head from 'next/head';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { useRouter } from 'next/router';
 import { gql, useQuery } from '@apollo/client';
+import UsuarioContext from '../context/usuarios/UsuarioContext';
 
 const OBTENER_USUARIO = gql `
     query obtenerUsuario {
@@ -24,6 +25,9 @@ const Layout = ({children}) => {
     const [usuario, setUsuario] = useState({});
     const {data, loading, error } = useQuery(OBTENER_USUARIO);
 
+    const pedidoContext = useContext(UsuarioContext);
+    const { agregarUsuario } = pedidoContext;
+
     useEffect(() => {
         
         const getUser = () => {
@@ -37,14 +41,14 @@ const Layout = ({children}) => {
             if(!data || !data.obtenerUsuario) {
                 return router.push('/login');
             }
-
+            agregarUsuario(data.obtenerUsuario)
             setUsuario(data.obtenerUsuario)
             }
 
         getUser();
     }, [data, loading, error])
 
-    
+  
     return (
       <>  
         <Head>
