@@ -1,45 +1,12 @@
-import React, {useState, useEffect} from 'react'
-import { gql, useQuery } from '@apollo/client'
+/* eslint-disable react/prop-types */
+import React from 'react'
 import { useRouter } from 'next/router';
 import client from '../config/apollo';
 
-const OBTENER_USUARIO = gql `
-    query obtenerUsuario {
-        obtenerUsuario {
-            id
-            nombre
-            apellido
-            rol
-        }
-    }
-`;
+const Header = ({usuario}) => {
 
-const Header = () => {
-
-    const [usuario, setUsuario] = useState({});
     const router = useRouter();
-    const {data, loading, error } = useQuery(OBTENER_USUARIO);
-
-    useEffect(() => {
-        
-        const getUser = () => {
-        
-            if(loading) return "Cargando...";
-
-            if(error) return error;
-
-            //console.log('data', data.obtenerUsuario)
-
-            if(!data || !data.obtenerUsuario) {
-                return router.push('/login');
-            }
-
-            setUsuario(data.obtenerUsuario)
-            }
-
-        getUser();
-    }, [data, loading, error])
-
+    
     const { nombre, apellido, rol } = usuario;
 
     const cerrarSesion = client => {

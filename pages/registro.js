@@ -17,7 +17,6 @@ const NUEVO_USUARIO = gql`
   }
 `;
 
-
 const Registro = () => {
 
     // State del mensaje

@@ -1,15 +1,51 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {useState, useEffect} from 'react'
 import Head from 'next/head';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { useRouter } from 'next/router';
+import { gql, useQuery } from '@apollo/client';
+
+const OBTENER_USUARIO = gql `
+    query obtenerUsuario {
+        obtenerUsuario {
+            id
+            nombre
+            apellido
+            rol
+        }
+    }
+`;
 
 const Layout = ({children}) => {
 
+
     // Routing de next
     const router = useRouter();
+    const [usuario, setUsuario] = useState({});
+    const {data, loading, error } = useQuery(OBTENER_USUARIO);
 
+    useEffect(() => {
+        
+        const getUser = () => {
+        
+            if(loading) return "Cargando...";
+
+            if(error) return error;
+
+            //console.log('data', data.obtenerUsuario)
+
+            if(!data || !data.obtenerUsuario) {
+                return router.push('/login');
+            }
+
+            setUsuario(data.obtenerUsuario)
+            }
+
+        getUser();
+    }, [data, loading, error])
+
+    
     return (
       <>  
         <Head>
@@ -32,7 +68,7 @@ const Layout = ({children}) => {
                     <Sidebar />
                 
                     <main className="xl:w-4/5 sm:w-2/3 sm:min-h-screen p-5">
-                        <Header />
+                        <Header usuario={usuario} />
                         {children}   
                     </main>
 
