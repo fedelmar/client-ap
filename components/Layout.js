@@ -47,7 +47,6 @@ const Layout = ({children}) => {
 
         getUser();
     }, [data, loading, error])
-
   
     return (
       <>  
