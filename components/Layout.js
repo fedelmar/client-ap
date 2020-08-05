@@ -19,7 +19,6 @@ const OBTENER_USUARIO = gql `
 
 const Layout = ({children}) => {
 
-
     // Routing de next
     const router = useRouter();
     const [usuario, setUsuario] = useState({});
@@ -68,7 +67,7 @@ const Layout = ({children}) => {
                     <Sidebar />
                 
                     <main className="xl:w-4/5 sm:w-2/3 sm:min-h-screen p-5">
-                        <Header usuario={usuario} />
+                        {!usuario ? (null) : (<Header usuario={usuario} />)}
                         {children}   
                     </main>
 
