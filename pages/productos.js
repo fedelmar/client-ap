@@ -14,6 +14,7 @@ const OBTENER_PRODUCTOS = gql`
       categoria
       caja
       cantCaja
+      insumos
     }
   }
 `;
@@ -33,11 +34,12 @@ const Productos = () => {
       <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
     </Layout>
   );
-  console.log(data)
 
   if(!data) {
     return router.push('/login');
   }
+
+  //console.log(data.obtenerProductos)
 
   return (
     <div>
@@ -56,6 +58,7 @@ const Productos = () => {
                 <th className="w-1/5 py-2">Categoria</th>
                 <th className="w-1/5 py-2">Caja</th>
                 <th className="w-1/5 py-2">Cant x Caja</th>
+                <th className="w-1/5 py-2">Insumos</th>
                 {rol === "Admin" ? (
                   <>
                     <th className="w-1/5 py-2">Editar</th>

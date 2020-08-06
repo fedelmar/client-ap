@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Swal from 'sweetalert2';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import Router from 'next/router';
+import MostrarInsumos from './MostrarInsumos';
+
 
 const ELIMINAR_PRODUCTO = gql` 
     mutation eliminarProducto($id: ID!){
@@ -18,6 +20,17 @@ const OBTENER_PRODUCTOS = gql`
       categoria
       caja
       cantCaja
+      insumos
+    }
+  }
+`;
+
+const OBTENER_INSUMO = gql`
+  query obtenerInsumos {
+    obtenerInsumos {
+      id
+      nombre
+      categoria
     }
   }
 `;
@@ -40,8 +53,25 @@ const Producto = ({producto, rol}) => {
         }
     });
 
-    const { nombre, categoria, caja, cantCaja , id } = producto;
-   
+    const { data, loading } = useQuery(OBTENER_INSUMO);
+
+    if(loading) return null;
+    const arrInsumos = data.obtenerInsumos;
+    
+    
+
+    const { nombre, categoria, caja, cantCaja, insumos, id } = producto;
+    console.log(insumos)
+    /*const nuevoArray = insumos.map( insumoProducto => (
+            arrInsumos.filter(insumo => 
+                (insumoProducto !== insumo.id ? 
+                    null
+                    : insumo.nombre)
+                )
+            )
+        )
+    console.log(nuevoArray)*/
+    
 
     const confimarEliminarProducto = async () => {
         Swal.fire({
@@ -63,7 +93,7 @@ const Producto = ({producto, rol}) => {
                             id
                         }
                     })
-                    console.log(data);
+                    //console.log(data);
                     Swal.fire(
                         'Eliminado!',
                         data.eliminarProducto,
@@ -83,13 +113,13 @@ const Producto = ({producto, rol}) => {
         })
     }
 
-
     return (
         <tr>
             <th className="border px-4 py-2" >{nombre}</th>
             <th className="border px-4 py-2" >{categoria}</th>
             <th className="border px-4 py-2" >{caja}</th>
             <th className="border px-4 py-2" >{cantCaja}</th>
+            <MostrarInsumos key={insumos.id} arrInsumos={arrInsumos} insumos={insumos}/>       
             {rol === "Admin" ? (
                 <>
                     <td className="border px-4 py-2">
