@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { useRouter } from 'next/router'
+import { useRouter} from 'next/router'
 import Layout from '../../components/Layout';
-import { Formik } from 'formik'
+import { Formik} from 'formik'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import * as Yup from 'yup'
 import Swal from 'sweetalert2';
@@ -11,8 +12,9 @@ const OBTENER_PRODUCTO = gql`
         obtenerProducto(id: $id) {
             id
             nombre
-            cantidad
             categoria
+            caja
+            cantCaja
         }
     }
 `; 
@@ -22,7 +24,8 @@ const ACTUALIZAR_PRODUCTO = gql`
         actualizarProducto(id: $id, input: $input) {
             nombre
             categoria
-            cantidad
+            caja
+            cantCaja
         }
 }
 `;
@@ -32,7 +35,7 @@ const EditarProducto = () => {
     const router = useRouter();
     const { query: { id } } = router;
 
-    const { data, loading, error } = useQuery(OBTENER_PRODUCTO, {
+    const { data, loading } = useQuery(OBTENER_PRODUCTO, {
         variables: {
             id
         }
@@ -43,7 +46,8 @@ const EditarProducto = () => {
     const schemaValidacion = Yup.object({
         nombre: Yup.string(),
         categoria: Yup.string(),
-        cantidad: Yup.number() 
+        caja: Yup.string(),
+        cantCaja: Yup.number() 
                     
     });
     
@@ -56,16 +60,18 @@ const EditarProducto = () => {
     const { obtenerProducto } = data;
 
     const actualizarInfoProducto = async valores => {
-        const { nombre, categoria, cantidad } = valores;
+        const { nombre, categoria, caja, cantCaja } = valores;
 
         try {
+            // eslint-disable-next-line no-unused-vars
             const { data } = await actualizarProducto({
                 variables: {
                     id,
                     input: {
                         nombre, 
                         categoria,
-                        cantidad
+                        caja,
+                        cantCaja
                     }
                 }
             });
@@ -158,25 +164,48 @@ const EditarProducto = () => {
                                     ) : null  }
 
                                     <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantidad">
-                                            Cantidad
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="caja">
+                                            Caja
                                         </label>
 
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="cantidad"
+                                            id="caja"
+                                            type="text"
+                                            placeholder="Caja del producto"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.caja}
+                                        />
+                                    </div>
+
+                                    { props.touched.caja && props.errors.caja ? (
+                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                            <p className="font-bold">Error</p>
+                                            <p>{props.errors.caja}</p>
+                                        </div>
+                                    ) : null  }
+
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantCaja">
+                                            Cantidad por caja
+                                        </label>
+
+                                        <input
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="cantCaja"
                                             type="number"
                                             placeholder="Cantidad"
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
-                                            value={props.values.cantidad}
+                                            value={props.values.cantCaja}
                                         />
                                     </div>
 
-                                    { props.touched.cantidad && props.errors.cantidad ? (
+                                    { props.touched.cantCaja && props.errors.cantCaja ? (
                                         <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                             <p className="font-bold">Error</p>
-                                            <p>{props.errors.cantidad}</p>
+                                            <p>{props.errors.cantCaja}</p>
                                         </div>
                                     ) : null  }
 
@@ -189,7 +218,7 @@ const EditarProducto = () => {
                             </form>      
                         )
                     }}
-                    </Formik> 
+                    </Formik>
                 </div>
             </div> 
         </Layout>        

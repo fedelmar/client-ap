@@ -13,7 +13,6 @@ const OBTENER_INSUMO = gql`
       id
       nombre
       categoria
-      cantidad
     }
   }
 `;
@@ -23,7 +22,6 @@ const ACTUALIZAR_INSUMO = gql`
         actualizarInsumo(id: $id, input: $input) {
             nombre
             categoria
-            cantidad
         }
 }
 `;
@@ -43,8 +41,7 @@ const EditarInsumo = () => {
 
     const schemaValidacion = Yup.object({
         nombre: Yup.string(),
-        categoria: Yup.string(),
-        cantidad: Yup.number() 
+        categoria: Yup.string()
                     
     });
     
@@ -57,7 +54,7 @@ const EditarInsumo = () => {
     const { obtenerInsumo } = data;
 
     const actualizarInfoInsumo = async valores => {
-        const { nombre, categoria, cantidad } = valores;
+        const { nombre, categoria } = valores;
 
         try {
             // eslint-disable-next-line no-unused-vars
@@ -66,8 +63,7 @@ const EditarInsumo = () => {
                     id,
                     input: {
                         nombre, 
-                        categoria,
-                        cantidad
+                        categoria
                     }
                 }
             });
@@ -160,31 +156,7 @@ const EditarInsumo = () => {
                                             <p>{props.errors.categoria}</p>
                                         </div>
                                     ) : null  }
-
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantidad">
-                                            Cantidad
-                                        </label>
-
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="cantidad"
-                                            type="number"
-                                            placeholder="Cantidad"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.cantidad}
-                                        />
-                                    </div>
-
-                                    { props.touched.cantidad && props.errors.cantidad ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{props.errors.cantidad}</p>
-                                        </div>
-                                    ) : null  }
-
-
+                                    
                                     <input
                                         type="submit"
                                         className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"

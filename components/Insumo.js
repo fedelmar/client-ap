@@ -17,7 +17,6 @@ const OBTENER_INSUMO = gql`
       id
       nombre
       categoria
-      cantidad
     }
   }
 `;
@@ -25,7 +24,7 @@ const OBTENER_INSUMO = gql`
 
 const Insumo = ({insumo, rol}) => {
 
-    const { nombre, categoria, cantidad, id } = insumo;
+    const { nombre, categoria, id } = insumo;
 
     const [eliminarInsumo] = useMutation(ELIMINAR_INSUMO, {
         update(cache) {
@@ -86,7 +85,6 @@ const Insumo = ({insumo, rol}) => {
         <tr>
             <th className="border px-4 py-2" >{nombre}</th>
             <th className="border px-4 py-2" >{categoria}</th>
-            <th className="border px-4 py-2" >{cantidad}</th>
             {rol === "Admin" ? (
                 <>
                     <td className="border px-4 py-2 ">
