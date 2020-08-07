@@ -25,7 +25,7 @@ const OBTENER_PRODUCTOS = gql`
   }
 `;
 
-const OBTENER_INSUMO = gql`
+const OBTENER_INSUMOS = gql`
   query obtenerInsumos {
     obtenerInsumos {
       id
@@ -53,24 +53,12 @@ const Producto = ({producto, rol}) => {
         }
     });
 
-    const { data, loading } = useQuery(OBTENER_INSUMO);
+    const { data, loading } = useQuery(OBTENER_INSUMOS);
 
     if(loading) return null;
     const arrInsumos = data.obtenerInsumos;
-    
-    
 
     const { nombre, categoria, caja, cantCaja, insumos, id } = producto;
-    console.log(insumos)
-    /*const nuevoArray = insumos.map( insumoProducto => (
-            arrInsumos.filter(insumo => 
-                (insumoProducto !== insumo.id ? 
-                    null
-                    : insumo.nombre)
-                )
-            )
-        )
-    console.log(nuevoArray)*/
     
 
     const confimarEliminarProducto = async () => {
