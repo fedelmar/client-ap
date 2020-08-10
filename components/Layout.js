@@ -36,14 +36,14 @@ const Layout = ({children}) => {
     const {data: dataUsuario, loading: loadingUsuario, error } = useQuery(OBTENER_USUARIO);
     const {data: dataInsumos, loading: loadingInsumos} = useQuery(OBTENER_INSUMOS);
 
-    const pedidoContext = useContext(UsuarioContext);
-    const { agregarUsuario, agregarInsumos } = pedidoContext;
+    const usuarioContext = useContext(UsuarioContext);
+    const { agregarUsuario, agregarInsumos } = usuarioContext;
     
     useEffect(() => {
         
         const getUser = () => {
         
-            if(loadingUsuario) return "Cargando...";
+            if(loadingUsuario) return null;
 
             if(error) return error;
 
@@ -56,7 +56,7 @@ const Layout = ({children}) => {
 
         const getInsumos = () => {
 
-            if(loadingInsumos) return "Cargando...";
+            if(loadingInsumos) return null;
 
             const {obtenerInsumos} = dataInsumos;
             agregarInsumos(obtenerInsumos)

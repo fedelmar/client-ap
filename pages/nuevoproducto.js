@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Layout from '../components/Layout'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { gql, useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
+import UsuarioContext from '../context/usuarios/UsuarioContext';
+import Select from 'react-select';
 
 const CREAR_PRODUCTO = gql`
     mutation nuevoProducto($input: ProductoInput) {
@@ -13,6 +15,7 @@ const CREAR_PRODUCTO = gql`
             categoria
             caja
             cantCaja
+            insumos
         }
     }
 `;
@@ -25,15 +28,19 @@ const OBTENER_PRODUCTOS = gql`
       categoria
       caja
       cantCaja
+      insumos
     }
   }
 `;
-
 
 const NuevoProducto = () => {
 
     const router = useRouter();
     const [mensaje, guardarMensaje] = useState(null);
+    const [nuevosInsumos, setNuevosInsumos] = useState([]);
+
+    const pedidoContext = useContext(UsuarioContext);
+    const { insumos } = pedidoContext;
 
     // Mutation para actualizar cache y nuevo cliente
     const [ nuevoProducto ] = useMutation(CREAR_PRODUCTO, {
@@ -55,19 +62,21 @@ const NuevoProducto = () => {
             nombre: '',
             categoria: '',
             caja: '',
-            cantCaja: ''
+            cantCaja: '',
+            insumos: []
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required('El nombre del producto es obligatorio'),
             categoria: Yup.string().required('Campo obligatorio'),
             caja: Yup.string(),
             cantCaja: Yup.number(),
+            insumos: Yup.array()
                         
         }),
         onSubmit: async valores => {   
             
             const { nombre, categoria, caja, cantCaja } = valores
-
+            const insumos = nuevosInsumos;
             try {
                 // eslint-disable-next-line no-unused-vars
                 const { data } = await nuevoProducto({
@@ -76,7 +85,8 @@ const NuevoProducto = () => {
                             nombre,
                             categoria,
                             caja,
-                            cantCaja
+                            cantCaja,
+                            insumos
                         }
                     }
                 });
@@ -99,6 +109,11 @@ const NuevoProducto = () => {
         )
     }
 
+    const seleccionarInsumo = insumo => {
+        setNuevosInsumos(insumo.map(insumo => insumo.id))
+
+    }
+    
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Nuevo Producto</h1>
@@ -207,6 +222,18 @@ const NuevoProducto = () => {
                                 </div>
                             ) : null  }
                             
+                            <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione o busque los productos</p>
+                            <Select
+                                className="mt-3"
+                                options={insumos}
+                                onChange={opcion => seleccionarInsumo(opcion) }
+                                getOptionValue={ opciones => opciones.id }
+                                getOptionLabel={ opciones => opciones.nombre }
+                                placeholder="Busque o Seleccione el Insumo"
+                                noOptionsMessage={() => "No hay resultados"}
+                                isMulti={true}
+                                onBlur={formik.handleBlur}
+                            />
 
                             <input
                                 type="submit"
