@@ -233,7 +233,7 @@ const EditarProducto = () => {
                                         options={insumos}
                                         onChange={opcion => seleccionarInsumo(opcion) }
                                         getOptionValue={ opciones => opciones.id }
-                                        getOptionLabel={ opciones => opciones.nombre }
+                                        getOptionLabel={ opciones => `${opciones.nombre} - Material: ${opciones.categoria}`}
                                         placeholder="Busque o Seleccione el Insumo"
                                         noOptionsMessage={() => "No hay resultados"}
                                         isMulti={true}

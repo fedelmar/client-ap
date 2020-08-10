@@ -29,7 +29,7 @@ const MostrarInsumos = ({arrInsumos, insumos}) => {
     }
 
     const a = arrInsumos.filter(({id}) => insumos.includes(id))
-                .map(({nombre})=> (<th key={arrInsumos.id} className="px-2 py-2" >{nombre}</th>))
+                .map(({nombre, categoria})=> (<p key={arrInsumos.id} className="px-2 py-2" >{`${nombre} Material: ${categoria}`} </p>))
 
     return(
         <th className="border px-4 py-2" >
@@ -47,7 +47,7 @@ const MostrarInsumos = ({arrInsumos, insumos}) => {
                 className={(isOpen ? "block " : "hidden ") + "fixed inset-0 bg-black opacity-25 h-full w-full cursor-default"}
             />
             <div useref={isOpen.toString()} className={(isOpen ? "block " : "hidden ") + "absolute mt-2 py-2 bg-white rounded shadow"}>
-                {a.length === 0 ? (<th className="px-2 py-2" >No hay insumos para mostrar</th>) : a}
+                {a.length === 0 ? (<p className="px-2 py-2" >No hay insumos para mostrar</p>) : a}
             </div>            
         </th>
         
