@@ -18,35 +18,56 @@ const OBTENER_USUARIO = gql `
     }
 `;
 
+const OBTENER_INSUMOS = gql`
+  query obtenerInsumos {
+    obtenerInsumos{
+      id
+      nombre
+      categoria
+    }
+  }
+`;
+
 const Layout = ({children}) => {
 
     // Routing de next
     const router = useRouter();
     const [usuario, setUsuario] = useState({});
-    const {data, loading, error } = useQuery(OBTENER_USUARIO);
+    const {data: dataUsuario, loading: loadingUsuario, error } = useQuery(OBTENER_USUARIO);
+    const {data: dataInsumos, loading: loadingInsumos} = useQuery(OBTENER_INSUMOS);
 
     const pedidoContext = useContext(UsuarioContext);
-    const { agregarUsuario } = pedidoContext;
-
+    const { agregarUsuario, agregarInsumos } = pedidoContext;
+    
     useEffect(() => {
         
         const getUser = () => {
         
-            if(loading) return "Cargando...";
+            if(loadingUsuario) return "Cargando...";
 
             if(error) return error;
 
-            //console.log('data', data.obtenerUsuario)
-
-            if(!data || !data.obtenerUsuario) {
+            if(!dataUsuario || !dataUsuario.obtenerUsuario) {
                 return router.push('/login');
             }
-            agregarUsuario(data.obtenerUsuario)
-            setUsuario(data.obtenerUsuario)
-            }
+            agregarUsuario(dataUsuario.obtenerUsuario)
+            setUsuario(dataUsuario.obtenerUsuario)
+        }
+
+        const getInsumos = () => {
+
+            if(loadingInsumos) return "Cargando...";
+
+            const {obtenerInsumos} = dataInsumos;
+            agregarInsumos(obtenerInsumos)
+
+        }
 
         getUser();
-    }, [data, loading, error])
+        getInsumos();
+    }, [dataUsuario, loadingUsuario, loadingInsumos, dataInsumos, error])
+
+
   
     return (
       <>  
