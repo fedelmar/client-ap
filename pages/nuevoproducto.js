@@ -110,7 +110,10 @@ const NuevoProducto = () => {
     }
 
     const seleccionarInsumo = insumo => {
-        setNuevosInsumos(insumo.map(insumo => insumo.id))
+        if (insumo) {
+            setNuevosInsumos(insumo.map(insumo => insumo.id)) 
+        } else 
+            setNuevosInsumos([]);
 
     }
     
