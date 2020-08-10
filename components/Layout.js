@@ -43,7 +43,7 @@ const Layout = ({children}) => {
         
         const getUser = () => {
         
-            if(loadingUsuario) return null;
+            if(loadingUsuario) return 'Cargando...';
 
             if(error) return error;
 
@@ -56,7 +56,7 @@ const Layout = ({children}) => {
 
         const getInsumos = () => {
 
-            if(loadingInsumos) return null;
+            if(loadingInsumos) return 'Cargando...';
 
             const {obtenerInsumos} = dataInsumos;
             agregarInsumos(obtenerInsumos)
