@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import { useRouter} from 'next/router'
 import Layout from '../../components/Layout';
 import { Formik} from 'formik'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import * as Yup from 'yup'
 import Swal from 'sweetalert2';
+import UsuarioContext from '../../context/usuarios/UsuarioContext';
+import Select from 'react-select';
 
 const OBTENER_PRODUCTO = gql`
     query obtenerProducto($id: ID!) {
@@ -15,6 +17,7 @@ const OBTENER_PRODUCTO = gql`
             categoria
             caja
             cantCaja
+            insumos
         }
     }
 `; 
@@ -26,6 +29,7 @@ const ACTUALIZAR_PRODUCTO = gql`
             categoria
             caja
             cantCaja
+            insumos
         }
 }
 `;
@@ -34,6 +38,10 @@ const EditarProducto = () => {
 
     const router = useRouter();
     const { query: { id } } = router;
+    const [nuevosInsumos, setNuevosInsumos] = useState([]);
+
+    const pedidoContext = useContext(UsuarioContext);
+    const { insumos } = pedidoContext;
 
     const { data, loading } = useQuery(OBTENER_PRODUCTO, {
         variables: {
@@ -47,7 +55,8 @@ const EditarProducto = () => {
         nombre: Yup.string(),
         categoria: Yup.string(),
         caja: Yup.string(),
-        cantCaja: Yup.number() 
+        cantCaja: Yup.number(),
+        insumos: Yup.array() 
                     
     });
     
@@ -61,7 +70,7 @@ const EditarProducto = () => {
 
     const actualizarInfoProducto = async valores => {
         const { nombre, categoria, caja, cantCaja } = valores;
-
+        const insumos = nuevosInsumos;
         try {
             // eslint-disable-next-line no-unused-vars
             const { data } = await actualizarProducto({
@@ -71,7 +80,8 @@ const EditarProducto = () => {
                         nombre, 
                         categoria,
                         caja,
-                        cantCaja
+                        cantCaja,
+                        insumos
                     }
                 }
             });
@@ -92,6 +102,14 @@ const EditarProducto = () => {
         }
     }
 
+    const seleccionarInsumo = insumo => {
+        if (insumo) {
+            setNuevosInsumos(insumo.map(insumo => insumo.id)) 
+        } else 
+            setNuevosInsumos([]);
+
+    }
+
     return (
         <Layout>
           <h1 className="text-2xl text-gray-800 font-light">Editar Producto</h1>
@@ -107,7 +125,7 @@ const EditarProducto = () => {
                     >
 
                     {props => {
-                    console.log(props);
+                    //const insumosProducto = insumos.filter(({id}) => props.values.insumos.includes(id))
                     return (
                             <form
                                 className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
@@ -208,6 +226,20 @@ const EditarProducto = () => {
                                             <p>{props.errors.cantCaja}</p>
                                         </div>
                                     ) : null  }
+
+                                    <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione o busque los insumos</p>
+                                    <Select
+                                        className="mt-3"
+                                        options={insumos}
+                                        onChange={opcion => seleccionarInsumo(opcion) }
+                                        getOptionValue={ opciones => opciones.id }
+                                        getOptionLabel={ opciones => opciones.nombre }
+                                        placeholder="Busque o Seleccione el Insumo"
+                                        noOptionsMessage={() => "No hay resultados"}
+                                        isMulti={true}
+                                        onBlur={props.handleBlur}
+                                        defaultValue={insumos.filter(({id}) => props.values.insumos.includes(id))}
+                                    /> 
 
 
                                     <input
