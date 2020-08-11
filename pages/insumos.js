@@ -8,12 +8,11 @@ import Link from 'next/link';
 import UsuarioContext from '../context/usuarios/UsuarioContext';
 
 const OBTENER_INSUMOS = gql`
-   query obtenerInsumos {
+  query obtenerInsumos {
     obtenerInsumos{
       id
       nombre
       categoria
-      cantidad
     }
   }
 `;
@@ -51,7 +50,6 @@ export default function Pedidos() {
             <tr className="text-white">
               <th className="w-1/5 py-2">Nombre</th>
               <th className="w-1/5 py-2">Categoria</th>
-              <th className="w-1/5 py-2">Cantidad</th>
               {rol === "Admin" ? (
                 <>
                   <th className="w-1/5 py-2">Eliminar</th>

@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Layout from '../components/Layout'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { gql, useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
+import UsuarioContext from '../context/usuarios/UsuarioContext';
+import Select from 'react-select';
 
 const CREAR_PRODUCTO = gql`
     mutation nuevoProducto($input: ProductoInput) {
@@ -11,7 +13,9 @@ const CREAR_PRODUCTO = gql`
             id
             nombre
             categoria
-            cantidad
+            caja
+            cantCaja
+            insumos
         }
     }
 `;
@@ -22,16 +26,21 @@ const OBTENER_PRODUCTOS = gql`
       id
       nombre
       categoria
-      cantidad
+      caja
+      cantCaja
+      insumos
     }
   }
 `;
-
 
 const NuevoProducto = () => {
 
     const router = useRouter();
     const [mensaje, guardarMensaje] = useState(null);
+    const [nuevosInsumos, setNuevosInsumos] = useState([]);
+
+    const pedidoContext = useContext(UsuarioContext);
+    const { insumos } = pedidoContext;
 
     // Mutation para actualizar cache y nuevo cliente
     const [ nuevoProducto ] = useMutation(CREAR_PRODUCTO, {
@@ -52,18 +61,22 @@ const NuevoProducto = () => {
         initialValues: {
             nombre: '',
             categoria: '',
-            cantidad: 0
+            caja: '',
+            cantCaja: '',
+            insumos: []
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required('El nombre del producto es obligatorio'),
             categoria: Yup.string().required('Campo obligatorio'),
-            cantidad: Yup.number().required('Ingrese una cantidad') 
+            caja: Yup.string(),
+            cantCaja: Yup.number(),
+            insumos: Yup.array()
                         
         }),
         onSubmit: async valores => {   
             
-            const { nombre, categoria, cantidad } = valores
-
+            const { nombre, categoria, caja, cantCaja } = valores
+            const insumos = nuevosInsumos;
             try {
                 // eslint-disable-next-line no-unused-vars
                 const { data } = await nuevoProducto({
@@ -71,7 +84,9 @@ const NuevoProducto = () => {
                         input: {
                             nombre,
                             categoria,
-                            cantidad
+                            caja,
+                            cantCaja,
+                            insumos
                         }
                     }
                 });
@@ -94,6 +109,14 @@ const NuevoProducto = () => {
         )
     }
 
+    const seleccionarInsumo = insumo => {
+        if (insumo) {
+            setNuevosInsumos(insumo.map(insumo => insumo.id)) 
+        } else 
+            setNuevosInsumos([]);
+
+    }
+    
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Nuevo Producto</h1>
@@ -157,28 +180,63 @@ const NuevoProducto = () => {
                             ) : null  }
 
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantidad">
-                                    Cantidad
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="caja">
+                                    Caja
                                 </label>
 
                                 <input
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="cantidad"
+                                    id="caja"
+                                    type="text"
+                                    placeholder="Tipo de caja"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.caja}
+                                />
+                            </div>
+
+                            { formik.touched.caja && formik.errors.caja ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formik.errors.caja}</p>
+                                </div>
+                            ) : null  }
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantCaja">
+                                    Cantidad por Caja
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="cantCaja"
                                     type="number"
                                     placeholder="Cantidad"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.cantidad}
+                                    value={formik.values.cantCaja}
                                 />
                             </div>
 
-                            { formik.touched.cantidad && formik.errors.cantidad ? (
+                            { formik.touched.cantCaja && formik.errors.cantCaja ? (
                                 <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                     <p className="font-bold">Error</p>
-                                    <p>{formik.errors.cantidad}</p>
+                                    <p>{formik.errors.cantCaja}</p>
                                 </div>
                             ) : null  }
                             
+                            <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione o busque los productos</p>
+                            <Select
+                                className="mt-3"
+                                options={insumos}
+                                onChange={opcion => seleccionarInsumo(opcion) }
+                                getOptionValue={ opciones => opciones.id }
+                                getOptionLabel={ opciones => `${opciones.nombre} - Material: ${opciones.categoria}`}
+                                placeholder="Busque o Seleccione el Insumo"
+                                noOptionsMessage={() => "No hay resultados"}
+                                isMulti={true}
+                                onBlur={formik.handleBlur}
+                            />
 
                             <input
                                 type="submit"

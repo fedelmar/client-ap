@@ -28,8 +28,8 @@ const AsignarProductos = () => {
     }, [productos])
 
     const seleccionarProducto = producto => {
-            setProductos(producto)
-        }
+        setProductos(producto)
+    }
 
     if(loading) return null;
     const { obtenerProductos } = data;

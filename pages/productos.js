@@ -12,7 +12,9 @@ const OBTENER_PRODUCTOS = gql`
       id
       nombre
       categoria
-      cantidad
+      caja
+      cantCaja
+      insumos
     }
   }
 `;
@@ -37,6 +39,8 @@ const Productos = () => {
     return router.push('/login');
   }
 
+  //console.log(data.obtenerProductos)
+
   return (
     <div>
       <Layout>
@@ -52,11 +56,13 @@ const Productos = () => {
               <tr className="text-white">
                 <th className="w-1/5 py-2">Nombre</th>
                 <th className="w-1/5 py-2">Categoria</th>
-                <th className="w-1/5 py-2">Cantidad</th>
+                <th className="w-1/5 py-2">Caja</th>
+                <th className="w-1/5 py-2">Cant x Caja</th>
+                <th className="w-1/5 py-2">Insumos</th>
                 {rol === "Admin" ? (
                   <>
-                    <th className="w-1/5 py-2">Eliminar</th>
                     <th className="w-1/5 py-2">Editar</th>
+                    <th className="w-1/5 py-2">Eliminar</th>
                   </>                  
                 ) : null}   
               </tr>
