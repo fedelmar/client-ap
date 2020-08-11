@@ -43,7 +43,7 @@ const NuevoCliente = () => {
     const [ nuevoCliente ] = useMutation(NUEVO_CLIENTE, {
         update(cache, { data: { nuevoCliente } } ) {
             // Obtener el objeto de cache que deseamos actualizar
-            const { obtenerClientesVendedor } = cache.readQuery({ query: OBTENER_CLIENTES_USUARIO  });
+            const {obtenerClientesVendedor} = cache.readQuery({ query: OBTENER_CLIENTES_USUARIO  });
 
             // Reescribimos el cache ( el cache nunca se debe modificar )
             cache.writeQuery({
@@ -80,6 +80,7 @@ const NuevoCliente = () => {
             const {nombre, apellido, empresa, email, telefono } = valores
 
             try {
+                // eslint-disable-next-line no-unused-vars
                 const { data } = await nuevoCliente({
                     variables: {
                         input: {

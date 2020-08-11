@@ -20,6 +20,7 @@ const OBTENER_INSUMO = gql`
 const ACTUALIZAR_INSUMO = gql`
     mutation actualizarInsumo($id: ID!, $input: InsumoInput) {
         actualizarInsumo(id: $id, input: $input) {
+            id
             nombre
             categoria
         }
