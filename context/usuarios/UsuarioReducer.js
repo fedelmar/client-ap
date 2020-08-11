@@ -1,5 +1,7 @@
 import {
-    DATOS_USUARIO, LISTA_INSUMOS
+    DATOS_USUARIO, 
+    LISTA_INSUMOS, 
+    LISTA_PRODUCTOS
 } from '../../types'
 
 export default ( state, action ) => {
@@ -13,6 +15,11 @@ export default ( state, action ) => {
             return {
                 ...state,
                 insumos: action.payload
+            }
+        case LISTA_PRODUCTOS:
+            return {
+                ...state,
+                productos: action.payload
             }
         default:
             return state

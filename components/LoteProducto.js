@@ -3,7 +3,7 @@ import React from 'react';
 
 const LoteProducto = ({loteProducto, rol}) => {
 
-    const { lote, cantidad, producto, estado, id }  = loteProducto;
+    const { lote, cantidad, producto, estado }  = loteProducto;
 
     return ( <tr>
         <th className="border px-4 py-2" >{lote}</th>

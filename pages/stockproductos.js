@@ -31,8 +31,8 @@ const StockProductos = () => {
         </Layout>
     );
 
-    console.log(data.obtenerProductosStock);
-
+    //console.log(data.obtenerProductosStock);
+    
 
     return (
     <Layout>

@@ -28,6 +28,19 @@ const OBTENER_INSUMOS = gql`
   }
 `;
 
+const OBTENER_PRODUCTOS = gql`
+  query obtenerProductos {
+    obtenerProductos{
+      id
+      nombre
+      categoria
+      caja
+      cantCaja
+      insumos
+    }
+  }
+`;
+
 const Layout = ({children}) => {
 
     // Routing de next
@@ -35,9 +48,11 @@ const Layout = ({children}) => {
     const [usuario, setUsuario] = useState({});
     const {data: dataUsuario, loading: loadingUsuario, error } = useQuery(OBTENER_USUARIO);
     const {data: dataInsumos, loading: loadingInsumos} = useQuery(OBTENER_INSUMOS);
+    const {data: dataProductos, loading: loadingProductos} = useQuery(OBTENER_PRODUCTOS);
+    
 
     const usuarioContext = useContext(UsuarioContext);
-    const { agregarUsuario, agregarInsumos } = usuarioContext;
+    const { agregarUsuario, agregarInsumos, agregarProductos } = usuarioContext;
     
     useEffect(() => {
         
@@ -63,12 +78,27 @@ const Layout = ({children}) => {
 
         }
 
+        const getProductos = () => {
+
+            if(loadingProductos) return 'Cargando...';
+
+            const {obtenerProductos} = dataProductos;
+            agregarProductos(obtenerProductos)
+
+        }
+
         getUser();
         getInsumos();
-    }, [dataUsuario, loadingUsuario, loadingInsumos, dataInsumos, error])
+        getProductos();
 
+    }, [dataUsuario, 
+        loadingUsuario, 
+        loadingInsumos, 
+        dataInsumos, 
+        error,
+        loadingProductos,
+        dataProductos])
 
-  
     return (
       <>  
         <Head>

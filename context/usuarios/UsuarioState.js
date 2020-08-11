@@ -5,7 +5,8 @@ import UsuarioReducer from './UsuarioReducer';
 
 import {
     DATOS_USUARIO,
-    LISTA_INSUMOS
+    LISTA_INSUMOS, 
+    LISTA_PRODUCTOS
 } from '../../types'
 
 const UsuarioState = ({children}) => {
@@ -13,7 +14,8 @@ const UsuarioState = ({children}) => {
     // State de usuarios
     const initialState = {
         usuario: {},
-        insumos: []
+        insumos: [],
+        productos: []
     }
 
     const agregarUsuario = usuario => {
@@ -29,14 +31,24 @@ const UsuarioState = ({children}) => {
             payload: listaInsumos
         })
     }
+
+    const agregarProductos = listaProductos => {
+        dispatch({
+            type: LISTA_PRODUCTOS,
+            payload: listaProductos
+        })
+    }
+
     const [ state, dispatch ] = useReducer(UsuarioReducer, initialState);
     return (
         <UsuarioContext.Provider
             value={{
                 usuario: state.usuario,
                 insumos: state.insumos,
+                productos: state.productos,
                 agregarUsuario,
-                agregarInsumos
+                agregarInsumos,
+                agregarProductos
             }}
         >
             {children}
