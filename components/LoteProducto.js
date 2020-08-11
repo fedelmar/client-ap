@@ -1,13 +1,30 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { gql, useQuery } from '@apollo/client';
+
+const LISTADO_PRODUCTOS = gql`
+    query obtenerProductos {
+        obtenerProductos{
+            id
+            nombre
+        }
+    }
+`; 
 
 const LoteProducto = ({loteProducto, rol}) => {
 
+    const {data, loading} = useQuery(LISTADO_PRODUCTOS);
     const { lote, cantidad, producto, estado }  = loteProducto;
+
+    if (loading) return null;
+
+    console.log(data.obtenerProductos);
+    const {nombre} = data.obtenerProductos.find(i => i.id === producto) 
+    console.log('nombre ', nombre)
 
     return ( <tr>
         <th className="border px-4 py-2" >{lote}</th>
-        <th className="border px-4 py-2" >{producto}</th>
+        <th className="border px-4 py-2" >{nombre}</th>
         <th className="border px-4 py-2" >{cantidad}</th>
         <th className="border px-4 py-2" >{estado}</th>   
         {rol === "Admin" ? (
