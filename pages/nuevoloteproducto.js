@@ -35,7 +35,7 @@ const NuevoLoteProducto = () => {
 
     const router = useRouter();
     const [mensaje, guardarMensaje] = useState(null);
-    const [ idProducto, setIdProducto] = useState();
+    const [idProducto, setIdProducto] = useState();
 
     const [nuevoProductoStock] = useMutation(CREAR_LOTE, {
         update(cache, {data: { nuevoProductoStock }}) {
