@@ -48,8 +48,8 @@ const EditarLoteProducto = () => {
 
     const [ actualizarProductoStock ] = useMutation(ACTUALIZAR_LOTE);
 
-    const pedidoContext = useContext(UsuarioContext);
-    const { productos } = pedidoContext;
+    const usuarioContext = useContext(UsuarioContext);
+    const { productos } = usuarioContext;
 
     if(loading) return (   
         <Layout>

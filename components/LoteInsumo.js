@@ -92,7 +92,13 @@ const LoteInsumo = ({loteInsumo, rol}) => {
           })
     };
 
-    
+    const editarLote = () => {
+        Router.push({
+            pathname: "/editarLInsumo/[id]",
+            query: { id }
+        })
+    }
+
     return (
         <tr>
             <th className="border px-3 py-2" >{lote}</th>
@@ -104,7 +110,7 @@ const LoteInsumo = ({loteInsumo, rol}) => {
                         <button
                             type="button"
                             className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                            //onClick={() => editarLote()}
+                            onClick={() => editarLote()}
                         >
                             <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         </button>
