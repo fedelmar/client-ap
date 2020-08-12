@@ -114,14 +114,13 @@ const NuevoProducto = () => {
             setNuevosInsumos(insumo.map(insumo => insumo.id)) 
         } else 
             setNuevosInsumos([]);
-
     }
     
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Nuevo Producto</h1>
         
-            {mensaje && mostrarMensaje() }
+            {mensaje && mostrarMensaje()}
 
             <div className="flex justify-center mt-5">
                 <div className="w-full max-w-lg">
@@ -225,14 +224,14 @@ const NuevoProducto = () => {
                                 </div>
                             ) : null  }
                             
-                            <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione o busque los productos</p>
+                            <p className="block text-gray-700 text-sm font-bold mb-2">Busque o Seleccione el Insumo</p>
                             <Select
                                 className="mt-3"
                                 options={insumos}
                                 onChange={opcion => seleccionarInsumo(opcion) }
                                 getOptionValue={ opciones => opciones.id }
                                 getOptionLabel={ opciones => `${opciones.nombre} - Material: ${opciones.categoria}`}
-                                placeholder="Busque o Seleccione el Insumo"
+                                placeholder="Insumos..."
                                 noOptionsMessage={() => "No hay resultados"}
                                 isMulti={true}
                                 onBlur={formik.handleBlur}

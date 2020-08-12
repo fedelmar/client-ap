@@ -25,6 +25,7 @@ const OBTENER_PRODUCTO = gql`
 const ACTUALIZAR_PRODUCTO = gql`
     mutation actualizarProducto($id: ID!, $input: ProductoInput) {
         actualizarProducto(id: $id, input: $input) {
+            id
             nombre
             categoria
             caja
@@ -125,7 +126,6 @@ const EditarProducto = () => {
                     >
 
                     {props => {
-                    //const insumosProducto = insumos.filter(({id}) => props.values.insumos.includes(id))
                     return (
                             <form
                                 className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
