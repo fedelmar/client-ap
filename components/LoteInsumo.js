@@ -1,15 +1,33 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React from 'react';
+import { gql, useQuery, useMutation } from '@apollo/client';
+
+const LISTADO_INSUMOS = gql`
+    query obtenerInsumos {
+        obtenerInsumos{
+            id
+            nombre
+        }
+    }
+`;
 
 const LoteInsumo = ({loteInsumo, rol}) => {
 
+    const {data, loading} = useQuery(LISTADO_INSUMOS);
+
     const {lote, insumo, cantidad} = loteInsumo;
 
+    if (loading) return null;
+
+    // Buscar dentro de lista de productos el nombre del producto
+    const {nombre} = data.obtenerInsumos.find(i => i.id === insumo);
+
+    
     return (
         <tr>
             <th className="border px-3 py-2" >{lote}</th>
-            <th className="border px-3 py-2" >{insumo}</th>
+            <th className="border px-3 py-2" >{nombre}</th>
             <th className="border px-3 py-2" >{cantidad}</th>
             {rol === "Admin" ? (
                 <>
