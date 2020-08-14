@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { gql, useQuery } from '@apollo/client';
-import UsuarioContext from '../context/usuarios/UsuarioContext';
-import Layout from '../components/Layout';
-import RegistroCPE from '../components/RegistroCPE';
+import UsuarioContext from '../../context/usuarios/UsuarioContext';
+import Layout from '../../components/Layout';
+import RegistroCPE from '../../components/RegistroCPE';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosCE {
@@ -39,7 +39,6 @@ const ProduccionEsponjas = () => {
 
     console.log(data.obtenerRegistrosCE)
 
-
     return (
     <Layout>
        <h1 className="text-2xl text-gray-800 font-light" >Registros de produccion de Esponjas</h1> 
@@ -51,8 +50,7 @@ const ProduccionEsponjas = () => {
                 <th className="w-1/12 py-2">Fecha</th>
                 <th className="w-1/12 py-2">Operario</th>
                 <th className="w-1/12 py-2">Lote</th>
-                <th className="w-1/12 py-2">Hora Inicio</th>
-                <th className="w-1/12 py-2">Hora Cierre</th>
+                <th className="w-2/12 py-2">Horario</th>
                 <th className="w-1/12 py-2">Producto</th>
                 <th className="w-1/12 py-2">Lote Bolsa</th>
                 <th className="w-1/12 py-2">Lote Esponja</th>

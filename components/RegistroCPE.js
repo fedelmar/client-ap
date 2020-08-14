@@ -4,6 +4,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Router from 'next/router';
+import MostrarObser from './registros/MostrarObser';
 
 const ELIMINAR_REGISTRO = gql `
     mutation	eliminarRegistroCE($id: ID!){
@@ -95,19 +96,20 @@ const RegistroCPE = ({registro, rol}) => {
           })
     }
 
+    console.log(new Date(fecha))
+
     return (
         <tr>
             <th className="border px-4 py-2" >{fecha}</th>
             <th className="border px-4 py-2" >{operario}</th>
             <th className="border px-4 py-2" >{lote}</th>
-            <th className="border px-4 py-2" >{horaInicio}</th>
-            <th className="border px-4 py-2" >{horaCierre}</th>
+            <th className="border px-4 py-2" >De {horaInicio} a {horaCierre}</th>
             <th className="border px-4 py-2" >{producto}</th>
             <th className="border px-4 py-2" >{lBolsa}</th>
             <th className="border px-4 py-2" >{lEsponja}</th>
             <th className="border px-4 py-2" >{cantProductida}</th>
             <th className="border px-4 py-2" >{cantDescarte}</th>
-            <th className="border px-4 py-2" >{observaciones}</th>     
+            <MostrarObser observaciones={observaciones} />     
             {rol === "Admin" ? (
                 <>
                     {/* De momento la edicion no va a estar disponible
