@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Router from 'next/router';
 import MostrarObser from './registros/MostrarObser';
+import { format } from 'date-fns'
 
 const ELIMINAR_REGISTRO = gql `
     mutation	eliminarRegistroCE($id: ID!){
@@ -98,12 +98,14 @@ const RegistroCPE = ({registro, rol}) => {
 
     console.log(new Date(fecha))
 
+  //  format(new Date(fecha), 'dd/MM/yy')
+
     return (
         <tr>
-            <th className="border px-4 py-2" >{fecha}</th>
+            <th className="border px-4 py-2" >{format(new Date(fecha), 'dd/MM/yy')}</th>
             <th className="border px-4 py-2" >{operario}</th>
             <th className="border px-4 py-2" >{lote}</th>
-            <th className="border px-4 py-2" >De {horaInicio} a {horaCierre}</th>
+            <th className="border px-4 py-2" >De {format(new Date(fecha), 'HH:mm')} a {horaCierre}</th>
             <th className="border px-4 py-2" >{producto}</th>
             <th className="border px-4 py-2" >{lBolsa}</th>
             <th className="border px-4 py-2" >{lEsponja}</th>
