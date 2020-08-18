@@ -22,7 +22,6 @@ const PedidoState = ({children}) => {
 
     // Modificando el cliente
     const agregarCliente = cliente => {
-        //console.log(cliente)
         dispatch({
             type: SELECCIONAR_CLIENTE,
             payload: cliente

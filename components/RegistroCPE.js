@@ -96,10 +96,7 @@ const RegistroCPE = ({registro, rol}) => {
           })
     }
 
-    console.log(new Date(fecha))
-
-  //  format(new Date(fecha), 'dd/MM/yy')
-
+    //console.log(new Date(fecha))
     return (
         <tr>
             <th className="border px-4 py-2" >{format(new Date(fecha), 'dd/MM/yy')}</th>
