@@ -17,7 +17,7 @@ const LISTA_REGISTROS = gql `
             producto
             lBolsa
             lEsponja
-            cantProductida
+            cantProducida
             cantDescarte
             observaciones
         }

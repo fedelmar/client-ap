@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import Swal from 'sweetalert2';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import Router from 'next/router';
+import { gql, useMutation } from '@apollo/client';
 import MostrarObser from './registros/MostrarObser';
 import { format } from 'date-fns'
 
@@ -24,7 +23,7 @@ const LISTA_REGISTROS = gql `
             producto
             lBolsa
             lEsponja
-            cantProductida
+            cantProducida
             cantDescarte
             observaciones
         }
@@ -59,7 +58,7 @@ const RegistroCPE = ({registro, rol}) => {
             producto, 
             lBolsa, 
             lEsponja, 
-            cantProductida, 
+            cantProducida, 
             cantDescarte, 
             observaciones } = registro;
 
@@ -106,7 +105,7 @@ const RegistroCPE = ({registro, rol}) => {
             <th className="border px-4 py-2" >{producto}</th>
             <th className="border px-4 py-2" >{lBolsa}</th>
             <th className="border px-4 py-2" >{lEsponja}</th>
-            <th className="border px-4 py-2" >{cantProductida}</th>
+            <th className="border px-4 py-2" >{cantProducida}</th>
             <th className="border px-4 py-2" >{cantDescarte}</th>
             <MostrarObser observaciones={observaciones} />     
             {rol === "Admin" ? (
