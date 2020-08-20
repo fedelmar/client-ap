@@ -20,6 +20,31 @@ const LISTA_STOCK = gql `
     }
 `;
 
+const OBTENER_STOCK = gql`
+    query obtenerProductosStock{
+        obtenerProductosStock{
+            id
+            lote
+            cantidad
+            producto
+            estado
+        }
+    }
+`;
+
+const CREAR_LOTE = gql`
+    mutation nuevoProductoStock($input: sProductoInput){
+        nuevoProductoStock(input: $input){
+            id
+            lote
+            producto        
+            estado
+            cantidad
+        }
+    }
+`;
+
+
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroCE($input: CPEInput){
         nuevoRegistroCE(input: $input){
@@ -61,7 +86,20 @@ const LISTA_REGISTROS = gql `
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data, loading } = useQuery(LISTA_STOCK);
+    const { data, loading } = useQuery(OBTENER_STOCK);
+    const [mensaje, guardarMensaje] = useState(null);
+    const [ nuevoProductoStock ] = useMutation(CREAR_LOTE, {
+        update(cache, {data: { nuevoProductoStock }}) {
+            const { obtenerProductosStock } = cache.readQuery({ query: OBTENER_STOCK});
+
+            cache.writeQuery({
+                query: OBTENER_STOCK,
+                data: {
+                    obtenerProductosStock: [...obtenerProductosStock, nuevoProductoStock]
+                }
+            })
+        }
+    })
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroCE }}) {
             const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -86,6 +124,7 @@ const IniciarProduccion = () => {
         lote: '',
         horaInicio: '',
         producto: '',
+        productoID: '',
         lBolsa: '',
         lEsponja: ''
     });
@@ -113,7 +152,7 @@ const IniciarProduccion = () => {
     const formikCierre = useFormik({
         initialValues: {
             cantProducida: '',
-            cantDescarte: '0',
+            cantDescarte: 0,
             observaciones: ''
         },
         validationSchema: Yup.object({
@@ -134,17 +173,14 @@ const IniciarProduccion = () => {
         </Layout>
     );
 
-    const {obtenerStockInsumos} = data;
+    const {obtenerProductosStock} = data;
     /*console.log('stock', obtenerStockInsumos)
     console.log("insumos", insumos)*/
 
     const handleInicio = valores => {
-        // Inicia la prodccion, registrando fecha, hora, lote, producto, lBolsa, lEsponja
-    
         const { lote, lBolsa, lEsponja} = valores
 
         const start = Date.now();
-
         const dia = format(new Date(start), 'dd/MM/yy')
         const hora = format(new Date(start), 'HH:mm')
 
@@ -154,6 +190,7 @@ const IniciarProduccion = () => {
 
     const handleCierre = () => {
         // Volver a iniciar por si hubo algun error
+        setRegistro({...registro})
         setSession(false);        
     }
 
@@ -164,12 +201,11 @@ const IniciarProduccion = () => {
         // Se registran los ultimos datos
         const fin = Date.now();
         const hora = format(new Date(fin), 'HH:mm')
-        console.log('hora cierre: ',hora)
+
         //Volver a planillas de produccion y modificar base de datos
         const {cantDescarte, cantProducida, observaciones} = valores;
         setRegistro({...registro, cantDescarte, cantProducida, observaciones, horaCierre: hora})
-        
-        const str = "Lote: " + registro.lote + "Producto: " + registro.producto + "\nLote de Esponja: " + registro.lEsponja;
+
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
@@ -192,7 +228,6 @@ const IniciarProduccion = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    console.log("registro: ", registro)  
                     const { data } = await nuevoRegistroCE({
                         variables: {
                             input: {
@@ -210,28 +245,46 @@ const IniciarProduccion = () => {
                             }
                         }                
                     });
+                    const { dataProducto } = await nuevoProductoStock({
+                        variables: {
+                            input: {
+                                lote: registro.lote,
+                                producto: registro.productoID,
+                                estado: "Proceso",
+                                cantidad: cantProducida
+                            }
+                        }
+                    });
                     Swal.fire(
-                        'Guardado!',
+                        'Se guardo el registro y se creo un nuevo lote en stock de productos',
                         data.nuevoRegistroCE,
                         'success'
                     )
                     router.push('/registros/produccionesponjas');
                 } catch (error) {
-                    console.log(error)
+                    guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
             }
           })        
     }
 
     const seleccionarProducto = producto => {
-        setRegistro({...registro, producto: producto.nombre})
+        setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     }
 
-    //console.log('session iniciada: ', session)
+    const mostrarMensaje = () => {
+        return(
+            <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+                <p>{mensaje}</p>
+            </div>
+        )
+    }
 
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
+
+            {mensaje && mostrarMensaje()}
 
             <div>
                { !session ? (
@@ -276,19 +329,6 @@ const IniciarProduccion = () => {
                                     onBlur={formikInicio.handleBlur}
                                     isMulti={false}
                                 />
-
-                                {/*<p className="block text-gray-700 text-sm font-bold mb-2">Seleccione el Lote de bolsa</p>
-                                <Select
-                                    className="mt-3 mb-4"
-                                    options={insumos}
-                                    onChange={opcion => seleccionarInsumo(opcion) }
-                                    getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => opciones.nombre}
-                                    placeholder="Insumo..."
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    onBlur={formikInicio.handleBlur}
-                                    isMulti={false}
-                                />*/}
 
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lEsponja">
