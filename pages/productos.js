@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import Layout from '../components/Layout';
 import Producto from '../components/Producto';
 import { gql, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import UsuarioContext from '../context/usuarios/UsuarioContext';
 
@@ -22,8 +21,6 @@ const OBTENER_PRODUCTOS = gql`
 
 const Productos = () => {
 
-  const router = useRouter();
-
   const { data, loading } = useQuery(OBTENER_PRODUCTOS);
 
   const pedidoContext = useContext(UsuarioContext);
@@ -34,10 +31,6 @@ const Productos = () => {
       <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
     </Layout>
   );
-
-  if(!data) {
-    return router.push('/login');
-  }
 
   //console.log(data.obtenerProductos)
 
