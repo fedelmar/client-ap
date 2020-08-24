@@ -86,18 +86,21 @@ const LISTA_REGISTROS = gql `
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data, loading } = useQuery(OBTENER_STOCK);
+    const { data, loading } = useQuery(LISTA_STOCK);
+    useQuery(OBTENER_STOCK);
     const [mensaje, guardarMensaje] = useState(null);
     const [ nuevoProductoStock ] = useMutation(CREAR_LOTE, {
         update(cache, {data: { nuevoProductoStock }}) {
             const { obtenerProductosStock } = cache.readQuery({ query: OBTENER_STOCK});
 
-            cache.writeQuery({
-                query: OBTENER_STOCK,
-                data: {
-                    obtenerProductosStock: [...obtenerProductosStock, nuevoProductoStock]
-                }
-            })
+            if (!obtenerProductosStock.some(i => i.id === nuevoProductoStock.id)) {
+                cache.writeQuery({
+                    query: OBTENER_STOCK,
+                    data: {
+                        obtenerProductosStock: [...obtenerProductosStock, nuevoProductoStock]
+                    }
+                })
+            }           
         }
     })
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO, {
@@ -165,17 +168,14 @@ const IniciarProduccion = () => {
         }
     })    
 
-    //console.log(registro)
-
     if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
 
-    const {obtenerProductosStock} = data;
-    /*console.log('stock', obtenerStockInsumos)
-    console.log("insumos", insumos)*/
+    const {obtenerStockInsumos} = data;
+
 
     const handleInicio = valores => {
         const { lote, lBolsa, lEsponja} = valores
@@ -279,6 +279,9 @@ const IniciarProduccion = () => {
             </div>
         )
     }
+
+    /*console.log('stock', obtenerStockInsumos)
+    console.log("insumos", insumos)*/
 
     return (
         <Layout>
