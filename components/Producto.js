@@ -25,6 +25,12 @@ const OBTENER_PRODUCTOS = gql`
   }
 `;
 
+const EXISTE_PRODUCTO = gql ` 
+    query existeProductoStock($id: ID!) {
+        existeProductoStock(id: $id)
+    }
+`;
+
 const OBTENER_INSUMOS = gql`
   query obtenerInsumos {
     obtenerInsumos {
@@ -37,6 +43,8 @@ const OBTENER_INSUMOS = gql`
 
 
 const Producto = ({producto, rol}) => {
+
+    const { nombre, categoria, caja, cantCaja, insumos, id } = producto;
    
     const [eliminarProducto] = useMutation(ELIMINAR_PRODUCTO, {
         update(cache) {
@@ -52,14 +60,12 @@ const Producto = ({producto, rol}) => {
             })
         }
     });
-
+    const {data: existeLote, loading: loadingExiste} = useQuery(EXISTE_PRODUCTO, { variables: {id} });
     const { data, loading } = useQuery(OBTENER_INSUMOS);
 
     if(loading) return null;
+    if(loadingExiste) return null;
     const arrInsumos = data.obtenerInsumos;
-
-    const { nombre, categoria, caja, cantCaja, insumos, id } = producto;
-    
 
     const confimarEliminarProducto = async () => {
         Swal.fire({
@@ -120,13 +126,16 @@ const Producto = ({producto, rol}) => {
                         </button>
                     </td>
                     <td className="border px-4 py-2 ">
-                        <button
-                            type="button"
-                            onClick={() => confimarEliminarProducto()}
-                            className="flex justify-center item-center bg-red-800 py-2 px-4 w-full text-white rounded uppercase font-bold text-xs"    
-                        >
-                            <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </button>
+                        {!existeLote.existeProductoStock ?
+                            <button
+                                type="button"
+                                onClick={() => confimarEliminarProducto()}
+                                className="flex justify-center item-center bg-red-800 py-2 px-4 w-full text-white rounded uppercase font-bold text-xs"    
+                            >
+                                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+                        : 'Producto en uso'
+                        }                        
                     </td>
                 </>
             ) : null}
