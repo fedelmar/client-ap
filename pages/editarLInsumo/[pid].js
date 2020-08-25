@@ -44,7 +44,7 @@ const EditarLoteInsumo = () => {
         }
     });
 
-    const [ actualizarProductoStock ] = useMutation(ACTUALIZAR_LOTE);
+    const [ actualizarInsumoStock ] = useMutation(ACTUALIZAR_LOTE);
 
     const usuarioContext = useContext(UsuarioContext);
     const { insumos } = usuarioContext;
@@ -68,7 +68,7 @@ const EditarLoteInsumo = () => {
         const insumo = idInsumo;
         try {
             // eslint-disable-next-line no-unused-vars
-            const { data } = actualizarProductoStock({
+            const { data } = actualizarInsumoStock({
                 variables: {
                     id,
                     input: {

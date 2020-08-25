@@ -147,6 +147,7 @@ const IniciarProduccion = () => {
     });
     const [session, setSession] = useState(false);
     
+    // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
             lote: '',
@@ -165,6 +166,7 @@ const IniciarProduccion = () => {
         }
     })
 
+    // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
             cantProducida: '',
@@ -192,6 +194,7 @@ const IniciarProduccion = () => {
     const {obtenerStockInsumos} = data;
 
     const handleInicio = valores => {
+        // Iniciar valores de fecha y hora, y guardar el lote
         const { lote } = valores
         console.log('en handleinicio: ', valores)
         const start = Date.now();
@@ -341,8 +344,6 @@ const IniciarProduccion = () => {
         : null
     })
 
-
-    console.log(registro)
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
