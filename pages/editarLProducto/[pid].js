@@ -145,19 +145,23 @@ const EditarLoteProducto = () => {
                                         </div>
                                     ) : null  }                                                                                                                                                                                 
 
-                                    <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione o busque el producto</p>
-                                    <Select
-                                        className="mt-3 mb-4"
-                                        options={productos}
-                                        onChange={opcion => seleccionarProducto(opcion) }
-                                        getOptionValue={ opciones => opciones.id }
-                                        getOptionLabel={ opciones => opciones.nombre}
-                                        placeholder="Producto..."
-                                        noOptionsMessage={() => "No hay resultados"}
-                                        onBlur={props.handleBlur}
-                                        isMulti={false}
-                                        defaultValue={productos.find( i => i.id === props.values.producto)}
-                                    />
+                                    {productos.length > 0 ? 
+                                        <>
+                                            <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione o busque el producto</p>
+                                            <Select
+                                                className="mt-3 mb-4"
+                                                options={productos}
+                                                onChange={opcion => seleccionarProducto(opcion) }
+                                                getOptionValue={ opciones => opciones.id }
+                                                getOptionLabel={ opciones => opciones.nombre}
+                                                placeholder="Producto..."
+                                                noOptionsMessage={() => "No hay resultados"}
+                                                onBlur={props.handleBlur}
+                                                isMulti={false}
+                                                defaultValue={productos.find( i => i.id === props.values.producto)}
+                                            />
+                                        </>
+                                    : 'Cargando...'}
         
                                     <div className="mb-4">
                                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="estado">
@@ -215,7 +219,7 @@ const EditarLoteProducto = () => {
                                         className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
                                         value="Editar Producto"
                                     />
-                            </form>      
+                            </form>
                         )
                     }}
                     </Formik>
