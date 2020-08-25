@@ -67,18 +67,29 @@ const CREAR_LOTE = gql`
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroCE($input: CPEInput){
         nuevoRegistroCE(input: $input){
-        id
-        fecha
-        operario
-        lote
-        horaInicio
-        horaCierre
-        producto
-        lBolsa
-        lEsponja
-        cantProducida
-        cantDescarte
-        observaciones
+            id
+            fecha
+            operario
+            lote
+            horaInicio
+            horaCierre
+            producto
+            lBolsa
+            lEsponja
+            cantProducida
+            cantDescarte
+            observaciones
+        }
+    }
+`;
+
+const ACTUALIZAR_INSUMO = gql `
+    mutation actualizarInsumoStock($id: ID!, $input: sInsumoInput){
+        actualizarInsumoStock(id: $id, input: $input) {
+            id
+            lote
+            insumo
+            cantidad
         }
     }
 `;
@@ -88,6 +99,7 @@ const IniciarProduccion = () => {
     const router = useRouter();
     const { data, loading } = useQuery(LISTA_STOCK);
     useQuery(OBTENER_STOCK);
+    const [ actualizarInsumoStock ] = useMutation(ACTUALIZAR_INSUMO);
     const [ nuevoProductoStock ] = useMutation(CREAR_LOTE, {
         update(cache, {data: { nuevoProductoStock }}) {
             const { obtenerProductosStock } = cache.readQuery({ query: OBTENER_STOCK});
@@ -127,10 +139,15 @@ const IniciarProduccion = () => {
         producto: '',
         productoID: '',
         lBolsa: '',
-        lEsponja: ''
+        lBolsaID: '',
+        bolsaDisp: 0,
+        lEsponja: '',
+        lEsponjaID: '',
+        esponjaDisp: 0
     });
     const [session, setSession] = useState(false);
     
+    // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
             lote: '',
@@ -144,12 +161,12 @@ const IniciarProduccion = () => {
             lBolsa: Yup.string(),
             lEsponja: Yup.string()                        
         }),
-        onSubmit: valores => {
-            console.log(valores)          
+        onSubmit: valores => {        
             handleInicio(valores);            
         }
     })
 
+    // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
             cantProducida: '',
@@ -157,7 +174,10 @@ const IniciarProduccion = () => {
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantProducida: Yup.number().required('Ingrese la cantidad producida'),
+            cantProducida: Yup.number()
+                                .max(registro.bolsaDisp, `Debe ser menor o igual a ${registro.bolsaDisp}`)
+                                .max(registro.esponjaDisp, `Debe ser menor o igual a ${registro.esponjaDisp}`)
+                                .required('Ingrese la cantidad producida'),
             cantDescarte: Yup.number().required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
         }),
@@ -174,6 +194,7 @@ const IniciarProduccion = () => {
     const {obtenerStockInsumos} = data;
 
     const handleInicio = valores => {
+        // Iniciar valores de fecha y hora, y guardar el lote
         const { lote } = valores
         console.log('en handleinicio: ', valores)
         const start = Date.now();
@@ -240,7 +261,7 @@ const IniciarProduccion = () => {
                             }
                         }                
                     });
-                    const { dataProducto } = await nuevoProductoStock({
+                    await nuevoProductoStock({
                         variables: {
                             input: {
                                 lote: registro.lote,
@@ -250,6 +271,24 @@ const IniciarProduccion = () => {
                             }
                         }
                     });
+                    await actualizarInsumoStock({
+                        variables: {
+                            id: registro.lBolsaID,
+                            input: {
+                                lote: registro.lbolsa,
+                                cantidad: registro.bolsaDisp - cantProducida
+                            }
+                        }
+                    })
+                    await actualizarInsumoStock({
+                        variables: {
+                            id: registro.lEsponjaID,
+                            input: {
+                                lote: registro.lEsponja,
+                                cantidad: registro.esponjaDisp - cantProducida
+                            }
+                        }
+                    })
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
                         data.nuevoRegistroCE,
@@ -263,18 +302,18 @@ const IniciarProduccion = () => {
           })        
     }
 
+    // Manejo de los campos select del formulario (On Change)
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     }
     const seleccionarLEsponja = lote => {
-        console.log(lote)
-        setRegistro({...registro, lEsponja: lote.lote})
+        setRegistro({...registro, lEsponja: lote.lote, lEsponjaID: lote.loteId, esponjaDisp: lote.cantidad})
     }
     const seleccionarLBolsa = lote => {
-        console.log(lote)
-        setRegistro({...registro, lBolsa: lote.lote})
+        setRegistro({...registro, lBolsa: lote.lote, lBolsaID: lote.loteId, bolsaDisp: lote.cantidad})
     }
 
+    // Mostrar mensaje de base de datos si hubo un error
     const mostrarMensaje = () => {
         return(
             <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
@@ -305,8 +344,6 @@ const IniciarProduccion = () => {
         : null
     })
 
-
-    console.log(registro)
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
@@ -405,8 +442,8 @@ const IniciarProduccion = () => {
                         <p className="text-gray-800 font-light">Dia: {registro.dia}   Hora de inicio: {registro.horaInicio}</p>
                         <p className="text-gray-800 font-light">Lote: {registro.lote}</p>                        
                         <p className="text-gray-800 font-light">Producto: {registro.producto}</p>                        
-                        <p className="text-gray-800 font-light">Lote de Esponja: {registro.lEsponja}</p>
-                        <p className="text-gray-800 font-light">Lote de Bolsa: {registro.lBolsa}</p>
+                        <p className="text-gray-800 font-light">Lote de Esponja: {registro.lEsponja} Disponibles: {registro.esponjaDisp}</p>
+                        <p className="text-gray-800 font-light">Lote de Bolsa: {registro.lBolsa} Disponibles: {registro.bolsaDisp}</p>
                         
                         <div className="flex justify-center mt-5">
                             <div className="w-full max-w-lg">
