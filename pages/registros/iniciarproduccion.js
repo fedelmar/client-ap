@@ -32,6 +32,25 @@ const OBTENER_STOCK = gql`
     }
 `;
 
+const LISTA_REGISTROS = gql `
+    query obtenerRegistrosCE {
+        obtenerRegistrosCE{
+            id
+            fecha
+            operario
+            lote
+            horaInicio
+            horaCierre
+            producto
+            lBolsa
+            lEsponja
+            cantProducida
+            cantDescarte
+            observaciones
+        }
+    }
+`;
+
 const CREAR_LOTE = gql`
     mutation nuevoProductoStock($input: sProductoInput){
         nuevoProductoStock(input: $input){
@@ -64,31 +83,11 @@ const NUEVO_REGISTRO = gql`
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosCE {
-        obtenerRegistrosCE{
-            id
-            fecha
-            operario
-            lote
-            horaInicio
-            horaCierre
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
-            cantDescarte
-            observaciones
-        }
-    }
-`;
-
 const IniciarProduccion = () => {
 
     const router = useRouter();
     const { data, loading } = useQuery(LISTA_STOCK);
     useQuery(OBTENER_STOCK);
-    const [mensaje, guardarMensaje] = useState(null);
     const [ nuevoProductoStock ] = useMutation(CREAR_LOTE, {
         update(cache, {data: { nuevoProductoStock }}) {
             const { obtenerProductosStock } = cache.readQuery({ query: OBTENER_STOCK});
@@ -115,11 +114,10 @@ const IniciarProduccion = () => {
             })
         }
     });
-
     const pedidoContext = useContext(UsuarioContext);
     const { productos, insumos } = pedidoContext;
     const { nombre } = pedidoContext.usuario;
- 
+    const [mensaje, guardarMensaje] = useState(null);
     const [registro, setRegistro] = useState({
         dia: '',
         fecha: '',
@@ -132,7 +130,7 @@ const IniciarProduccion = () => {
         lEsponja: ''
     });
     const [session, setSession] = useState(false);
-
+    
     const formikInicio = useFormik({
         initialValues: {
             lote: '',
@@ -143,12 +141,12 @@ const IniciarProduccion = () => {
         validationSchema: Yup.object({
             lote: Yup.string().required('Campo obligatorio'),
             producto: Yup.string(),
-            lBolsa: Yup.string().required('Campo obligatorio'),
-            lEsponja: Yup.string().required('Campo obligatorio'),                        
+            lBolsa: Yup.string(),
+            lEsponja: Yup.string()                        
         }),
-        onSubmit: valores => {           
-            handleInicio(valores);
-            
+        onSubmit: valores => {
+            console.log(valores)          
+            handleInicio(valores);            
         }
     })
 
@@ -173,18 +171,16 @@ const IniciarProduccion = () => {
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-
     const {obtenerStockInsumos} = data;
 
-
     const handleInicio = valores => {
-        const { lote, lBolsa, lEsponja} = valores
-
+        const { lote } = valores
+        console.log('en handleinicio: ', valores)
         const start = Date.now();
         const dia = format(new Date(start), 'dd/MM/yy')
         const hora = format(new Date(start), 'HH:mm')
 
-        setRegistro({...registro, horaInicio: hora, fecha: start, dia, lote, lBolsa, lEsponja})
+        setRegistro({...registro, horaInicio: hora, fecha: start, dia, lote})
         setSession(true);
     }
 
@@ -194,11 +190,10 @@ const IniciarProduccion = () => {
         setSession(false);        
     }
 
-
     const terminarProduccion = async valores => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos e insumos
 
-        // Se registran los ultimos datos
+        // Se registra el horario de cierre de produccion
         const fin = Date.now();
         const hora = format(new Date(fin), 'HH:mm')
 
@@ -271,6 +266,14 @@ const IniciarProduccion = () => {
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     }
+    const seleccionarLEsponja = lote => {
+        console.log(lote)
+        setRegistro({...registro, lEsponja: lote.lote})
+    }
+    const seleccionarLBolsa = lote => {
+        console.log(lote)
+        setRegistro({...registro, lBolsa: lote.lote})
+    }
 
     const mostrarMensaje = () => {
         return(
@@ -280,9 +283,30 @@ const IniciarProduccion = () => {
         )
     }
 
-    /*console.log('stock', obtenerStockInsumos)
-    console.log("insumos", insumos)*/
+    // Definir lotes de esponjas y bolsas, segun el stock de insumos y la info en context de insumos
+    let lotesEsponjas = []
+    let lotesBolsas = []
+    if (insumos.length > 0) obtenerStockInsumos.map(i => {
+        const infoInsumo = insumos.find(a => a.id === i.insumo);
+        (infoInsumo && infoInsumo.categoria == 'Esponjas') ? 
+            lotesEsponjas.push({
+                loteId: i.id,
+                lote: i.lote,
+                nombre: infoInsumo.nombre,
+                cantidad: i.cantidad
+            })
+        :  (infoInsumo.categoria == 'Polietileno') ? 
+            lotesBolsas.push({
+                loteId: i.id,
+                lote: i.lote,
+                nombre: infoInsumo.nombre,
+                cantidad: i.cantidad
+            })
+        : null
+    })
 
+
+    console.log(registro)
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
@@ -333,44 +357,32 @@ const IniciarProduccion = () => {
                                     isMulti={false}
                                 />
 
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lEsponja">
-                                        Lote de Esponja
-                                    </label>
-    
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="lEsponja"
-                                        type="text"
-                                        placeholder="Ingrese el Lote de Esponja..."
-                                        onChange={formikInicio.handleChange}
-                                        onBlur={formikInicio.handleBlur}
-                                        value={formikInicio.values.lEsponja}
-                                    />
-                                </div>
-    
-                                { formikInicio.touched.lEsponja && formikInicio.errors.lEsponja ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{formikInicio.errors.lEsponja}</p>
-                                    </div>
-                                ) : null  }
+                                <p className="block text-gray-700 text-sm font-bold mb-2">Lote de Esponja</p>
+                                <Select
+                                    className="mt-3 mb-4"
+                                    options={lotesEsponjas}
+                                    onChange={opcion => seleccionarLEsponja(opcion) }
+                                    getOptionValue={ opciones => opciones.loteId }
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.nombre} Disp: ${opciones.cantidad}`}
+                                    placeholder="Lote..."
+                                    noOptionsMessage={() => "No hay resultados"}
+                                    onBlur={formikInicio.handleBlur}
+                                    isMulti={false}
+                                />
 
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lEsponja">
-                                        Lote de Bolsa
-                                    </label>
-    
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="lBolsa"
-                                        type="text"
-                                        placeholder="Ingrese el Lote de Bolsa..."
-                                        onChange={formikInicio.handleChange}
-                                        onBlur={formikInicio.handleBlur}
-                                        value={formikInicio.values.lBolsa}
-                                    />
-                                </div>
+                                <p className="block text-gray-700 text-sm font-bold mb-2">Lote de Bolsa</p>
+                                <Select
+                                    className="mt-3 mb-4"
+                                    options={lotesBolsas}
+                                    onChange={opcion => seleccionarLBolsa(opcion) }
+                                    getOptionValue={ opciones => opciones.loteId }
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.nombre} Disp: ${opciones.cantidad}`}
+                                    placeholder="Lote..."
+                                    noOptionsMessage={() => "No hay resultados"}
+                                    onBlur={formikInicio.handleBlur}
+                                    isMulti={false}
+                                />                          
+
     
                                 { formikInicio.touched.lBolsa && formikInicio.errors.lBolsa ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
