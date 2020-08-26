@@ -28,8 +28,8 @@ const ProduccionEsponjas = () => {
 
     const { data, loading } = useQuery(LISTA_REGISTROS);
 
-    const pedidoContext = useContext(UsuarioContext);
-    const { rol } = pedidoContext.usuario;
+    const usuarioContext = useContext(UsuarioContext);
+    const { rol } = usuarioContext.usuario;
 
 
     if(loading) return (
