@@ -1,11 +1,54 @@
 import React from 'react';
 import MostrarObser from './registros/MostrarObser';
 import { format } from 'date-fns';
+import { gql, useMutation } from '@apollo/client';
+import Swal from 'sweetalert2';
+
+const ELIMINAR_REGISTRO = gql`
+    mutation eliminarRegistroGE($id: ID!){
+        eliminarRegistroGE(id: $id)
+    }
+`;
+
+const LISTA_REGISTROS = gql `
+    query obtenerRegistrosGE{
+        obtenerRegistrosGE{
+                id
+                fecha
+                operario
+                lote
+                horaInicio
+                horaCierre
+                caja
+                descCajas
+                guardado
+                descarte
+                observaciones
+                producto
+            }
+        }
+`;
+
 
 
 const RegistroGE = ({registro, rol}) => {
 
+    const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO, {
+        update(cache) {
+
+            const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS })
+
+            cache.writeQuery({
+                query: LISTA_REGISTROS,
+                data: {
+                    obtenerRegistrosGE: obtenerRegistrosGE.filter( registroActual => registroActual.id !== id )
+                }
+            })
+        }
+    })
+
     const {
+        id,
         fecha,
         horaCierre,
         lote,
@@ -19,7 +62,36 @@ const RegistroGE = ({registro, rol}) => {
     } = registro;
 
     const confimarEliminarRegistro = () => {
-      console.log('Eliminar')
+        Swal.fire({
+            title: '¿Seguro desea eliminar el registro?',
+            text: "Sera eliminado definitivamente",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Eliminar!',
+            cancelButtonText: 'Cancelar'
+          }).then( async (result) => {
+            if (result.value) {
+
+                try {
+                    //Eliminar por id
+                    const { data } = await eliminarRegistroGE({
+                        variables: {
+                            id
+                        }
+                    })
+                    //console.log(data);
+                    Swal.fire(
+                        'Eliminado!',
+                        data.eliminarRegistroGE,
+                        'success'
+                )
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+          })
     }
 
     return (

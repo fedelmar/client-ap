@@ -7,6 +7,7 @@ import RegistroGE from '../../components/RegistroGE'
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosGE{
         obtenerRegistrosGE{
+                id
                 fecha
                 operario
                 lote
