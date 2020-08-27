@@ -37,8 +37,6 @@ const GuardadoEsponjas = () => {
         </Layout>
     );
 
-    console.log(data.obtenerRegistrosGE)
-
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Guardado de Esponjas</h1>

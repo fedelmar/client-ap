@@ -126,9 +126,9 @@ const IniciarProduccion = () => {
             })
         }
     });
-    const pedidoContext = useContext(UsuarioContext);
-    const { productos, insumos } = pedidoContext;
-    const { nombre } = pedidoContext.usuario;
+    const usuarioContext = useContext(UsuarioContext);
+    const { productos, insumos } = usuarioContext;
+    const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
     const [registro, setRegistro] = useState({
         dia: '',
@@ -196,7 +196,6 @@ const IniciarProduccion = () => {
     const handleInicio = valores => {
         // Iniciar valores de fecha y hora, y guardar el lote
         const { lote } = valores
-        console.log('en handleinicio: ', valores)
         const start = Date.now();
         const dia = format(new Date(start), 'dd/MM/yy')
         const hora = format(new Date(start), 'HH:mm')
