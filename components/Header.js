@@ -22,22 +22,23 @@ const Header = ({usuario}) => {
     }
  
     return (
-        <div className="sm:flex sm:justify-between mb-5">
-            <p className="mb-5 lg:mb-0 text-2xl text-gray-800 font-light">Hola {nombre} {apellido}!</p>
-
-            <div className="sm:flex sm:justify-between">
-                
+        <header className="flex items-center justify-between bg-gray-800 px-4 py-3">
+            <div>
+                <p className="text-white font-black text-2xl ">Sistema AP</p>
+            </div>
+            <p className="text-2xl text-white font-light">Hola {nombre} {apellido}!</p>
+            <div className="flex">
                 {rol === "Admin" ? (
-                    <div className="px-2" >
-                        <button
-                            onClick={() => router.push('/registro')}
-                            className="uppercase shadow-md text-white text-xs sm:w-auto p-2 font-black bg-green-700 rounded w-full lg:w-auto text-center" 
-                            type="button"
-                        >
-                            Nuevo Usuario
-                        </button>
-                    </div>
-                ) : null}
+                        <div className="px-2" >
+                            <button
+                                onClick={() => router.push('/registro')}
+                                className="uppercase shadow-md text-white text-xs sm:w-auto p-2 font-black bg-green-700 rounded w-full lg:w-auto text-center" 
+                                type="button"
+                            >
+                                Nuevo Usuario
+                            </button>
+                        </div>
+                    ) : null}
 
                 <div>
                     <button
@@ -48,9 +49,17 @@ const Header = ({usuario}) => {
                         Cerrar Sessión
                     </button>
                 </div>
-            </div>
-        </div>
-        
+            </div>       
+            {/*<div>
+                <button type="button" className="text-gray-300 hover:text-white focus:text-white focus:outline-none">
+                    <svg  className="h-6 w-6 fill-current" viewBox="0 0 100 80">
+                        <rect width="100" height="10"></rect>
+                        <rect y="30" width="100" height="10"></rect>
+                        <rect y="60" width="100" height="10"></rect>
+                    </svg>
+                </button>                        
+            </div>*/}                  
+        </header>        
     );
 }
 
