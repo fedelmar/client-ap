@@ -23,9 +23,13 @@ const Header = ({usuario}) => {
  
     return (
         <header className="flex items-center justify-between bg-gray-800 px-4 py-3">
-            <div>
-                <p className="text-white font-black text-2xl ">Sistema AP</p>
-            </div>
+            <button
+                type="button"
+                className="text-white font-black text-2xl "
+                onClick={() => router.push('/')}
+            >
+                Sistema AP
+            </button>
             <p className="text-2xl text-white font-light">Hola {nombre} {apellido}!</p>
             <div className="flex">
                 {rol === "Admin" ? (
@@ -49,16 +53,7 @@ const Header = ({usuario}) => {
                         Cerrar Sessión
                     </button>
                 </div>
-            </div>       
-            {/*<div>
-                <button type="button" className="text-gray-300 hover:text-white focus:text-white focus:outline-none">
-                    <svg  className="h-6 w-6 fill-current" viewBox="0 0 100 80">
-                        <rect width="100" height="10"></rect>
-                        <rect y="30" width="100" height="10"></rect>
-                        <rect y="60" width="100" height="10"></rect>
-                    </svg>
-                </button>                        
-            </div>*/}                  
+            </div>             
         </header>        
     );
 }

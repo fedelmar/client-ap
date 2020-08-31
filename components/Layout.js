@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {useState, useEffect, useContext} from 'react'
 import Head from 'next/head';
-import Sidebar from '../components/Sidebar';
+import Footer from './Footer';
 import Header from '../components/Header';
 import { useRouter } from 'next/router';
 import { gql, useQuery } from '@apollo/client';
@@ -115,18 +115,17 @@ const Layout = ({children}) => {
                 </div>  
             </div>
         ) : (
-            <div className="bg-gray-200 min-h-screen" >
-                {!usuario ? (null) : (<Header usuario={usuario} />)}
-                <div className="sm:flex min-h-screen">
-
-                    <Sidebar />
+            <div className="flex flex-col justify-between h-auto pb-10">
+                {!usuario ? (null) : (<Header usuario={usuario} />)} 
                 
-                    <main className="xl:w-4/5 sm:w-2/3 sm:min-h-screen p-5">
-
-                        {children}   
-                    </main>
-
-                </div>
+             
+     
+                <div className="bg-gray-200 p-2 mb-auto min-h-screen" > 
+                        {children}
+                </div>   
+                
+                <Footer />
+               
             </div>
         )}
                
