@@ -166,6 +166,9 @@ const IniciarProduccion = () => {
         }
     })
 
+    let menor;
+    registro.bolsaDisp <= registro.esponjaDisp ? menor = registro.bolsaDisp : menor = registro.esponjaDisp;
+    
     // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
@@ -175,8 +178,7 @@ const IniciarProduccion = () => {
         },
         validationSchema: Yup.object({
             cantProducida: Yup.number()
-                                .max(registro.bolsaDisp, `Debe ser menor o igual a ${registro.bolsaDisp}`)
-                                .max(registro.esponjaDisp, `Debe ser menor o igual a ${registro.esponjaDisp}`)
+                                .max(menor, `Debe ser menor o igual a ${menor}`)
                                 .required('Ingrese la cantidad producida'),
             cantDescarte: Yup.number().required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
