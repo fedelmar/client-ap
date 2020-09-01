@@ -43,7 +43,7 @@ const StockProductos = () => {
             </Link>
 
             <div className="overflow-x-scroll">
-                <table className="table-auto shadow-md mt-10 w-full w-lg">
+                <table className="table-auto shadow-md mt-2 w-full w-lg">
                 {rol === "Admin" ? (
                     <thead className="bg-gray-800">
                     <tr className="text-white">
