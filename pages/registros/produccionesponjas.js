@@ -72,12 +72,13 @@ const ProduccionEsponjas = () => {
               onDayChange={day => setStartDate(day)}
             />
           </div>
-          <div className="m-1 border">
+          <div className="m-1">
             <DayPickerInput
               value=" Hasta... "
               onDayChange={day => setEndDate(day)}
             />
           </div>
+          <button className=" bg-green-700 p-1 ml-1 inline-block text-white rounded text-sm hover:bg-green-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Exportar!</button>
         </div>
       ) : null }
        
