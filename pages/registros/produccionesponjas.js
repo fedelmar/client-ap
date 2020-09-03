@@ -3,9 +3,9 @@ import { gql, useQuery } from '@apollo/client';
 import UsuarioContext from '../../context/usuarios/UsuarioContext';
 import Layout from '../../components/Layout';
 import RegistroCPE from '../../components/RegistroCPE';
-import Link from 'next/link'
-import DayPicker from 'react-day-picker';
+import Link from 'next/link';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import ExportarRegistro from '../../components/registros/ExportarRegistro';
 
 
 const LISTA_REGISTROS = gql `
@@ -31,8 +31,8 @@ const ProduccionEsponjas = () => {
 
     const { data, loading } = useQuery(LISTA_REGISTROS);
     const [ pdfOpen, setPdfOpen ] = useState(false);
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
 
@@ -47,8 +47,6 @@ const ProduccionEsponjas = () => {
       setPdfOpen(!pdfOpen);
     }
 
-    console.log('Desde: ',startDate)
-    console.log('Hasta: ',endDate)
     //console.log(data.obtenerRegistrosCE)
     return (
     <Layout>
@@ -78,7 +76,14 @@ const ProduccionEsponjas = () => {
               onDayChange={day => setEndDate(day)}
             />
           </div>
-          <button className=" bg-green-700 p-1 ml-1 inline-block text-white rounded text-sm hover:bg-green-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Exportar!</button>
+          {startDate && endDate ?
+            <ExportarRegistro 
+            registros={data.obtenerRegistrosCE}
+            desde={startDate}
+            hasta={endDate}
+            />
+          : null}
+
         </div>
       ) : null }
        
