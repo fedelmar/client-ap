@@ -4,6 +4,7 @@ import { ApolloProvider } from '@apollo/client';
 import client from '../config/apollo';
 import PedidoState from '../context/pedidos/PedidoState';
 import UsuarioState from '../context/usuarios/UsuarioState';
+import 'react-day-picker/lib/style.css';
 
 const MyApp = ({Component, pageProps}) => {
 
