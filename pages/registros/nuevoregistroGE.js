@@ -111,7 +111,11 @@ const NuevoRegistroGE = () => {
         }
     })   
 
-    if (loading) return 'Cargando...';
+    if(loading) return (
+        <Layout>
+          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
+        </Layout>
+    );
     const {obtenerStockEsponjas} = data;
 
     const terminarProduccion = async valores => {
