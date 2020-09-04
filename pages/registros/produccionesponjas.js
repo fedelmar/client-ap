@@ -5,7 +5,7 @@ import Layout from '../../components/Layout';
 import RegistroCPE from '../../components/RegistroCPE';
 import Link from 'next/link';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import ExportarRegistro from '../../components/registros/ExportarRegistro';
+import ExportarRegistro from '../../components/registros/ExportarRegistroPE';
 
 
 const LISTA_REGISTROS = gql `
@@ -78,9 +78,9 @@ const ProduccionEsponjas = () => {
           </div>
           {startDate && endDate ?
             <ExportarRegistro 
-            registros={data.obtenerRegistrosCE}
-            desde={startDate}
-            hasta={endDate}
+              registros={data.obtenerRegistrosCE}
+              desde={startDate}
+              hasta={endDate}
             />
           : null}
 

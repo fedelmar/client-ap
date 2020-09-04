@@ -4,10 +4,12 @@ import 'jspdf-autotable';
 import { format } from 'date-fns';
 
 
+
 const ExportarRegistro = ({registros, desde, hasta}) => {
     
     desde.setHours(0);
     hasta.setHours(0);
+    console.log(registros)
 
     let registrosExportados = registros.filter (registro => new Date(registro.fecha) >= desde && new Date(registro.fecha) <= hasta);
 
