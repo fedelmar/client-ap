@@ -4,6 +4,7 @@ import Link from 'next/link';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import UsuarioContext from '../../context/usuarios/UsuarioContext';
 import {gql, useQuery} from '@apollo/client';
+import RegistroSalidas from '../../components/RegistroSalidas';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosSalidas{
@@ -37,7 +38,7 @@ const Salidas = () => {
         setPdfOpen(!pdfOpen);
     }
 
-    console.log(data.obtenerRegistrosSalidas)
+    //console.log(data.obtenerRegistrosSalidas)
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Registros de Salidas</h1>
@@ -85,7 +86,7 @@ const Salidas = () => {
                         <th className="w-1/8 py-2">Remito</th>
                         <th className="w-1/8 py-2">Lote</th>
                         <th className="w-1/8 py-2">Producto</th>
-                        <th className="w-1/8 py-2">Producto</th>
+                        <th className="w-1/8 py-2">Cantidad</th>
                         {rol === "Admin" ? (
                             <>
                                 <th className="w-1/8 py-2">Editar</th> 
@@ -95,13 +96,13 @@ const Salidas = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-white">
-                    {/*data.obtenerRegistrosCE.map( registro => (
-                        <RegistroCPE
+                    {data.obtenerRegistrosSalidas.map( registro => (
+                        <RegistroSalidas
                             key={registro.id}
                             registro={registro}
                             rol={rol}
                         />
-                    ))*/}  
+                    ))}  
                     </tbody>  
                 </table>
             </div>
