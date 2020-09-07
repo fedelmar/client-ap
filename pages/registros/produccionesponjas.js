@@ -36,7 +36,6 @@ const ProduccionEsponjas = () => {
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
 
-
     if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
@@ -83,7 +82,6 @@ const ProduccionEsponjas = () => {
               hasta={endDate}
             />
           : null}
-
         </div>
       ) : null }
        
@@ -120,7 +118,7 @@ const ProduccionEsponjas = () => {
                   />
               ))}  
             </tbody>  
-            </table>
+          </table>
         </div>
     </Layout>  
     
