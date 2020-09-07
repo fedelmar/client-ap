@@ -14,11 +14,19 @@ const LOTE_PRODUCTO = gql `
         }
     }
 `
+const OBTENER_CLIENTES = gql `
+  query obtenerClientes {
+      obtenerClientes{
+          id
+          empresa
+        }
+      }
+`;
 
 const RegistroSalidas = ({registro, rol}) => {
 
     const { fecha, cliente, remito, lProducto, cantidad} = registro;
-
+    const {data: dataClientes, loading: loadingClientes} = useQuery(OBTENER_CLIENTES);
     const { data, loading } = useQuery(LOTE_PRODUCTO, {
         variables: {
             id: lProducto
@@ -27,19 +35,18 @@ const RegistroSalidas = ({registro, rol}) => {
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
 
- 
+    if(loadingClientes) return null;
     if(loading) return null;
-
-    console.log(productos)
-    console.log(data)
 
     // Buscar dentro de lista de productos el nombre del producto
     const {nombre} = productos.find(i => i.id == data.obtenerProductoStock.producto);
+    // Buscar dentro de lista de clientes el nombre del cliente
+    const {empresa} = dataClientes.obtenerClientes.find(i => i.id == cliente);
     
     return (
         <tr>
             <th className="border px-4 py-2" >{format(new Date(fecha), 'dd/MM/yy')}</th>
-            <th className="border px-4 py-2" >{cliente}</th>
+            <th className="border px-4 py-2" >{empresa}</th>
             <th className="border px-4 py-2" >{remito}</th>
             <th className="border px-4 py-2" >{data.obtenerProductoStock.lote}</th>
             <th className="border px-4 py-2" >{nombre}</th>
