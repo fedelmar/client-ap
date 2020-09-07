@@ -45,7 +45,7 @@ const RegistroGE = ({registro, rol}) => {
                 }
             })
         }
-    })
+    });
 
     const {
         id,
