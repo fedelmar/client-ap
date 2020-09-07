@@ -268,7 +268,7 @@ const IniciarProduccion = () => {
                                 lote: registro.lote,
                                 producto: registro.productoID,
                                 estado: "Proceso",
-                                cantidad: cantProducida
+                                cantidad: cantProducida - cantDescarte
                             }
                         }
                     });
