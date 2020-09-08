@@ -39,7 +39,8 @@ const FinalizarSalida = (datos) => {
                                                     onChange={() => arrayHelpers.replace(index, {
                                                         lote: lote.lote,
                                                         producto: lote.producto,
-                                                        disponible: event.target.value
+                                                        disponible: lote.disponible,
+                                                        cantidad: event.target.value
                                                     })}
                                                     type="number"
                                                     id="cantidad"
