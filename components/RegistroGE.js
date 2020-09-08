@@ -29,8 +29,6 @@ const LISTA_REGISTROS = gql `
         }
 `;
 
-
-
 const RegistroGE = ({registro, rol}) => {
 
     const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO, {
