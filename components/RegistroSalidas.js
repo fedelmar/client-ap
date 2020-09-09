@@ -1,9 +1,8 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Swal from 'sweetalert2';
 import ListarLotes from '../components/registros/ListarLotes';
-import { toDate } from 'date-fns/fp';
 
 const OBTENER_CLIENTES = gql `
   query obtenerClientes {
@@ -101,9 +100,8 @@ const RegistroSalidas = ({registro, rol}) => {
             <th className="border px-4 py-2 w-1/8">
                 {lotes.map(lote => 
                     <ListarLotes 
-                    lote={lote}
-                    key={lote}
-                    
+                        lote={lote}
+                        key={lote}                    
                     />
                 )}
             </th>

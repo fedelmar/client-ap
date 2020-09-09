@@ -150,7 +150,6 @@ const NuevoRegistroGE = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    console.log(registro.loteID)
                     const { data } = await nuevoRegistroGE({
                         variables: {
                             input: {
