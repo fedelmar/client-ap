@@ -1,64 +1,64 @@
 import React from 'react';
-import MostrarObser from './registros/MostrarObser';
 import { format } from 'date-fns';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import Swal from 'sweetalert2';
+import ListarLotes from '../components/registros/ListarLotes';
 
-const ELIMINAR_REGISTRO = gql`
-    mutation eliminarRegistroGE($id: ID!){
-        eliminarRegistroGE(id: $id)
+const OBTENER_CLIENTES = gql `
+  query obtenerClientes {
+      obtenerClientes{
+          id
+          empresa
+        }
+      }
+`;
+
+const ELIMINAR_REGISTRO = gql `
+    mutation eliminarRegistroSalida($id: ID!){
+        eliminarRegistroSalida(id: $id)
     }
 `;
 
 const LISTA_REGISTROS = gql `
-    query obtenerRegistrosGE{
-        obtenerRegistrosGE{
-                id
-                fecha
-                operario
+    query obtenerRegistrosSalidas{
+        obtenerRegistrosSalidas{
+            id
+            fecha
+            cliente
+            remito
+            lotes {
                 lote
-                horaInicio
-                horaCierre
-                caja
-                descCajas
-                guardado
-                descarte
-                observaciones
-                producto
+                cantidad
             }
         }
+    }
 `;
 
-const RegistroGE = ({registro, rol}) => {
+const RegistroSalidas = ({registro, rol}) => {
 
-    const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO, {
+    const { fecha, cliente, remito, lotes, id} = registro;
+
+    const [eliminarRegistroSalida] = useMutation(ELIMINAR_REGISTRO, {
         update(cache) {
 
-            const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS })
+            const { obtenerRegistrosSalidas } = cache.readQuery({ query: LISTA_REGISTROS })
 
             cache.writeQuery({
                 query: LISTA_REGISTROS,
                 data: {
-                    obtenerRegistrosGE: obtenerRegistrosGE.filter( registroActual => registroActual.id !== id )
+                    obtenerRegistrosSalidas: obtenerRegistrosSalidas.filter( registroActual => registroActual.id !== id )
                 }
             })
         }
     });
+    const {data: dataClientes, loading: loadingClientes} = useQuery(OBTENER_CLIENTES);
 
-    const {
-        id,
-        fecha,
-        horaCierre,
-        lote,
-        operario,
-        caja,
-        descCajas,
-        descarte,
-        guardado,
-        observaciones,
-        producto
-    } = registro;
 
+    if(loadingClientes) return null;
+
+    // Buscar dentro de lista de clientes el nombre del cliente
+    const {empresa} = dataClientes.obtenerClientes.find(i => i.id == cliente);
+    
     const confimarEliminarRegistro = () => {
         Swal.fire({
             title: '¿Seguro desea eliminar el registro?',
@@ -74,7 +74,7 @@ const RegistroGE = ({registro, rol}) => {
 
                 try {
                     //Eliminar por id
-                    const { data } = await eliminarRegistroGE({
+                    const { data } = await eliminarRegistroSalida({
                         variables: {
                             id
                         }
@@ -82,7 +82,7 @@ const RegistroGE = ({registro, rol}) => {
                     //console.log(data);
                     Swal.fire(
                         'Eliminado!',
-                        data.eliminarRegistroGE,
+                        data.eliminarRegistroSalida,
                         'success'
                 )
                 } catch (error) {
@@ -94,21 +94,20 @@ const RegistroGE = ({registro, rol}) => {
 
     return (
         <tr>
-            <th className="border px-4 py-2" >{format(new Date(fecha), 'dd/MM/yy')}</th>
-            <th className="border px-4 py-2" >De {format(new Date(fecha), 'HH:mm')} a {horaCierre}</th>
-            <th className="border px-4 py-2" >{producto}</th>
-            <th className="border px-4 py-2" >{lote}</th>
-            <th className="border px-4 py-2" >{caja}</th>
-            <th className="border px-4 py-2" >{descCajas}</th>
-            <th className="border px-4 py-2" >{guardado}</th>
-            <th className="border px-4 py-2" >{descarte}</th>
-            <th className="border px-4 py-2" >{operario}</th>
-            <MostrarObser observaciones={observaciones} />     
+            <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
+            <th className="border px-4 py-2 w-1/8" >{empresa}</th>
+            <th className="border px-4 py-2 w-1/8" >{remito}</th>
+            <th className="border px-4 py-2 w-1/8">
+                {lotes.map(lote => 
+                    <ListarLotes 
+                        lote={lote}
+                        key={lote}                    
+                    />
+                )}
+            </th>
             {rol === "Admin" ? (
                 <>
-                    {/* De momento la edicion no va a estar disponible
-                    
-                    <td className="border px-4 py-2">
+                    {/*<td className="border px-4 py-2">
                         <button
                             type="button"
                             className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
@@ -132,4 +131,4 @@ const RegistroGE = ({registro, rol}) => {
     );
 }
 
-export default RegistroGE;
+export default RegistroSalidas

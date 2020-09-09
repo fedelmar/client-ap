@@ -150,7 +150,6 @@ const NuevoRegistroGE = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    console.log(registro.loteID)
                     const { data } = await nuevoRegistroGE({
                         variables: {
                             input: {
@@ -228,7 +227,7 @@ const NuevoRegistroGE = () => {
                                 <Select
                                     className="mt-3 mb-4"
                                     options={obtenerStockEsponjas}
-                                    onChange={opcion => seleccionarLEsponja(opcion) }
+                                    onChange={opcion => seleccionarLEsponja(opcion)}
                                     getOptionValue={ opciones => opciones.loteId }
                                     getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."

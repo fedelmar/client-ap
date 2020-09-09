@@ -39,6 +39,11 @@ const Footer = () => {
                                 <a className="text-white block">Guardado de Esponjas</a>
                             </Link>
                         </li>
+                        <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                            <Link href="/registros/salidas">
+                                <a className="text-white block">Salidas</a>
+                            </Link>
+                        </li>
                     </div>
                 : null}
                 {listados ? 
@@ -61,6 +66,11 @@ const Footer = () => {
                         <li className={router.pathname === "/stockinsumos" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
                             <Link href="/stockinsumos">
                                 <a className="text-white block">Stock de Insumos</a>
+                            </Link>
+                        </li>
+                        <li className={router.pathname === "/clientes" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                            <Link href="/clientes">
+                                <a className="text-white block">Clientes</a>
                             </Link>
                         </li>
                     </div>
@@ -100,11 +110,7 @@ const Footer = () => {
                         <a className="text-white block">Pedidos</a>
                     </Link>
                 </li>
-                <li className={router.pathname === "/clientes" ? "bg-blue-800 p-2" : "p-2"}>    
-                    <Link href="/clientes">
-                        <a className="text-white block">Clientes</a>
-                    </Link>
-                </li>*/}
+                */}
             </nav>
         </footer>       
     );
