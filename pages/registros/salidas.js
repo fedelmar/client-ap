@@ -13,8 +13,10 @@ const LISTA_REGISTROS = gql `
             fecha
             cliente
             remito
-            lProducto
-            cantidad
+            lotes {
+                lote
+                cantidad
+            }
         }
     }
 `;
@@ -84,9 +86,12 @@ const Salidas = () => {
                         <th className="w-1/8 py-2">Fecha</th>
                         <th className="w-1/8 py-2">Cliente</th>
                         <th className="w-1/8 py-2">Remito</th>
-                        <th className="w-1/8 py-2">Lote</th>
-                        <th className="w-1/8 py-2">Producto</th>
-                        <th className="w-1/8 py-2">Cantidad</th>
+                        <div className="flex justify-between">
+                            <th className="w-1/8 pl-10 py-2">Lote</th>
+                            <th className="w-1/8 py-2">Producto</th>
+                            <th className="w-1/8 pr-10 py-2">Cantidad</th>       
+                        </div>
+
                         {rol === "Admin" ? (
                             <>
                                 {/*<th className="w-1/8 py-2">Editar</th> */}
@@ -96,13 +101,13 @@ const Salidas = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-white">
-                    {data.obtenerRegistrosSalidas.map( registro => (
-                        <RegistroSalidas
-                            key={registro.id}
-                            registro={registro}
-                            rol={rol}
-                        />
-                    ))}  
+                        {data.obtenerRegistrosSalidas.map( registro => (
+                            <RegistroSalidas
+                                key={registro.id}
+                                registro={registro}
+                                rol={rol}
+                            />
+                        ))}  
                     </tbody>  
                 </table>
             </div>

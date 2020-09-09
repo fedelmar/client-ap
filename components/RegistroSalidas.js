@@ -1,19 +1,10 @@
 import React, {useContext} from 'react';
 import { format } from 'date-fns';
-import UsuarioContext from '../context/usuarios/UsuarioContext';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Swal from 'sweetalert2';
+import ListarLotes from '../components/registros/ListarLotes';
+import { toDate } from 'date-fns/fp';
 
-const LOTE_PRODUCTO = gql `
-    query obtenerProductoStock($id: ID!){
-        obtenerProductoStock(id: $id){
-            id
-            lote
-            cantidad
-            producto
-        }
-    }
-`
 const OBTENER_CLIENTES = gql `
   query obtenerClientes {
       obtenerClientes{
@@ -36,15 +27,18 @@ const LISTA_REGISTROS = gql `
             fecha
             cliente
             remito
-            lProducto
-            cantidad
+            lotes {
+                lote
+                cantidad
+            }
         }
     }
 `;
 
 const RegistroSalidas = ({registro, rol}) => {
 
-    const { fecha, cliente, remito, lProducto, cantidad, id} = registro;
+    const { fecha, cliente, remito, lotes, id} = registro;
+
     const [eliminarRegistroSalida] = useMutation(ELIMINAR_REGISTRO, {
         update(cache) {
 
@@ -59,19 +53,10 @@ const RegistroSalidas = ({registro, rol}) => {
         }
     });
     const {data: dataClientes, loading: loadingClientes} = useQuery(OBTENER_CLIENTES);
-    const { data, loading } = useQuery(LOTE_PRODUCTO, {
-        variables: {
-            id: lProducto
-        }
-    });
-    const usuarioContext = useContext(UsuarioContext);
-    const { productos } = usuarioContext;
+
 
     if(loadingClientes) return null;
-    if(loading) return null;
 
-    // Buscar dentro de lista de productos el nombre del producto
-    const {nombre} = productos.find(i => i.id == data.obtenerProductoStock.producto);
     // Buscar dentro de lista de clientes el nombre del cliente
     const {empresa} = dataClientes.obtenerClientes.find(i => i.id == cliente);
     
@@ -110,12 +95,18 @@ const RegistroSalidas = ({registro, rol}) => {
 
     return (
         <tr>
-            <th className="border px-4 py-2" >{format(new Date(fecha), 'dd/MM/yy')}</th>
-            <th className="border px-4 py-2" >{empresa}</th>
-            <th className="border px-4 py-2" >{remito}</th>
-            <th className="border px-4 py-2" >{data.obtenerProductoStock.lote}</th>
-            <th className="border px-4 py-2" >{nombre}</th>
-            <th className="border px-4 py-2" >{cantidad}</th>
+            <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
+            <th className="border px-4 py-2 w-1/8" >{empresa}</th>
+            <th className="border px-4 py-2 w-1/8" >{remito}</th>
+            <th className="border px-4 py-2 w-1/8">
+                {lotes.map(lote => 
+                    <ListarLotes 
+                    lote={lote}
+                    key={lote}
+                    
+                    />
+                )}
+            </th>
             {rol === "Admin" ? (
                 <>
                     {/*<td className="border px-4 py-2">
