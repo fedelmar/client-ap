@@ -33,11 +33,11 @@ const ListarLotes = (lote) => {
     const {nombre} = productos.find(i => i.id == data.obtenerProductoStock.producto);
     
     return (
-        <tr>
-                <td className="border px-4 py-2 w-1/8" >{obtenerProductoStock.lote}</td>
-                <td className="border px-4 py-2 w-1/8" >{nombre}</td>      
-                <td className="border px-4 py-2 w-1/8" >{cantidad}</td>
-        </tr>        
+        <td className="flex">
+                <h1 className="border px-4 py-2 w-1/8" >{obtenerProductoStock.lote}</h1>
+                <h1 className="border px-4 py-2 w-1/8" >{nombre}</h1>      
+                <h1 className="border px-4 py-2 w-1/8" >{cantidad}</h1>
+        </td>        
     );
 }
 

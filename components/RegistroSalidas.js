@@ -97,7 +97,7 @@ const RegistroSalidas = ({registro, rol}) => {
             <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
             <th className="border px-4 py-2 w-1/8" >{empresa}</th>
             <th className="border px-4 py-2 w-1/8" >{remito}</th>
-            <th className="border px-4 py-2 w-1/8">
+            <th className="border pl-2 pr-0 py-2 w-3/8">
                 {lotes.map(lote => 
                     <ListarLotes 
                         lote={lote}

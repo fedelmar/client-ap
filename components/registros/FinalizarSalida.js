@@ -93,7 +93,7 @@ const FinalizarSalida = (datos) => {
                 }                
             });
 
-           // router.push('/registros/salidas');
+            router.push('/registros/salidas');
         } catch (error) {
             guardarMensaje(error.message.replace('GraphQL error: ', ''));
         }
