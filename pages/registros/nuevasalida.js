@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import Layout from '../../components/Layout';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import Select from 'react-select';
 import FinalizarSalida from '../../components/registros/FinalizarSalida';
-import { set } from 'date-fns';
 
 const OBTENER_CLIENTES = gql `
   query obtenerClientes {

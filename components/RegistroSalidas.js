@@ -51,14 +51,14 @@ const RegistroSalidas = ({registro, rol}) => {
             })
         }
     });
-    const {data: dataClientes, loading: loadingClientes} = useQuery(OBTENER_CLIENTES);
+    const {data , loading} = useQuery(OBTENER_CLIENTES);
 
 
-    if(loadingClientes) return null;
+    if(loading) return null;
 
     // Buscar dentro de lista de clientes el nombre del cliente
-    const {empresa} = dataClientes.obtenerClientes.find(i => i.id == cliente);
-    
+    const {empresa} = data.obtenerClientes.find(i => i.id == cliente);
+
     const confimarEliminarRegistro = () => {
         Swal.fire({
             title: '¿Seguro desea eliminar el registro?',
@@ -97,14 +97,14 @@ const RegistroSalidas = ({registro, rol}) => {
             <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
             <th className="border px-4 py-2 w-1/8" >{empresa}</th>
             <th className="border px-4 py-2 w-1/8" >{remito}</th>
-            <th className="border pl-2 pr-0 py-2 w-3/8">
+            <tr className="border pl-2 pr-0 py-2 w-3/8">
                 {lotes.map(lote => 
                     <ListarLotes 
                         lote={lote}
                         key={lote}                    
                     />
                 )}
-            </th>
+            </tr>
             {rol === "Admin" ? (
                 <>
                     {/*<td className="border px-4 py-2">

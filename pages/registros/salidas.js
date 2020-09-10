@@ -86,11 +86,11 @@ const Salidas = () => {
                         <th className="w-1/8 py-2">Fecha</th>
                         <th className="w-1/8 py-2">Cliente</th>
                         <th className="w-1/8 py-2">Remito</th>
-                        <div className="flex justify-start">
+                        <tr className="flex justify-start">
                             <th className="w-1/8 px-10 py-2">Lote</th>
                             <th className="w-1/8 py-2">Producto</th>
                             <th className="w-1/8 px-10 py-2">Cantidad</th>       
-                        </div>
+                        </tr>
 
                         {rol === "Admin" ? (
                             <>
