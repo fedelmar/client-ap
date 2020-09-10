@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import { Formik, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { format } from 'date-fns';
 import { gql, useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
+
 
 const NUEVA_SALIDA = gql `
     mutation nuevoRegistroSalida($input: SalidaInput){
@@ -36,6 +37,7 @@ const LISTA_REGISTROS = gql `
 
 const FinalizarSalida = (datos) => {
 
+    const router = useRouter();
     const {cliente, productos, remito   } = datos;
     const [mensaje, guardarMensaje] = useState(null);
     const [ nuevoRegistroSalida ] = useMutation(NUEVA_SALIDA, {
@@ -107,8 +109,6 @@ const FinalizarSalida = (datos) => {
             </div>
         )
     }
-
-    console.log(productos)
 
     return(
         <div>
