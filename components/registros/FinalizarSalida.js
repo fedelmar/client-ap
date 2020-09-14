@@ -38,7 +38,7 @@ const LISTA_REGISTROS = gql `
 const FinalizarSalida = (datos) => {
 
     const router = useRouter();
-    const {cliente, productos, remito   } = datos;
+    const { cliente, productos, remito } = datos;
     const [mensaje, guardarMensaje] = useState(null);
     const [ nuevoRegistroSalida ] = useMutation(NUEVA_SALIDA, {
         update(cache, {data: { nuevoRegistroSalida }}) {
@@ -58,16 +58,16 @@ const FinalizarSalida = (datos) => {
           .of(     
             Yup.object().shape({
                 id: Yup.string()
-                    .required('Required'),    
+                    .required('Required'),
                 lote: Yup.string()         
-                    .required('Required'), // these constraints take precedence     
+                    .required('Required'),
                 producto: Yup.string()
-                    .required('Required'), // these constraints take precedence 
+                    .required('Required'),
                 disponible: Yup.number(),
                 cantidad: Yup.number()
             })     
           )
-    });                  
+    });
 
     const handleSubmit = async (valores) => {
         const { lotes } = valores;

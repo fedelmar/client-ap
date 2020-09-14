@@ -86,17 +86,14 @@ const Salidas = () => {
                         <th className="w-1/8 py-2">Fecha</th>
                         <th className="w-1/8 py-2">Cliente</th>
                         <th className="w-1/8 py-2">Remito</th>
-                        <tr className="flex justify-start">
-                            <th className="w-1/8 px-10 py-2">Lote</th>
+                        <th className="w-1/8 px-10 py-2">Lotes</th>
+                       { /*<tr className="flex justify-start">
                             <th className="w-1/8 py-2">Producto</th>
                             <th className="w-1/8 px-10 py-2">Cantidad</th>       
-                        </tr>
+                </tr>*/}
 
                         {rol === "Admin" ? (
-                            <>
-                                {/*<th className="w-1/8 py-2">Editar</th> */}
-                                <th className="w-1/8 py-2">Eliminar</th>
-                            </>                  
+                                <th className="w-1/8 py-2">Eliminar</th>              
                         ) : null}   
                     </tr>
                     </thead>
