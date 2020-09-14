@@ -16,7 +16,7 @@
     "jspdf": "^2.1.0",
     "jspdf-autotable": "^3.5.10",
     "next": "9.4.4",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "react": "16.13.1",
     "react-day-picker": "^7.4.8",
     "react-dom": "16.13.1",
