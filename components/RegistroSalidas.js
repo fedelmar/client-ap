@@ -2,7 +2,6 @@ import React from 'react';
 import { format } from 'date-fns';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Swal from 'sweetalert2';
-import ListarLotes from '../components/registros/ListarLotes';
 
 const OBTENER_CLIENTES = gql `
   query obtenerClientes {
@@ -34,6 +33,16 @@ const LISTA_REGISTROS = gql `
     }
 `;
 
+const LISTA_LOTES = gql `
+    query obtenerLotesPorSalidas($id: ID!){
+        obtenerLotesPorSalida(id: $id){
+            lote
+            producto
+            cantidad
+        }
+}
+`;
+
 const RegistroSalidas = ({registro, rol}) => {
 
     const { fecha, cliente, remito, lotes, id} = registro;
@@ -51,10 +60,17 @@ const RegistroSalidas = ({registro, rol}) => {
             })
         }
     });
+    const { data: dataLotes, loading: loadingLotes } = useQuery(LISTA_LOTES, {
+        variables: {
+            id
+        }
+    });
     const {data , loading} = useQuery(OBTENER_CLIENTES);
 
-
+    if(loadingLotes) return null;
     if(loading) return null;
+
+    const { obtenerLotesPorSalida } = dataLotes;
 
     // Buscar dentro de lista de clientes el nombre del cliente
     const {empresa} = data.obtenerClientes.find(i => i.id == cliente);
@@ -97,25 +113,14 @@ const RegistroSalidas = ({registro, rol}) => {
             <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
             <th className="border px-4 py-2 w-1/8" >{empresa}</th>
             <th className="border px-4 py-2 w-1/8" >{remito}</th>
-            <tr className="border pl-2 pr-0 py-2 w-3/8">
-                {lotes.map(lote => 
-                    <ListarLotes 
-                        lote={lote}
-                        key={lote}                    
-                    />
-                )}
-            </tr>
+            {obtenerLotesPorSalida.map(i =>
+                <div className="flex ">
+                    <p className="border px-4 py-2 w-full text-center font-bold" >{i.lote}</p>
+                    <p className="border px-4 py-2 w-full text-center font-bold" >{i.producto}</p>
+                    <p className="border px-4 py-2 w-full text-center font-bold" >{i.cantidad}</p>
+                </div>
+            )}
             {rol === "Admin" ? (
-                <>
-                    {/*<td className="border px-4 py-2">
-                        <button
-                            type="button"
-                            className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                            //onClick={() => editarRegistro()}
-                        >
-                            <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        </button>
-                    </td>*/}
                     <td className="border px-4 py-2 ">
                         <button
                             type="button"
@@ -125,10 +130,9 @@ const RegistroSalidas = ({registro, rol}) => {
                             <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </button>
                     </td>
-                </>
             ) : null}
         </tr>
     );
 }
 
-export default RegistroSalidas
+export default RegistroSalidas;
