@@ -3,6 +3,8 @@ import Layout from '../../components/Layout';
 import { gql, useQuery } from '@apollo/client';
 import Select from 'react-select';
 import FinalizarSalida from '../../components/registros/FinalizarSalida';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const OBTENER_CLIENTES = gql `
   query obtenerClientes {
@@ -24,21 +26,6 @@ const OBTENER_STOCK = gql`
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosSalidas{
-        obtenerRegistrosSalidas{
-            id
-            fecha
-            cliente
-            remito
-            lotes {
-                lote
-                cantidad
-            }
-        }
-    }
-`;
-
 const NuevaSalida = () => {
 
     const { data: dataClientes, loading: loadingClientes } = useQuery(OBTENER_CLIENTES);
@@ -47,6 +34,20 @@ const NuevaSalida = () => {
     const [ remito, setRemito ] = useState();
     const [ productos, setProductos ] = useState([]);
     const [ isOpen, setIsOpen ] = useState(false);
+
+    const formik = useFormik({
+        initialValues: {
+            remito: ''
+        },
+        validationSchema: Yup.object({
+            remito: Yup.string().required('El remito es obligatorio')                        
+        }),
+        onSubmit: async valores => {   
+            const { remito } = valores;
+            setRemito(remito);
+            handleOpenClose();
+        }
+    })
 
     if(loadingClientes || loadingStock)  return (
         <Layout>
@@ -69,7 +70,6 @@ const NuevaSalida = () => {
     }
 
     const seleccionarLote = value => {
-        console.log(value)
         setProductos(value)
     }
 
@@ -84,17 +84,28 @@ const NuevaSalida = () => {
             {!isOpen ?
                 <div className="flex justify-center mt-5">
                     <div className="w-full max-w-lg">
-                        <form>
+                        <form
+                            onSubmit={formik.handleSubmit}
+                        >
                             <div className="bg-white shadow-md px-8 pt-6 pb-8 mb-4">
                                 <p className="block text-gray-700 text-sm font-bold mb-2">Remito</p>         
                                 <input
                                     className="shadow appearance-none border rounded w-full py-2 px-3 mb-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="cantGuardada"
-                                    type="string"
+                                    id="remito"
+                                    type="text"
                                     placeholder="Ingrese el remito"
-                                    onChange={() => setRemito(event.target.value)}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.remito}
                                 />
-                                
+
+                                { formik.touched.remito && formik.errors.remito ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formik.errors.remito}</p>
+                                    </div>
+                                ) : null  }
+
                                 <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione el Cliente</p>
                                 <Select
                                     className="mt-3 mb-2"
@@ -117,12 +128,13 @@ const NuevaSalida = () => {
                                     placeholder="Lote..."
                                     isMulti
                                 />
-                                <button 
-                                    onClick={() => handleOpenClose()}
-                                    className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
-                                >
-                                    Seleccionar Cantidades
-                                </button>
+                                {cliente && productos.length > 0 ?
+                                    <input
+                                        type="submit"
+                                        className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
+                                        value="Seleccionar Cantidades"
+                                    />
+                                : null}
                             </div>
                         </form>
                     </div>

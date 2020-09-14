@@ -70,19 +70,16 @@ const FinalizarSalida = (datos) => {
     });
 
     const handleSubmit = async (valores) => {
+
         const { lotes } = valores;
-        console.log('Remito: ', remito)
-        console.log('Cliente: ', cliente.id)
-        console.log('lotes: ',lotes)
         const lotesAGuardar = []
+
         lotes.forEach(index => {
             lotesAGuardar.push({
                 lote: index.id,
                 cantidad: index.cantidad
             })
         });
-
-        console.log(lotesAGuardar);
 
         try {
             const { data } = await nuevoRegistroSalida({
@@ -94,7 +91,6 @@ const FinalizarSalida = (datos) => {
                     }
                 }                
             });
-
             router.push('/registros/salidas');
         } catch (error) {
             guardarMensaje(error.message.replace('GraphQL error: ', ''));
