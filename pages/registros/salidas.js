@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Layout from '../../components/Layout';
 import Link from 'next/link';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import UsuarioContext from '../../context/usuarios/UsuarioContext';
 import {gql, useQuery} from '@apollo/client';
 import RegistroSalidas from '../../components/RegistroSalidas';
@@ -14,6 +13,7 @@ const LISTA_REGISTROS = gql `
             cliente
             remito
             lotes {
+                producto
                 lote
                 cantidad
             }
@@ -25,8 +25,6 @@ const Salidas = () => {
 
     const { data, loading } = useQuery(LISTA_REGISTROS);
     const [ pdfOpen, setPdfOpen ] = useState(false);
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
 
@@ -54,31 +52,6 @@ const Salidas = () => {
                 </button>
             </div>
 
-            {pdfOpen ? (
-                <div className="flex flex-row justify-center">
-                    <p className="block text-gray-70 font-bold mr-1 mt-1">Seleccione el periodo a exportar: </p>
-                    <div className="m-1">
-                        <DayPickerInput
-                        value=" Desde... "
-                        onDayChange={day => setStartDate(day)}
-                        />
-                    </div>
-                    <div className="m-1">
-                        <DayPickerInput
-                        value=" Hasta... "
-                        onDayChange={day => setEndDate(day)}
-                        />
-                    </div>
-                    {/*startDate && endDate ?
-                        <ExportarRegistro 
-                        registros={data.obtenerRegistrosCE}
-                        desde={startDate}
-                        hasta={endDate}
-                        />
-                    : null*/}
-                </div>
-            ) : null }
-
             <div className="overflow-x-scroll">
                 <table className="table-auto shadow-md mt-2 w-full w-lg">
                     <thead className="bg-gray-800">
@@ -87,11 +60,6 @@ const Salidas = () => {
                         <th className="w-1/8 py-2">Cliente</th>
                         <th className="w-1/8 py-2">Remito</th>
                         <th className="w-1/8 px-10 py-2">Lotes</th>
-                       { /*<tr className="flex justify-start">
-                            <th className="w-1/8 py-2">Producto</th>
-                            <th className="w-1/8 px-10 py-2">Cantidad</th>       
-                </tr>*/}
-
                         {rol === "Admin" ? (
                                 <th className="w-1/8 py-2">Eliminar</th>              
                         ) : null}   

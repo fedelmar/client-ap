@@ -14,6 +14,7 @@ const NUEVA_SALIDA = gql `
             remito
             lotes {
                 lote
+                producto
                 cantidad
             }
         }
@@ -30,6 +31,7 @@ const LISTA_REGISTROS = gql `
             lotes {
                 lote
                 cantidad
+                producto
             }
         }
     }
@@ -76,7 +78,9 @@ const FinalizarSalida = (datos) => {
 
         lotes.forEach(index => {
             lotesAGuardar.push({
-                lote: index.id,
+                loteID: index.id,
+                lote: index.lote,
+                producto: index.producto,
                 cantidad: index.cantidad
             })
         });

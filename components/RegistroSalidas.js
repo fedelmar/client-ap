@@ -28,19 +28,10 @@ const LISTA_REGISTROS = gql `
             lotes {
                 lote
                 cantidad
+                producto
             }
         }
     }
-`;
-
-const LISTA_LOTES = gql `
-    query obtenerLotesPorSalidas($id: ID!){
-        obtenerLotesPorSalida(id: $id){
-            lote
-            producto
-            cantidad
-        }
-}
 `;
 
 const RegistroSalidas = ({registro, rol}) => {
@@ -60,17 +51,10 @@ const RegistroSalidas = ({registro, rol}) => {
             })
         }
     });
-    const { data: dataLotes, loading: loadingLotes } = useQuery(LISTA_LOTES, {
-        variables: {
-            id
-        }
-    });
     const {data , loading} = useQuery(OBTENER_CLIENTES);
 
-    if(loadingLotes) return null;
     if(loading) return null;
 
-    const { obtenerLotesPorSalida } = dataLotes;
 
     // Buscar dentro de lista de clientes el nombre del cliente
     const {empresa} = data.obtenerClientes.find(i => i.id == cliente);
@@ -113,7 +97,7 @@ const RegistroSalidas = ({registro, rol}) => {
             <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
             <th className="border px-4 py-2 w-1/8" >{empresa}</th>
             <th className="border px-4 py-2 w-1/8" >{remito}</th>
-            {obtenerLotesPorSalida.map(i =>
+            {lotes.map(i =>
                 <div className="flex ">
                     <p className="border px-4 py-2 w-full text-center font-bold" >{i.lote}</p>
                     <p className="border px-4 py-2 w-full text-center font-bold" >{i.producto}</p>
