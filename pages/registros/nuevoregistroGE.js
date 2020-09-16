@@ -223,7 +223,7 @@ const NuevoRegistroGE = () => {
                     <div className="flex justify-center mt-5">
                         <div className="w-full max-w-lg">
                             <div className="bg-white shadow-md px-8 pt-6 pb-8 mb-4">
-                                <p className="block text-gray-700 text-sm font-bold mb-2">Lote de Esponja</p>
+                                <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
                                 <Select
                                     className="mt-3 mb-4"
                                     options={obtenerStockEsponjas}
@@ -245,123 +245,151 @@ const NuevoRegistroGE = () => {
                     </div>
             
                 ) : (
-                    <>  
-                        <p className="text-gray-800 font-light">Dia: {registro.dia}   Hora de inicio: {registro.horaInicio}</p>
-                        <p className="text-gray-800 font-light">Lote: {registro.lote}</p>                        
-                        <p className="text-gray-800 font-light">Producto: {registro.producto}</p>
-                        <p className="text-gray-800 font-light">Estado del producto: {registro.estado}</p>                         
-                        <p className="text-gray-800 font-light">Esponjas disponibles: {registro.cantidad}</p>
-                        <p className="text-gray-800 font-light">Caja: {registro.caja}</p>
-                        <p className="text-gray-800 font-light">Cantidad por caja: {registro.cantCaja}</p>
-                        
-                        <div className="flex justify-center mt-5">
-                            <div className="w-full max-w-lg">
-                                <form
-                                    className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
-                                    onSubmit={formikCierre.handleSubmit}
-                                >
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantGuardada">
-                                            Esponjas guardadas
-                                        </label>
-        
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="cantGuardada"
-                                            type="number"
-                                            placeholder="Ingrese la cantidad producida..."
-                                            onChange={formikCierre.handleChange}
-                                            onBlur={formikCierre.handleBlur}
-                                            value={formikCierre.values.cantGuardada}
-                                        />
-                                    </div>
-
-                                    { formikCierre.touched.cantGuardada && formikCierre.errors.cantGuardada ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{formikCierre.errors.cantGuardada}</p>
+                    <div className="flex justify-center mt-5">
+                        <div className="w-full max-w-lg">
+                            <form
+                                className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
+                                onSubmit={formikCierre.handleSubmit}
+                            >
+                                <div className="mb-2 border-b-2 border-gray-600">
+                                    <div className="flex justify-between pb-2">
+                                        <div className="flex">
+                                            <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
+                                            <p className="text-gray-700 font-light ">{registro.dia}</p>
                                         </div>
-                                    ) : null  }
-
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
-                                            Cantidad de descarte
-                                        </label>
-        
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="cantDescarte"
-                                            type="number"
-                                            placeholder="Ingrese la cantidad de descarte..."
-                                            onChange={formikCierre.handleChange}
-                                            onBlur={formikCierre.handleBlur}
-                                            value={formikCierre.values.cantDescarte}
-                                        />
-                                    </div>
-
-                                    { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{formikCierre.errors.cantDescarte}</p>
+                                        <div className="flex">
+                                            <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
+                                            <p className="text-gray-700 font-light">{registro.horaInicio}</p>
                                         </div>
-                                    ) : null  }
-
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descCajas">
-                                            Cajas descartadas
-                                        </label>
-        
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="descCajas"
-                                            type="number"
-                                            placeholder="Ingrese la cantidad de descarte..."
-                                            onChange={formikCierre.handleChange}
-                                            onBlur={formikCierre.handleBlur}
-                                            value={formikCierre.values.descCajas}
-                                        />
                                     </div>
-
-                                    { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{formikCierre.errors.cantDescarte}</p>
-                                        </div>
-                                    ) : null  }
-
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="observaciones">
-                                            Observaciones
-                                        </label>
-        
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="observaciones"
-                                            type="text"
-                                            placeholder="Observaciones..."
-                                            onChange={formikCierre.handleChange}
-                                            onBlur={formikCierre.handleBlur}
-                                            value={formikCierre.values.observaciones}
-                                        />
+                                    
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
+                                        <p className="text-gray-700 font-light">{registro.lote}</p>
                                     </div>
-        
-                                    { formikCierre.touched.observaciones && formikCierre.errors.observaciones ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{formikCierre.errors.observaciones}</p>
-                                        </div>
-                                    ) : null  }
-        
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
+                                        <p className="text-gray-700 font-light">{registro.producto}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
+                                        <p className="text-gray-700 font-light">{registro.estado}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Esponjas disponibles: </p>
+                                        <p className="text-gray-700 font-light">{registro.cantidad}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
+                                        <p className="text-gray-700 font-light">{registro.caja}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1 mb-2">Cantidad por caja: </p>
+                                        <p className="text-gray-700 font-light">{registro.cantCaja}</p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-4 mt-1">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantGuardada">
+                                        Esponjas guardadas
+                                    </label>
+    
                                     <input
-                                        type="submit"
-                                        className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900"
-                                        value="Finalizar Producción"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="cantGuardada"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad producida..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.cantGuardada}
                                     />
-                                    <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
-                                </form>
-                            </div>
-                        </div>                     
-                    </>
+                                </div>
+
+                                { formikCierre.touched.cantGuardada && formikCierre.errors.cantGuardada ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.cantGuardada}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
+                                        Cantidad de descarte
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="cantDescarte"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad de descarte..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.cantDescarte}
+                                    />
+                                </div>
+
+                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.cantDescarte}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descCajas">
+                                        Cajas descartadas
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="descCajas"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad de descarte..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.descCajas}
+                                    />
+                                </div>
+
+                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.cantDescarte}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
+                                        Observaciones
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="observaciones"
+                                        type="text"
+                                        placeholder="Observaciones..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.observaciones}
+                                    />
+                                </div>
+    
+                                { formikCierre.touched.observaciones && formikCierre.errors.observaciones ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.observaciones}</p>
+                                    </div>
+                                ) : null  }
+    
+                                <input
+                                    type="submit"
+                                    className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900"
+                                    value="Finalizar Producción"
+                                />
+                                <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
+                            </form>
+                        </div>
+                    </div> 
                 )}
             </div>
         </Layout>

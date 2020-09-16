@@ -114,15 +114,17 @@ const FinalizarSalida = (datos) => {
         <div>
             {mensaje && mostrarMensaje()}
 
-            <div className="flex">
-                <p className="block text-gray-700 text-m font-bold mb-2 pr-2">Cliente:</p>
-                <p className="block text-gray-700 text-m mb-2">{cliente.empresa}</p>
+            <div className="flex justify-between border-b-2 border-gray-600 mb-2">
+                <div className="flex">
+                    <p className="block text-gray-700 text-m font-bold mb-2 pr-2">Remito:</p>
+                    <p className="block text-gray-700 text-m mb-2">{remito}</p>
+                </div>
+                <div className="flex">
+                    <p className="block text-gray-700 text-m font-bold mb-2 pr-2">Cliente:</p>
+                    <p className="block text-gray-700 text-m mb-2">{cliente.empresa}</p>
+                </div>
             </div>
-            <div className="flex">
-                <p className="block text-gray-700 text-m font-bold mb-2 pr-2">Remito:</p>
-                <p className="block text-gray-700 text-m mb-2">{remito}</p>
-            </div>
-            <p className="block text-gray-700 text-m font-bold mb-2">Seleccione las cantidades</p>
+            <p className="block text-center text-gray-700 text-xl font-bold mb-2">Seleccione las cantidades</p>
             <Formik
                 initialValues={{ lotes: productos }}
                 onSubmit={values => handleSubmit(values)}
@@ -137,9 +139,18 @@ const FinalizarSalida = (datos) => {
                                     values.lotes.map((lote, index) => (
                                         <div key={index}>
                                             <div className="flex">
-                                                <p className="text-gray-800 text-m font-light p-2">Lote: {lote.lote}</p>
-                                                <p className="text-gray-800 text-m font-light p-2">Producto: {lote.producto}</p> 
-                                                <p className="text-gray-800 text-m font-light p-2">Disponibles: {lote.disponible}</p>                                            
+                                                <div className="flex">
+                                                    <p className="text-gray-700 text-m font-bold pr-2 pt-1">Lote: </p>
+                                                    <p className="text-gray-700 text-m font-light pb-1 pt-1">{lote.lote}</p>
+                                                </div>
+                                                <div className="flex">
+                                                    <p className="text-gray-700 text-m font-bold pr-2 pl-2 pt-1">Producto: </p>
+                                                    <p className="text-gray-700 text-m font-light pb-1 pt-1">{lote.producto}</p>
+                                                </div>
+                                                <div className="flex">
+                                                    <p className="text-gray-700 text-m font-bold pr-2 pl-2 pt-1">Disponibles: </p>
+                                                    <p className="text-gray-700 text-m font-light pb-1 pt-1">{lote.disponible}</p>
+                                                </div>                                            
                                             </div>
                                             <input
                                                 onChange={() => arrayHelpers.replace(index, {
@@ -157,7 +168,7 @@ const FinalizarSalida = (datos) => {
                                     ))
                                 ) : null}
                                 <div>
-                                    <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" type="submit">Finalizar Registro</button>
+                                    <button className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900" type="submit">Finalizar Registro</button>
                                 </div>
                             </div>
                             )}
