@@ -128,13 +128,11 @@ const NuevaSalida = () => {
                                     placeholder="Lote..."
                                     isMulti
                                 />
-                                {cliente && productos.length > 0 ?
-                                    <input
-                                        type="submit"
-                                        className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
-                                        value="Seleccionar Cantidades"
-                                    />
-                                : null}
+                                <input
+                                    type="submit"
+                                    className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
+                                    value="Seleccionar Cantidades"
+                                />
                             </div>
                         </form>
                     </div>
