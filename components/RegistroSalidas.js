@@ -3,15 +3,6 @@ import { format } from 'date-fns';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Swal from 'sweetalert2';
 
-const OBTENER_CLIENTES = gql `
-  query obtenerClientes {
-      obtenerClientes{
-          id
-          empresa
-        }
-      }
-`;
-
 const ELIMINAR_REGISTRO = gql `
     mutation eliminarRegistroSalida($id: ID!){
         eliminarRegistroSalida(id: $id)
@@ -51,14 +42,7 @@ const RegistroSalidas = ({registro, rol}) => {
             })
         }
     });
-    const {data , loading} = useQuery(OBTENER_CLIENTES);
-
-    if(loading) return null;
-
-
-    // Buscar dentro de lista de clientes el nombre del cliente
-    const {empresa} = data.obtenerClientes.find(i => i.id == cliente);
-
+    
     const confimarEliminarRegistro = () => {
         Swal.fire({
             title: '¿Seguro desea eliminar el registro?',
@@ -95,14 +79,14 @@ const RegistroSalidas = ({registro, rol}) => {
     return (
         <tr>
             <th className="border px-4 py-2 w-1/8" >{format(new Date(fecha), 'dd/MM/yy')}</th>
-            <th className="border px-4 py-2 w-1/8" >{empresa}</th>
+            <th className="border px-4 py-2 w-1/8" >{cliente}</th>
             <th className="border px-4 py-2 w-1/8" >{remito}</th>
             {lotes.map(i =>
-                <div className="flex">
+                <th key={i.id} className="flex">
                     <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.lote}</p>
-                    <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.producto}</p>
                     <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.cantidad}</p>
-                </div>
+                    <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.producto}</p>
+                </th>
             )}
             {rol === "Admin" ? (
                     <td className="border px-4 py-2 ">
