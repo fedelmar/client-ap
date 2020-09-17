@@ -9,7 +9,9 @@ const ExportarRegistro = ({registros, desde, hasta}) => {
     desde.setHours(0);
     hasta.setHours(0);
 
-    let registrosExportados = registros.filter (registro => new Date(registro.fecha) >= desde && new Date(registro.fecha) <= hasta);
+    console.log(registros)
+
+    let registrosExportados = registros.filter(registro => new Date(registro.fecha) >= desde && new Date(registro.fecha) <= hasta);
 
     const exportar = () => {
         const doc = new jsPDF()
@@ -19,27 +21,25 @@ const ExportarRegistro = ({registros, desde, hasta}) => {
             styles: { fontSize: 8 },
             head: [
                 ['Fecha',
-                'Operario',
-                'Lote',
-                "Inicio",
-                "Cierre",
-                "Producto",
-                "Caja", 
-                "Esponjas",
-                "Descarte",
-                "Observaciones"]
+                'Remito',
+                'Cliente',
+                'Lote', 
+                'Producto', 
+                'Cantidad']
             ],
             body: registrosExportados.map (i => [
                 format(new Date(i.fecha), 'dd/MM/yy'),
-                i.operario,
-                i.lote,
-                i.horaInicio,
-                i.horaCierre,
-                i.producto,
-                i.caja,
-                i.guardado,
-                i.descarte,
-                i.observaciones
+                i.remito,
+                i.cliente,
+                i.lotes.map(a => 
+                    `${a.lote}\n`
+                ),
+                i.lotes.map(a => 
+                    `${a.producto}\n`
+                ),
+                i.lotes.map(a => 
+                    `${a.cantidad} \n`
+                )
             ]),
             didDrawPage: function (data) {
                 // Header

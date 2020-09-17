@@ -98,10 +98,10 @@ const RegistroSalidas = ({registro, rol}) => {
             <th className="border px-4 py-2 w-1/8" >{empresa}</th>
             <th className="border px-4 py-2 w-1/8" >{remito}</th>
             {lotes.map(i =>
-                <div className="flex ">
-                    <p className="border px-4 py-2 w-full text-center font-bold" >{i.lote}</p>
-                    <p className="border px-4 py-2 w-full text-center font-bold" >{i.producto}</p>
-                    <p className="border px-4 py-2 w-full text-center font-bold" >{i.cantidad}</p>
+                <div className="flex">
+                    <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.lote}</p>
+                    <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.producto}</p>
+                    <p className="border px-4 py-2 w-full h-full text-center font-bold" >{i.cantidad}</p>
                 </div>
             )}
             {rol === "Admin" ? (
