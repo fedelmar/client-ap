@@ -2,7 +2,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation } from '@apollo/client';
-import MostrarObser from '../../../components/registros/MostrarObser';
+import MostrarObser from '../MostrarObser';
 import { format } from 'date-fns'
 
 const ELIMINAR_REGISTRO = gql `

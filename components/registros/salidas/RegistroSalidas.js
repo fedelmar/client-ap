@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import Swal from 'sweetalert2';
 
 const ELIMINAR_REGISTRO = gql `

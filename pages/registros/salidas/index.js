@@ -3,9 +3,9 @@ import Layout from '../../../components/Layout';
 import Link from 'next/link';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import {gql, useQuery} from '@apollo/client';
-import RegistroSalidas from './RegistroSalidas';
+import RegistroSalidas from '../../../components/registros/salidas/RegistroSalidas';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import ExportarRegistro from '../../../components/registros/ExportarRegistroS';
+import ExportarRegistro from '../../../components/registros/salidas/ExportarRegistroS';
 
 
 const LISTA_REGISTROS = gql `

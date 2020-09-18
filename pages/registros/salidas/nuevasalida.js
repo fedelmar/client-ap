@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Layout from '../../../components/Layout';
 import { gql, useQuery } from '@apollo/client';
 import Select from 'react-select';
-import FinalizarSalida from './FinalizarSalida';
+import FinalizarSalida from '../../../components/registros/salidas/FinalizarSalida';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 

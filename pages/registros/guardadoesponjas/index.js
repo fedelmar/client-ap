@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react'
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
-import RegistroGE from './RegistroGE';
+import RegistroGE from '../../../components/registros/guardadoesponjas/RegistroGE';
 import Link from 'next/link';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import ExportarRegistro from '../../../components/registros/ExportarRegistroGE';
+import ExportarRegistro from '../../../components/registros/guardadoesponjas/ExportarRegistroGE';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosGE{
