@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import Layout from '../../../components/Layout';
-import Producto from './Producto';
+import Producto from '../../../components/listados/Producto';
 import { gql, useQuery } from '@apollo/client';
 import Link from 'next/link';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
