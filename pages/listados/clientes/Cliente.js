@@ -83,7 +83,6 @@ const Cliente = ({cliente}) => {
 
     return (
         <tr>
-            <td className="border px-4 py-2 ">{nombre} {apellido} </td>
             <td className="border px-4 py-2 ">{empresa}</td>
             <td className="border px-4 py-2 ">{email}</td>
             <td className="border px-4 py-2">
