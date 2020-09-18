@@ -97,7 +97,7 @@ const EditarCliente = () => {
             )
 
             // Redireccionar
-            router.push('/clientes');
+            router.push('/listados/clientes');
         } catch (error) {
             console.log(error);
         }

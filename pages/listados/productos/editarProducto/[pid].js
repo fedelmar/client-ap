@@ -97,7 +97,7 @@ const EditarProducto = () => {
             )
 
             // Redireccionar
-            router.push('/productos');
+            router.push('/listados/productos');
         } catch (error) {
             console.log(error);
         }

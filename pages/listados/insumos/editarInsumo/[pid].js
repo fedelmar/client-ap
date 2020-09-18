@@ -79,7 +79,7 @@ const EditarInsumo = () => {
             )
 
             // Redireccionar
-            router.push('/insumos');
+            router.push('/listados/insumos');
         } catch (error) {
             console.log(error);
         }

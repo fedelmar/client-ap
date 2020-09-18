@@ -93,7 +93,7 @@ const NuevoCliente = () => {
                     }
                 });
                 // console.log(data.nuevoCliente);
-                router.push('/clientes'); // redireccionar hacia clientes
+                router.push('/listados/clientes'); // redireccionar hacia clientes
             } catch (error) {
                 guardarMensaje(error.message.replace('GraphQL error: ', ''));
 

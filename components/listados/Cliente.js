@@ -76,7 +76,7 @@ const Cliente = ({cliente}) => {
 
     const editarCliente = () => {
         Router.push({
-            pathname: "/editarcliente/[id]",
+            pathname: "/listados/clientes/editarcliente/[id]",
             query: { id }
         })
     }

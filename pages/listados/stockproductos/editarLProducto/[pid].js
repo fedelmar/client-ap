@@ -92,7 +92,7 @@ const EditarLoteProducto = () => {
             )
 
             // Redireccionar
-            router.push('/stockproductos');
+            router.push('/listados/stockproductos');
         } catch (error) {
             console.log(error);
         }

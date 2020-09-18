@@ -85,7 +85,7 @@ const Insumo = ({insumo, rol}) => {
 
     const editarInsumo = () => {
         Router.push({
-            pathname: "/editarInsumo/[id]",
+            pathname: "/listados/insumos/editarInsumo/[id]",
             query: { id }
         })
     }

@@ -89,7 +89,7 @@ const LoteProducto = ({loteProducto, rol}) => {
 
     const editarLote = () => {
         Router.push({
-            pathname: "/editarLProducto/[id]",
+            pathname: "/listados/stockproductos/editarLProducto/[id]",
             query: { id }
         })
     }
