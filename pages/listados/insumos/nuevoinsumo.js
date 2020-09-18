@@ -71,7 +71,7 @@ const NuevoInsumo = () => {
                     }
                 });
                 //console.log(data.nuevoInsumo);
-                router.push('/listados/insumos');
+                router.push('/insumos');
                 
             } catch (error) {
                 guardarMensaje(error.message.replace('GraphQL error: ', ''));

@@ -91,7 +91,7 @@ const NuevoProducto = () => {
                     }
                 });
                 //console.log(data.nuevoProducto);
-                router.push('/listados/productos');
+                router.push('/productos');
                 
             } catch (error) {
                 guardarMensaje(error.message.replace('GraphQL error: ', ''));

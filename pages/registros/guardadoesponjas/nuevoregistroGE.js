@@ -384,7 +384,7 @@ const NuevoRegistroGE = () => {
                                 <input
                                     type="submit"
                                     className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900"
-                                    value="Finalizar Guardado"
+                                    value="Finalizar Producción"
                                 />
                                 <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
                             </form>

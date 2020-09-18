@@ -32,12 +32,12 @@ const EditarCliente = () => {
     // obtener el ID actual
     const router = useRouter();
     const { query: { id } } = router;
-    //console.log(id)
+    // console.log(id)
 
     // Consultar para obtener el cliente
     const { data, loading } = useQuery(OBTENER_CLIENTE, {
         variables: {
-            id: id
+            id
         }
     });
 
@@ -64,7 +64,7 @@ const EditarCliente = () => {
         </Layout>
     );
 
-    //console.log(data.obtenerCliente)
+    // console.log(data.obtenerCliente)
 
     const {obtenerCliente} = data;
 
@@ -97,7 +97,7 @@ const EditarCliente = () => {
             )
 
             // Redireccionar
-            router.push('/listados/clientes');
+            router.push('/clientes');
         } catch (error) {
             console.log(error);
         }

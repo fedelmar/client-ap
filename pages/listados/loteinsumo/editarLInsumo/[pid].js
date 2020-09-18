@@ -87,7 +87,7 @@ const EditarLoteInsumo = () => {
             )
 
             // Redireccionar
-            router.push('/listados/stockinsumos');
+            router.push('/stockinsumos');
         } catch (error) {
             console.log(error);
         }
