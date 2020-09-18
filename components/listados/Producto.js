@@ -3,7 +3,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Router from 'next/router';
-import MostrarInsumos from '../../../components/MostrarInsumos';
+import MostrarInsumos from '../MostrarInsumos';
 
 
 const ELIMINAR_PRODUCTO = gql` 

@@ -3,7 +3,7 @@ import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import Link from 'next/link';
 import { gql, useQuery } from '@apollo/client';
-import LoteInsumo from './LoteInsumo';
+import LoteInsumo from '../../../components/listados/LoteInsumo';
 
 const LISTA_STOCK = gql `
     query obtenerStockInsumos{

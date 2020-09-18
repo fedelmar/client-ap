@@ -1,6 +1,6 @@
 import React from 'react'
 import Layout from '../../../components/Layout';
-import Cliente from './Cliente';
+import Cliente from '../../../components/listados/Cliente';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Link from 'next/link';

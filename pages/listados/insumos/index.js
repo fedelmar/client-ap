@@ -1,7 +1,7 @@
 
 import React, { useContext } from 'react'
 import Layout from '../../../components/Layout';
-import Insumo from './Insumo';
+import Insumo from '../../../components/listados/Insumo';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
