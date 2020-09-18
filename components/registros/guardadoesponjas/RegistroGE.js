@@ -1,5 +1,5 @@
 import React from 'react';
-import MostrarObser from './MostrarObser';
+import MostrarObser from '..MostrarObser';
 import { format } from 'date-fns';
 import { gql, useMutation } from '@apollo/client';
 import Swal from 'sweetalert2';
