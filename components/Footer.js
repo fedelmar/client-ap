@@ -29,17 +29,17 @@ const Footer = () => {
             <div>
                 {registros ? 
                     <div className="relative z-10">
-                        <li className={router.pathname === "/registros/produccionesponjas" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/registros/produccionesponjas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/registros/produccionesponjas">
                                 <a className="text-white block">Producción de Esponjas</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/registros/guardadoesponjas" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/registros/guardadoesponjas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/registros/guardadoesponjas">
                                 <a className="text-white block">Guardado de Esponjas</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/registros/salidas">
                                 <a className="text-white block">Salidas</a>
                             </Link>
@@ -48,27 +48,27 @@ const Footer = () => {
                 : null}
                 {listados ? 
                     <div className="relative z-10">
-                        <li className={router.pathname === "/listados/productos" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/listados/productos" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/listados/productos">
                                 <a className="text-white block">Productos</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/listados/insumos" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/listados/insumos" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/listados/insumos">
                                 <a className="text-white block">Insumos</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/listados/stockproductos" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/listados/stockproductos" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/listados/stockproductos">
                                 <a className="text-white block">Stock de Productos</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/listados/stockinsumos" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/listados/stockinsumos" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/listados/stockinsumos">
                                 <a className="text-white block">Stock de Insumos</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/listados/clientes" ? "bg-blue-800 p-2 px-5" : "p-2 px-5"}>    
+                        <li className={router.pathname === "/listados/clientes" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
                             <Link href="/listados/clientes">
                                 <a className="text-white block">Clientes</a>
                             </Link>
@@ -105,7 +105,7 @@ const Footer = () => {
                         </svg>
                     </button>                        
                 </div>*/}    
-                {/*<li className={router.pathname === "/listados/pedidos" ? "bg-blue-800 p-2" : "p-2"}>    
+                {/*<li className={router.pathname === "/listados/pedidos" ? "bg-blue-800 p-2 list-none" : "p-2 list-none"}>    
                     <Link href="/listados/pedidos">
                         <a className="text-white block">Pedidos</a>
                     </Link>
