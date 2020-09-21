@@ -180,7 +180,9 @@ const IniciarProduccion = () => {
             cantProducida: Yup.number()
                                 .max(menor, `Debe ser menor o igual a ${menor}`)
                                 .required('Ingrese la cantidad producida'),
-            cantDescarte: Yup.number().required('Ingrese el descarte generado'),
+            cantDescarte: Yup.number()
+                                .max(Yup.ref('cantProducida'), `Debe ser menor a la cantidad producida`)
+                                .required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
