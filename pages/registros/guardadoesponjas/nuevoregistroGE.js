@@ -102,7 +102,9 @@ const NuevoRegistroGE = () => {
             cantGuardada: Yup.number()
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
                                 .required('Ingrese la cantidad producida'),
-            cantDescarte: Yup.number().required('Ingrese el descarte generado'),
+            cantDescarte: Yup.number()
+                                .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
+                                .required('Ingrese el descarte generado'),
             descCajas: Yup.number(),
             observaciones: Yup.string()               
         }),
@@ -351,10 +353,10 @@ const NuevoRegistroGE = () => {
                                     />
                                 </div>
 
-                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                { formikCierre.touched.descCajas && formikCierre.errors.descCajas ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.cantDescarte}</p>
+                                        <p>{formikCierre.errors.descCajas}</p>
                                     </div>
                                 ) : null  }
 
