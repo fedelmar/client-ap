@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useTable, useFilters } from "react-table";
+import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
@@ -58,7 +58,11 @@ const Table = ({registros, filtros}) => {
         ],
         []
     )
-    const tableInstance = useTable({ columns, data: registros }, useFilters)
+    const tableInstance = useTable(
+        { columns, data: registros }, 
+        useFilters, 
+        useSortBy
+    )
 
     const {
         getTableProps,
@@ -115,13 +119,39 @@ const Table = ({registros, filtros}) => {
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
-                        {headers.map(column => (  
-                            <th 
-                                className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                {...column.getHeaderProps()}
-                            >
-                                {column.render('Header')}
-                            </th>
+                        {headers.map(column => (
+                            column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
+                            ? (
+                                <>
+                                    {console.log(column.id)}
+                                    <th 
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps()}
+                                    >                              
+                                        {column.render('Header')}
+                                                
+                                    </th>
+                                </>
+                                    
+                            )
+                            : (
+                                <>
+                                    {console.log(column.id)}
+                                    <th 
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    >                              
+                                        {column.render('Header')}
+                                        <span>
+                                            {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? ' ⬇'
+                                                : ' ⬆'
+                                            : ''}
+                                        </span>                        
+                                    </th>
+                                </>                                            
+                            )
                         ))}
                     </tr>
                 </thead>
