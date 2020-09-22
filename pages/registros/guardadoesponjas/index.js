@@ -4,7 +4,6 @@ import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
 import RegistroGE from '../../../components/registros/guardadoesponjas/RegistroGE';
 import Link from 'next/link';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import ExportarRegistro from '../../../components/registros/guardadoesponjas/ExportarRegistroGE';
 
 const LISTA_REGISTROS = gql `
@@ -31,8 +30,7 @@ const GuardadoEsponjas = () => {
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
     const [ pdfOpen, setPdfOpen ] = useState(false);
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+
     const { data, loading } = useQuery(LISTA_REGISTROS);
 
     if(loading) return (
@@ -60,29 +58,9 @@ const GuardadoEsponjas = () => {
             </div>
 
             {pdfOpen ? (
-                <div className="flex flex-row justify-center">
-                <p className="block text-gray-70 font-bold mr-1 mt-1">Seleccione el periodo a exportar: </p>
-                <div className="m-1">
-                    <DayPickerInput
-                    value=" Desde... "
-                    onDayChange={day => setStartDate(day)}
-                    />
-                </div>
-                <div className="m-1">
-                    <DayPickerInput
-                    value=" Hasta... "
-                    onDayChange={day => setEndDate(day)}
-                    />
-                </div>
-                {startDate && endDate ?
-                    <ExportarRegistro 
-                        registros={data.obtenerRegistrosGE}
-                        desde={startDate}
-                        hasta={endDate}
-                    />
-                : null}
-
-                </div>
+                <ExportarRegistro 
+                    registros={data.obtenerRegistrosGE}
+                />
             ) : null }
 
             <div className="overflow-x-scroll">
