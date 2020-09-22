@@ -2,10 +2,9 @@ import React, { useContext, useState } from 'react'
 import { gql, useQuery } from '@apollo/client';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
-import RegistroCPE from '../../../components/registros/produccionesponjas/RegistroCPE';
 import Link from 'next/link';
-
 import ExportarRegistro from '../../../components/registros/produccionesponjas/ExportarRegistroPE';
+import Table from '../../../components/registros/produccionesponjas/Table';
 
 
 const LISTA_REGISTROS = gql `
@@ -45,6 +44,8 @@ const ProduccionEsponjas = () => {
       setPdfOpen(!pdfOpen);
     }
 
+    const registros = data.obtenerRegistrosCE;
+
     //console.log(data.obtenerRegistrosCE)
     return (
     <Layout>
@@ -61,45 +62,12 @@ const ProduccionEsponjas = () => {
 
       {pdfOpen ? (
         <ExportarRegistro 
-          registros={data.obtenerRegistrosCE}
+          registros={registros}
         />
       ) : null }
-       
-      <div className="overflow-x-scroll">
-          <table className="table-auto shadow-md mt-2 w-full w-lg">
-            <thead className="bg-gray-800">
-              <tr className="text-white">
-                <th className="w-1/12 py-2">Fecha</th>
-                <th className="w-1/12 py-2">Operario</th>
-                <th className="w-1/12 py-2">Lote</th>
-                <th className="w-2/12 py-2">Horario</th>
-                <th className="w-1/12 py-2">Producto</th>
-                <th className="w-1/12 py-2">Lote Bolsa</th>
-                <th className="w-1/12 py-2">Lote Esponja</th>
-                <th className="w-1/12 py-2">Produccion</th>
-                <th className="w-1/12 py-2">Descarte</th>
-                <th className="w-1/12 py-2">Observaciones</th>
-                {rol === "Admin" ? (
-                  <>
-                    {/* De momento la edicion no va a estar disponible
 
-                    <th className="w-1/12 py-2">Editar</th> */}
-                    <th className="w-1/12 py-2">Eliminar</th>
-                  </>                  
-                ) : null}   
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {data.obtenerRegistrosCE.map( registro => (
-                  <RegistroCPE
-                    key={registro.id}
-                    registro={registro}
-                    rol={rol}
-                  />
-              ))}  
-            </tbody>  
-          </table>
-        </div>
+      <Table props={registros} />
+       
     </Layout>  
     
     );
