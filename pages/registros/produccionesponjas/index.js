@@ -4,7 +4,7 @@ import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import RegistroCPE from '../../../components/registros/produccionesponjas/RegistroCPE';
 import Link from 'next/link';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+
 import ExportarRegistro from '../../../components/registros/produccionesponjas/ExportarRegistroPE';
 
 
@@ -31,8 +31,7 @@ const ProduccionEsponjas = () => {
 
     const { data, loading } = useQuery(LISTA_REGISTROS);
     const [ pdfOpen, setPdfOpen ] = useState(false);
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
 
@@ -61,28 +60,9 @@ const ProduccionEsponjas = () => {
       </div>
 
       {pdfOpen ? (
-        <div className="flex flex-row justify-center">
-          <p className="block text-gray-70 font-bold mr-1 mt-1">Seleccione el periodo a exportar: </p>
-          <div className="m-1">
-            <DayPickerInput
-              value=" Desde... "
-              onDayChange={day => setStartDate(day)}
-            />
-          </div>
-          <div className="m-1">
-            <DayPickerInput
-              value=" Hasta... "
-              onDayChange={day => setEndDate(day)}
-            />
-          </div>
-          {startDate && endDate ?
-            <ExportarRegistro 
-              registros={data.obtenerRegistrosCE}
-              desde={startDate}
-              hasta={endDate}
-            />
-          : null}
-        </div>
+        <ExportarRegistro 
+          registros={data.obtenerRegistrosCE}
+        />
       ) : null }
        
       <div className="overflow-x-scroll">
