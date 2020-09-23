@@ -121,37 +121,29 @@ const Table = ({registros, filtros}) => {
                     <tr className="text-white">
                         {headers.map(column => (
                             column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
-                            ? (
-                                <>
-                                    {console.log(column.id)}
-                                    <th 
-                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                        {...column.getHeaderProps()}
-                                    >                              
-                                        {column.render('Header')}
-                                                
-                                    </th>
-                                </>
-                                    
-                            )
-                            : (
-                                <>
-                                    {console.log(column.id)}
-                                    <th 
-                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    >                              
-                                        {column.render('Header')}
-                                        <span>
-                                            {column.isSorted
-                                            ? column.isSortedDesc
-                                                ? ' ⬇'
-                                                : ' ⬆'
-                                            : ''}
-                                        </span>                        
-                                    </th>
-                                </>                                            
-                            )
+                            ? 
+                                <th 
+                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                    {...column.getHeaderProps()}
+                                >                              
+                                    {column.render('Header')}
+                                            
+                                </th>                                    
+                        
+                            :
+                                <th 
+                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                                >                              
+                                    {column.render('Header')}
+                                    <span>
+                                        {column.isSorted
+                                        ? column.isSortedDesc
+                                            ? ' ▽'
+                                            : ' △'
+                                        : ''}
+                                    </span>                        
+                                </th>
                         ))}
                     </tr>
                 </thead>
@@ -166,8 +158,7 @@ const Table = ({registros, filtros}) => {
                             {row.cells.map(cell => {
                             return (
                                 <>
-                                    {
-                                    cell.column.id === 'eliminar' ? 
+                                    {cell.column.id === 'eliminar' ? 
                                         <EliminarRegistro props={cell.row.original.id} />
                                     : 
                                         cell.column.id === 'observaciones' ? 
@@ -194,8 +185,7 @@ const Table = ({registros, filtros}) => {
                                             {...cell.getCellProps()}
                                         >
                                             {cell.render('Cell')}
-                                        </th>
-                                    }                        
+                                        </th>}                        
                                 </>
                             )
                             })}

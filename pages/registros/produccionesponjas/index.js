@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { gql, useQuery } from '@apollo/client';
 import Layout from '../../../components/Layout';
 import Link from 'next/link';
@@ -30,7 +30,6 @@ const ProduccionEsponjas = () => {
     const { data, loading } = useQuery(LISTA_REGISTROS);
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
-    let hola = 'hola';
 
     if(loading) return (
         <Layout>
