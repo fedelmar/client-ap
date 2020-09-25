@@ -3,6 +3,7 @@ import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
+import columnas from './columns';
 
 const Table = ({registros}) => {
 
@@ -10,55 +11,9 @@ const Table = ({registros}) => {
     const [filtroOperario, setFiltroOperario] = useState("");
     const [filtroProducto, setFiltroProducto] = useState("");
     const columns = useMemo(
-        () => [
-          {
-            Header: 'Fecha',
-            accessor: 'fecha',
-          },
-          {
-            Header: 'Horario',
-            accessor: 'horario',
-          },
-          {
-            Header: 'Producto',
-            accessor: 'producto',
-          },
-          {
-            Header: 'Lote',
-            accessor: 'lote',
-          },
-          {
-            Header: 'Tipo de Caja',
-            accessor: 'caja',
-          },
-          {
-            Header: 'Descarte de caja',
-            accessor: 'descCajas',
-          },
-          {
-            Header: 'Esponjas',
-            accessor: 'guardado',
-          },
-          {
-            Header: 'Descarte',
-            accessor: 'descarte',
-          },
-          {
-            Header: 'Operario',
-            accessor: 'operario',
-          },
-          {
-            Header: 'Observaciones',
-            accessor: 'observaciones',
-          },
-          {
-            Header: 'Eliminar',
-            accessor: 'eliminar',
-          },
-        ],
+        () => columnas, 
         []
-    )
-
+    );
     const tableInstance = useTable(
         { columns, data: registros }, 
         useFilters, 
