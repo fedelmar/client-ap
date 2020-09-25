@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
-const Table = ({registros, filtros}) => {
+const Table = ({registros, filtros, rol}) => {
 
     const [filtroLote, setFiltroLote] = useState("");
     const [filtroOperario, setFiltroOperario] = useState("");
@@ -18,7 +18,11 @@ const Table = ({registros, filtros}) => {
         { columns, data: registros }, 
         useFilters, 
         useSortBy
-    )
+    );
+
+    useEffect(() => {
+        if (rol !== 'Admin') toggleHideColumn('eliminar')            
+    },[])
 
     const {
         getTableProps,
@@ -26,7 +30,8 @@ const Table = ({registros, filtros}) => {
         headers,
         rows,
         prepareRow,
-        setFilter
+        setFilter,
+        toggleHideColumn
     } = tableInstance;
 
     const handleFilterChangeLote = e => {
@@ -77,14 +82,17 @@ const Table = ({registros, filtros}) => {
                     <tr className="text-white">
                         {headers.map(column => (
                             column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
-                            ? 
-                                <th 
-                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                    {...column.getHeaderProps()}
-                                >                              
-                                    {column.render('Header')}
-                                            
-                                </th>                                    
+                            ?
+                                rol !== 'Admin' && column.id === 'eliminar' ?
+                                    null
+                                :  
+                                    <th 
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps()}
+                                    >                              
+                                        {column.render('Header')}
+                                                
+                                    </th>                                    
                         
                             :
                                 <th 

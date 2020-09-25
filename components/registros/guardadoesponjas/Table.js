@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
-const Table = ({registros, filtros}) => {
+const Table = ({registros, filtros, rol}) => {
 
     const [filtroLote, setFiltroLote] = useState("");
     const [filtroOperario, setFiltroOperario] = useState("");
@@ -19,6 +19,9 @@ const Table = ({registros, filtros}) => {
         useFilters, 
         useSortBy
     )
+    useEffect(() => {
+        if (rol !== 'Admin') toggleHideColumn('eliminar')            
+    },[])
 
     const {
         getTableProps,
@@ -26,7 +29,8 @@ const Table = ({registros, filtros}) => {
         headers,
         rows,
         prepareRow,
-        setFilter
+        setFilter,
+        toggleHideColumn
     } = tableInstance;
 
     const handleFilterChangeLote = e => {
@@ -46,8 +50,6 @@ const Table = ({registros, filtros}) => {
         setFilter("operario", value);
         setFiltroOperario(value);
     };
-
-
 
     return (
         <div className="overflow-x-scroll">
@@ -73,19 +75,23 @@ const Table = ({registros, filtros}) => {
                     />
                 </div>
             : null}
+
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
                             column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
-                            ? 
-                                <th 
-                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                    {...column.getHeaderProps()}
-                                >                              
-                                    {column.render('Header')}
-                                            
-                                </th>                                    
+                            ?
+                                rol !== 'Admin' && column.id === 'eliminar' ?
+                                    null
+                                :
+                                    <th 
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps()}
+                                    >                              
+                                        {column.render('Header')}
+                                                
+                                    </th>                                    
                         
                             :
                                 <th 
@@ -100,7 +106,7 @@ const Table = ({registros, filtros}) => {
                                             : ' △'
                                         : ''}
                                     </span>                        
-                                </th>
+                                </th>                        
                         ))}
                     </tr>
                 </thead>
@@ -110,13 +116,12 @@ const Table = ({registros, filtros}) => {
                 >
                     {rows.map(row => {
                         prepareRow(row)
-                        console.log(row)
                         return (
                             <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
+                                {row.cells.map(cell => { 
                                     return (
                                         <>
-                                            {cell.column.id === 'eliminar' ?
+                                            {cell.column.id === 'eliminar' && rol === "Admin" ?
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             : 
                                                 cell.column.id === 'observaciones' ? 

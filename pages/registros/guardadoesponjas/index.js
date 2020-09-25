@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
-import RegistroGE from '../../../components/registros/guardadoesponjas/RegistroGE';
 import Link from 'next/link';
 import ExportarRegistro from '../../../components/registros/guardadoesponjas/ExportarRegistroGE';
 import Table from '../../../components/registros/guardadoesponjas/Table';
@@ -47,7 +46,7 @@ const GuardadoEsponjas = () => {
     const handleOpenCloseFiltros = () => {
         setFiltros(!filtros);
     }
-
+    
     const registros = data.obtenerRegistrosGE;
     return (
         <Layout>
@@ -76,6 +75,7 @@ const GuardadoEsponjas = () => {
             <Table 
                 registros={registros}
                 filtros={filtros}
+                rol={rol}
             />            
         </Layout>
     );

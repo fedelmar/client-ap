@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import { gql, useQuery } from '@apollo/client';
 import Layout from '../../../components/Layout';
 import Link from 'next/link';
@@ -27,6 +28,8 @@ const LISTA_REGISTROS = gql `
 
 const ProduccionEsponjas = () => {
 
+    const usuarioContext = useContext(UsuarioContext);
+    const { rol } = usuarioContext.usuario;
     const { data, loading } = useQuery(LISTA_REGISTROS);
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
@@ -74,6 +77,7 @@ const ProduccionEsponjas = () => {
       <Table 
         registros={registros}
         filtros={filtros}
+        rol={rol}
       />
        
     </Layout>  
