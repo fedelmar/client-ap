@@ -31,17 +31,17 @@ const EliminarRegistro = (props) => {
 
     const id = props.props;
 
-    const [eliminarRegistroCE] = useMutation(ELIMINAR_REGISTRO, {
+    const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO, {
         update(cache) {
             // Obtener copia de registros
-            const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
+            const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
 
 
             // Actualizar cache
             cache.writeQuery({
                 query: LISTA_REGISTROS,
                 data: {
-                    obtenerRegistrosCE: obtenerRegistrosCE.filter( registroActual => registroActual.id !== id )
+                    obtenerRegistrosGE: obtenerRegistrosGE.filter( registroActual => registroActual.id !== id )
                 }
             })
         }
@@ -62,7 +62,7 @@ const EliminarRegistro = (props) => {
 
                 try {
                     //Eliminar por id
-                    const { data } = await eliminarRegistroCE({
+                    const { data } = await eliminarRegistroGE({
                         variables: {
                             id
                         }
@@ -70,7 +70,7 @@ const EliminarRegistro = (props) => {
                     //console.log(data);
                     Swal.fire(
                         'Eliminado!',
-                        data.eliminarRegistroCE,
+                        data.eliminarRegistroGE,
                         'success'
                 )
                 } catch (error) {
