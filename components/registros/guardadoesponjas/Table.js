@@ -5,7 +5,7 @@ import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
-const Table = ({registros}) => {
+const Table = ({registros, filtros}) => {
 
     const [filtroLote, setFiltroLote] = useState("");
     const [filtroOperario, setFiltroOperario] = useState("");
@@ -51,6 +51,7 @@ const Table = ({registros}) => {
 
     return (
         <div className="overflow-x-scroll">
+            {filtros ? 
                 <div className="flex justify-between">
                     <input
                         className="p-1 border rounded border-gray-800"
@@ -71,17 +72,35 @@ const Table = ({registros}) => {
                         placeholder={"Buscar Operario"}
                     />
                 </div>
+            : null}
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
-                            <th 
-                                className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                {...column.getHeaderProps()}
-                            >                              
-                                {column.render('Header')}
-                                        
-                            </th> 
+                            column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
+                            ? 
+                                <th 
+                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                    {...column.getHeaderProps()}
+                                >                              
+                                    {column.render('Header')}
+                                            
+                                </th>                                    
+                        
+                            :
+                                <th 
+                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                                >                              
+                                    {column.render('Header')}
+                                    <span>
+                                        {column.isSorted
+                                        ? column.isSortedDesc
+                                            ? ' ▽'
+                                            : ' △'
+                                        : ''}
+                                    </span>                        
+                                </th>
                         ))}
                     </tr>
                 </thead>
