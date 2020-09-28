@@ -118,42 +118,42 @@ const Table = ({registros, filtros, rol}) => {
                     {rows.map(row => {
                         prepareRow(row)
                         return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                            return (
-                                <>
-                                    {cell.column.id === 'eliminar' ? 
-                                        <EliminarRegistro props={cell.row.original.id} />
-                                    : 
-                                        cell.column.id === 'observaciones' ? 
-                                            <MostrarObser observaciones={cell.row.original.observaciones} />   
-                                    :
-                                        cell.column.id === 'fecha' ?
-                                            <th 
-                                                className="border px-4 py-2"
-                                                {...cell.getCellProps()}
-                                            >
-                                                {format(new Date(cell.row.original.fecha), 'dd/MM/yy')}
-                                            </th>
-                                    :
-                                        cell.column.id === 'horario' ?
-                                            <th 
-                                                className="border px-4 py-2"
-                                                {...cell.getCellProps()}
-                                            >
-                                                De {format(new Date(cell.row.original.fecha), 'HH:mm')} a {cell.row.original.horaCierre}
-                                            </th>
-                                    :
-                                        <th 
-                                            className="border px-4 py-2"
-                                            {...cell.getCellProps()}
-                                        >
-                                            {cell.render('Cell')}
-                                        </th>}                        
-                                </>
-                            )
-                            })}
-                        </tr>
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    return (
+                                        <>
+                                            {cell.column.id === 'eliminar' ? 
+                                                <EliminarRegistro props={cell.row.original.id} />
+                                            : 
+                                                cell.column.id === 'observaciones' ? 
+                                                    <MostrarObser observaciones={cell.row.original.observaciones} />   
+                                            :
+                                                cell.column.id === 'fecha' ?
+                                                    <th 
+                                                        className="border px-4 py-2"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        {format(new Date(cell.row.original.fecha), 'dd/MM/yy')}
+                                                    </th>
+                                            :
+                                                cell.column.id === 'horario' ?
+                                                    <th 
+                                                        className="border px-4 py-2"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        De {format(new Date(cell.row.original.fecha), 'HH:mm')} a {cell.row.original.horaCierre}
+                                                    </th>
+                                            :
+                                                <th 
+                                                    className="border px-4 py-2"
+                                                    {...cell.getCellProps()}
+                                                >
+                                                    {cell.render('Cell')}
+                                                </th>}                        
+                                        </>
+                                    )
+                                })}
+                            </tr>
                         )
                     })}
                 </tbody>            

@@ -20,7 +20,7 @@ const Table = ({registros, filtros, rol}) => {
         useSortBy
     )
     useEffect(() => {
-        if (rol !== 'Admin') toggleHideColumn('eliminar')            
+        if (rol && rol !== 'Admin') toggleHideColumn('eliminar')            
     },[])
 
     const {
