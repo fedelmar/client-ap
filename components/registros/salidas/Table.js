@@ -4,8 +4,10 @@ import { format } from 'date-fns';
 import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
-const Table = ({registros, rol}) => {
+const Table = ({registros, filtros, rol}) => {
 
+    const [filtroCliente, setFiltroCliente] = useState("");
+    const [filtroRemito, setFiltroRemito] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -30,9 +32,38 @@ const Table = ({registros, rol}) => {
         toggleHideColumn
     } = tableInstance;
 
+    const handleFilterChangeCliente = e => {
+        const value = e.target.value || undefined;
+        setFilter("cliente", value);
+        setFiltroCliente(value);
+    };
+
+    const handleFilterChangeRemito = e => {
+        const value = e.target.value || undefined;
+        setFilter("remito", value);
+        setFiltroRemito(value);
+    };
+
 
     return (
         <div className="overflow-x-scroll">
+            {filtros ? 
+                <div className="flex justify-between">
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroCliente}
+                        onChange={handleFilterChangeCliente}
+                        placeholder={"Buscar Cliente"}
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroRemito}
+                        onChange={handleFilterChangeRemito}
+                        placeholder={"Buscar Remito"}
+                    />
+                </div>
+            : null}
+
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">

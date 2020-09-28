@@ -4,7 +4,7 @@ import 'jspdf-autotable';
 import { format } from 'date-fns';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
-const ExportarRegistro = ({registros, desde, hasta}) => {
+const ExportarRegistro = ({registros}) => {
     
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
