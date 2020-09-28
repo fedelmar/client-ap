@@ -30,7 +30,6 @@ const Salidas = () => {
 
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
-
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
 
