@@ -83,7 +83,7 @@ const Table = ({registros, filtros, rol}) => {
                             :
                                 <th 
                                     className={column.id === 'lotes' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                    {...column.getHeaderProps()}
+                                    {...column.getHeaderProps(column.getSortByToggleProps())}
                                 >                              
                                     {column.render('Header')}
                                     <span>
