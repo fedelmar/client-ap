@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState }  from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { format } from 'date-fns';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
 
 
-const ExportarRegistro = ({registros, desde, hasta}) => {
+const ExportarRegistro = ({registros}) => {
+
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+
+    let registrosExportados; 
+    if (startDate && endDate) {
+        startDate.setHours(0);
+        endDate.setHours(0);
+        registrosExportados = registros.filter (registro => new Date(registro.fecha) >= startDate && new Date(registro.fecha) <= endDate);
+    }
     
-    desde.setHours(0);
-    hasta.setHours(0);
-
-    let registrosExportados = registros.filter (registro => new Date(registro.fecha) >= desde && new Date(registro.fecha) <= hasta);
-
     const exportar = () => {
         const doc = new jsPDF()
         doc.autoTable({
@@ -60,12 +66,31 @@ const ExportarRegistro = ({registros, desde, hasta}) => {
         doc.save('registro.pdf')    
     }
     return (
-        <button 
-            className=" bg-green-700 p-1 ml-1 inline-block text-white rounded text-sm hover:bg-green-800 mb-3 uppercase font-bold w-full lg:w-auto text-center"
-            onClick={() => exportar()}
-        >
-            Exportar!
-        </button>
+        <div className="flex flex-row justify-center">
+            <p className="block text-gray-70 font-bold mr-1 mt-1">Seleccione el periodo a exportar: </p>
+            <div className="m-1">
+                <DayPickerInput
+                value=" Desde... "
+                onDayChange={day => setStartDate(day)}
+                />
+            </div>
+            <div className="m-1">
+                <DayPickerInput
+                value=" Hasta... "
+                onDayChange={day => setEndDate(day)}
+                />
+            </div>
+            {startDate && endDate ?
+                <button 
+                    className=" bg-green-700 p-1 ml-1 inline-block text-white rounded text-sm hover:bg-green-800 mb-3 uppercase font-bold w-full lg:w-auto text-center"
+                    onClick={() => exportar()}
+                >
+                    Exportar!
+                </button>
+            : null}
+
+
+        </div>
     );
 }
 

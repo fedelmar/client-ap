@@ -94,8 +94,6 @@ const Footer = () => {
                 >
                     Registros                    
                 </button>
-
-
                 {/*<div>
                     <button type="button" className="text-gray-300 hover:text-white focus:text-white focus:outline-none">
                         <svg  className="h-6 w-6 fill-current" viewBox="0 0 100 80">
@@ -112,6 +110,7 @@ const Footer = () => {
                 </li>
                 */}
             </nav>
+            <p className="absolute bottom-0 right-0 p-2 text-white">Echo con ❤</p>
         </footer>       
     );
 }

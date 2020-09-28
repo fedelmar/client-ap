@@ -164,7 +164,7 @@ const Registro = () => {
                                     onBlur={formik.handleBlur}
                                     value={formik.values.rol}
                                 >
-                                    <option value="" label="Seleccione una rol" />
+                                    <option value="" label="Seleccione un rol" />
                                     <option value="Admin" label="Admin" />
                                     <option value="Operario" label="Operario" />
                                 </select>
