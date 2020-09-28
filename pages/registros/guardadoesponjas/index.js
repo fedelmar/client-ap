@@ -47,7 +47,9 @@ const GuardadoEsponjas = () => {
         setFiltros(!filtros);
     }
     
-    const registros = data.obtenerRegistrosGE;
+    let registros = data.obtenerRegistrosGE.map(i => i);
+    registros.reverse();
+    
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Guardado de Esponjas</h1>
@@ -68,7 +70,7 @@ const GuardadoEsponjas = () => {
 
             {pdfOpen ? (
                 <ExportarRegistro 
-                    registros={data.obtenerRegistrosGE}
+                    registros={registros}
                 />
             ) : null }
 

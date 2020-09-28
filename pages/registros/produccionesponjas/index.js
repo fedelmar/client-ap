@@ -48,7 +48,8 @@ const ProduccionEsponjas = () => {
       setFiltros(!filtros);
     }
 
-    const registros = data.obtenerRegistrosCE;
+    let registros = data.obtenerRegistrosCE.map(i => i);
+    registros.reverse();
     
     return (
     <Layout>

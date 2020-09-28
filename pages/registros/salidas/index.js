@@ -45,7 +45,9 @@ const Salidas = () => {
         setPdfOpen(!pdfOpen);
     }
 
-    //console.log(data.obtenerRegistrosSalidas)
+    let registros = data.obtenerRegistrosSalidas.map(i => i)
+    registros.reverse();
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Registros de Salidas</h1>
@@ -76,7 +78,7 @@ const Salidas = () => {
                 </div>
                 {startDate && endDate ?
                     <ExportarRegistro 
-                        registros={data.obtenerRegistrosSalidas}
+                        registros={registros}
                         desde={startDate}
                         hasta={endDate}
                     />
@@ -100,7 +102,7 @@ const Salidas = () => {
                     </tr>
                     </thead>
                     <tbody className="bg-white">
-                        {data.obtenerRegistrosSalidas.map( registro => (
+                        {registros.map( registro => (
                             <RegistroSalidas
                                 key={registro.id}
                                 registro={registro}
