@@ -7,7 +7,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 
 
 
-const ExportarRegistro = ({registros, desde, hasta}) => {
+const ExportarRegistro = ({registros}) => {
 
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
@@ -18,6 +18,7 @@ const ExportarRegistro = ({registros, desde, hasta}) => {
         endDate.setHours(0);
         registrosExportados = registros.filter (registro => new Date(registro.fecha) >= startDate && new Date(registro.fecha) <= endDate);
     }
+    
     const exportar = () => {
         const doc = new jsPDF()
         doc.autoTable({
