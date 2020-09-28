@@ -6,6 +6,7 @@ import {gql, useQuery} from '@apollo/client';
 import RegistroSalidas from '../../../components/registros/salidas/RegistroSalidas';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import ExportarRegistro from '../../../components/registros/salidas/ExportarRegistroS';
+import Table from '../../../components/registros/salidas/Table';
 
 
 const LISTA_REGISTROS = gql `
@@ -86,32 +87,11 @@ const Salidas = () => {
 
                 </div>
             ) : null }
-
-
-            <div className="overflow-x-scroll">
-                <table className="table-auto shadow-md mt-2 w-full w-lg">
-                    <thead className="bg-gray-800">
-                    <tr className="text-white">
-                        <th className="w-1/8 py-2">Fecha</th>
-                        <th className="w-1/8 py-2">Cliente</th>
-                        <th className="w-1/8 py-2">Remito</th>
-                        <th className="w-1/8 px-10 py-2">Lotes</th>
-                        {rol === "Admin" ? (
-                                <th className="w-1/8 py-2">Eliminar</th>              
-                        ) : null}   
-                    </tr>
-                    </thead>
-                    <tbody className="bg-white">
-                        {registros.map( registro => (
-                            <RegistroSalidas
-                                key={registro.id}
-                                registro={registro}
-                                rol={rol}
-                            />
-                        ))}  
-                    </tbody>  
-                </table>
-            </div>
+            
+            <Table 
+                registros={registros}
+                rol={rol}
+            />
         </Layout>
     );
 }
