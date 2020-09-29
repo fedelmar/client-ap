@@ -35,7 +35,7 @@ const Salidas = () => {
 
     if(loading) return (
         <Layout>
-          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
+          <p className="text-2xl text-gray-800 font-light">Cargando...</p>
         </Layout>
     );
 

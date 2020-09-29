@@ -4,6 +4,7 @@ import Layout from '../../../components/Layout';
 import Link from 'next/link';
 import { gql, useQuery } from '@apollo/client';
 import LoteInsumo from '../../../components/listados/LoteInsumo';
+import Table from '../../../components/listados/stockinsumos/Table';
 
 const LISTA_STOCK = gql `
     query obtenerStockInsumos{
@@ -30,6 +31,8 @@ const StockInsumos = () => {
     );
 
     //console.log(data.obtenerStockInsumos);
+    let registros = data.obtenerStockInsumos.map(i => i)
+    registros.reverse();
 
     return (
         <Layout>
@@ -38,6 +41,11 @@ const StockInsumos = () => {
             <Link href="/listados/stockinsumos/nuevoloteinsumo">
                 <a className="bg-blue-800 py-2 px-5 mt-3 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Nuevo Lote</a>
             </Link>
+
+            <Table 
+                registros={registros}
+                rol={rol}
+            />
 
             <div className="overflow-x-scroll">
                 <table className="table-auto shadow-md mt-2 w-full w-lg">

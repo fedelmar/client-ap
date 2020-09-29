@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
-import { format } from 'date-fns';
-import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
+import EliminarLote from './EliminarLote';
+import Insumo from './Insumo';
 
-const Table = ({registros, filtros, rol}) => {
+const Table = ({registros, rol}) => {
 
-    const [filtroCliente, setFiltroCliente] = useState("");
-    const [filtroRemito, setFiltroRemito] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -32,48 +30,25 @@ const Table = ({registros, filtros, rol}) => {
         toggleHideColumn
     } = tableInstance;
 
-    const handleFilterChangeCliente = e => {
-        const value = e.target.value || undefined;
-        setFilter("cliente", value);
-        setFiltroCliente(value);
-    };
-
-    const handleFilterChangeRemito = e => {
-        const value = e.target.value || undefined;
-        setFilter("remito", value);
-        setFiltroRemito(value);
-    };
-
+    const editarLote = () => {
+        Router.push({
+            pathname: "/listados/stockinsumos/editarLInsumo/[id]",
+            query: { id }
+        })
+    }
     return (
         <div className="overflow-x-scroll">
-            {filtros ? 
-                <div className="flex justify-between">
-                    <input
-                        className="p-1 border rounded border-gray-800"
-                        value={filtroCliente}
-                        onChange={handleFilterChangeCliente}
-                        placeholder={"Buscar Cliente"}
-                    />
-                    <input
-                        className="p-1 border rounded border-gray-800"
-                        value={filtroRemito}
-                        onChange={handleFilterChangeRemito}
-                        placeholder={"Buscar Remito"}
-                    />
-                </div>
-            : null}
-
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
-                            column.id === 'lotes' || column.id === 'eliminar'
+                            column.id === 'editar' || column.id === 'eliminar'
                             ?
-                                rol !== 'Admin' && column.id === 'eliminar' ?
+                                rol !== 'Admin' ?
                                     null
                                 :  
                                     <th 
-                                        className={column.id === 'lotes' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        className="w-1/12 py-2"
                                         {...column.getHeaderProps()}
                                     >                              
                                         {column.render('Header')}
@@ -81,7 +56,7 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>
                             :
                                 <th 
-                                    className={column.id === 'lotes' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                    className="w-1/12 py-2" 
                                     {...column.getHeaderProps(column.getSortByToggleProps())}
                                 >                              
                                     {column.render('Header')}
@@ -107,25 +82,20 @@ const Table = ({registros, filtros, rol}) => {
                                 {row.cells.map(cell => {
                                     return (
                                         <>
-                                            {cell.column.id === 'eliminar' ?
-                                                <EliminarRegistro props={cell.row.original.id} />
-                                            :
-                                                cell.column.id === 'fecha' ?
-                                                    <th 
-                                                        className="border px-4 py-2"
-                                                        {...cell.getCellProps()}
+                                           {cell.column.id === 'eliminar' ?
+                                                <EliminarLote props={cell.row.original.id} />
+                                            : cell.column.id === 'editar' ?
+                                                <td className="border px-4 py-2">
+                                                    <button
+                                                        type="button"
+                                                        className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                                                        onClick={() => editarLote(cell.row.original.id)}
                                                     >
-                                                        {format(new Date(cell.row.original.fecha), 'dd/MM/yy')}
-                                                    </th>
-                                            :
-                                                cell.column.id === 'lotes' ?
-                                                    (cell.row.original.lotes.map(i =>
-                                                        <th key={i.id} className="flex border">
-                                                            <p className=" px-4 py-2 w-full h-full text-center font-bold" >{i.lote}</p>
-                                                            <p className=" px-4 py-2 w-full h-full text-center font-bold" >{i.producto}</p>
-                                                            <p className=" px-4 py-2 w-full h-full text-center font-bold" >{i.cantidad}</p>
-                                                        </th>
-                                                    ))
+                                                        <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                                    </button>
+                                                </td>
+                                            : cell.column.id === 'insumo' ?
+                                                <Insumo id={cell.value} />
                                             :
                                                 <th 
                                                     className="border px-4 py-2"
@@ -136,8 +106,8 @@ const Table = ({registros, filtros, rol}) => {
                                         </>
                                     )
                                 })}
-                            </tr>  
-                        )    
+                            </tr>
+                        )
                     })}
                 </tbody>
             </table>
