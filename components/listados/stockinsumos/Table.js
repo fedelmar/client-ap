@@ -4,8 +4,9 @@ import columnas from './columns';
 import EliminarLote from './EliminarLote';
 import Insumo from './Insumo';
 
-const Table = ({registros, rol}) => {
+const Table = ({registros, rol, filtros}) => {
 
+    const [filtroLote, setFiltroLote] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -39,8 +40,25 @@ const Table = ({registros, rol}) => {
             query: { id }
         })
     }
+
+
+    const handleFilterChangeLote = e => {
+        const value = e.target.value || undefined;
+        setFilter("lote", value);
+        setFiltroLote(value);
+    };
+
     return (
         <div className="overflow-x-scroll">
+            {filtros ? 
+                <input
+                    className="p-1 border rounded border-gray-800"
+                    value={filtroLote}
+                    onChange={handleFilterChangeLote}
+                    placeholder={"Buscar Lote"}
+                />
+            : null}
+
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
