@@ -22,7 +22,7 @@ const Table = ({registros, rol, filtros}) => {
             toggleHideColumn('eliminar');
             toggleHideColumn('editar');  
         }          
-    },[])
+    },[rol])
 
     const {
         getTableProps,
@@ -40,7 +40,6 @@ const Table = ({registros, rol, filtros}) => {
             query: { id }
         })
     }
-
 
     const handleFilterChangeLote = e => {
         const value = e.target.value || undefined;

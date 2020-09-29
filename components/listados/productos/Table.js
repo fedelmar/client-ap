@@ -4,8 +4,9 @@ import columnas from './columns';
 import EliminarProducto from './EliminarProducto';
 import Insumos from './Insumos';
 
-const Table = ({registros, rol}) => {
+const Table = ({registros, rol, filtros}) => {
 
+    const [filtroNombre, setFiltroNombre] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -21,7 +22,7 @@ const Table = ({registros, rol}) => {
             toggleHideColumn('eliminar');
             toggleHideColumn('editar');  
         }          
-    },[])
+    },[rol])
 
     const {
         getTableProps,
@@ -40,8 +41,23 @@ const Table = ({registros, rol}) => {
         })
     }
 
+    const handleFilterChangeNombre = e => {
+        const value = e.target.value || undefined;
+        setFilter("nombre", value);
+        setFiltroNombre(value);
+    };
+
     return (
         <div className="overflow-x-scroll">
+            {filtros ? 
+                <input
+                    className="p-1 border rounded border-gray-800"
+                    value={filtroNombre}
+                    onChange={handleFilterChangeNombre}
+                    placeholder={"Buscar Nombre"}
+                />
+            : null}
+
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
