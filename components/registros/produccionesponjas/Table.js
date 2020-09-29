@@ -22,7 +22,7 @@ const Table = ({registros, filtros, rol}) => {
 
     useEffect(() => {
         if (rol && rol !== 'Admin') toggleHideColumn('eliminar')            
-    },[])
+    },[rol])
 
     const {
         getTableProps,

@@ -24,7 +24,7 @@ const Table = ({registros, rol, filtros}) => {
             toggleHideColumn('eliminar');
             toggleHideColumn('editar');
         }            
-    },[])
+    },[rol])
 
     const {
         getTableProps,
