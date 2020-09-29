@@ -3,7 +3,6 @@ import Layout from '../../../components/Layout';
 import Link from 'next/link';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import { gql, useQuery } from '@apollo/client';
-import LoteProducto from '../../../components/listados/LoteProducto';
 import Table from '../../../components/listados/stockproductos/Table';
 
 const OBTENER_STOCK = gql`

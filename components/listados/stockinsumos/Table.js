@@ -17,7 +17,10 @@ const Table = ({registros, rol}) => {
     );
 
     useEffect(() => {
-        if (rol && rol !== 'Admin') toggleHideColumn('eliminar')            
+        if (rol && rol !== 'Admin') {
+            toggleHideColumn('eliminar');
+            toggleHideColumn('editar');  
+        }          
     },[])
 
     const {
