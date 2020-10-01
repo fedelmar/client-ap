@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
+import Router from 'next/router';
 import columnas from './columns';
 import EliminarProducto from './EliminarProducto';
 import Insumos from './Insumos';
@@ -34,7 +35,7 @@ const Table = ({registros, rol, filtros}) => {
         toggleHideColumn
     } = tableInstance;
     
-    const editarProducto = () => {
+    const editarProducto = id => {
         Router.push({
             pathname: "/listados/productos/editarProducto/[id]",
             query: { id }
