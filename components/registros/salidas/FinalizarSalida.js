@@ -89,7 +89,7 @@ const FinalizarSalida = (datos) => {
             const { data } = await nuevoRegistroSalida({
                 variables: {
                     input: {
-                        cliente: cliente.empresa,
+                        cliente: cliente,
                         remito: remito,
                         lotes: lotesAGuardar
                     }
