@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import UsuarioContext from '../context/usuarios/UsuarioContext';
+
 
 const Footer = () => {
 
-    // Routing de next
     const router = useRouter();
     const [listados, setListados] = useState(false);
     const [registros, setRegistros] = useState(false);
+    const pedidoContext = useContext(UsuarioContext);
+    const { rol } = pedidoContext.usuario;
 
     const handleOpenCloseListados = () => {
         setListados(!listados);
@@ -39,11 +42,13 @@ const Footer = () => {
                                 <a className="text-white block">Guardado de Esponjas</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
-                            <Link href="/registros/salidas">
-                                <a className="text-white block">Salidas</a>
-                            </Link>
-                        </li>
+                        {rol === "Admin" ? 
+                            <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
+                                <Link href="/registros/salidas">
+                                    <a className="text-white block">Salidas</a>
+                                </Link>
+                            </li>
+                        : null}
                     </div>
                 : null}
                 {listados ? 
@@ -68,11 +73,6 @@ const Footer = () => {
                                 <a className="text-white block">Stock de Insumos</a>
                             </Link>
                         </li>
-                        <li className={router.pathname === "/listados/clientes" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
-                            <Link href="/listados/clientes">
-                                <a className="text-white block">Clientes</a>
-                            </Link>
-                        </li>
                     </div>
                 : null}
             </div>
@@ -94,21 +94,6 @@ const Footer = () => {
                 >
                     Registros                    
                 </button>
-                {/*<div>
-                    <button type="button" className="text-gray-300 hover:text-white focus:text-white focus:outline-none">
-                        <svg  className="h-6 w-6 fill-current" viewBox="0 0 100 80">
-                            <rect width="100" height="10"></rect>
-                            <rect y="30" width="100" height="10"></rect>
-                            <rect y="60" width="100" height="10"></rect>
-                        </svg>
-                    </button>                        
-                </div>*/}    
-                {/*<li className={router.pathname === "/listados/pedidos" ? "bg-blue-800 p-2 list-none" : "p-2 list-none"}>    
-                    <Link href="/listados/pedidos">
-                        <a className="text-white block">Pedidos</a>
-                    </Link>
-                </li>
-                */}
             </nav>
             <p className="absolute bottom-0 right-0 p-2 text-white">Echo con ❤</p>
         </footer>       

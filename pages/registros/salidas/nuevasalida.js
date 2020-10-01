@@ -37,14 +37,17 @@ const NuevaSalida = () => {
 
     const formik = useFormik({
         initialValues: {
-            remito: ''
+            remito: '',
+            cliente: '',
         },
         validationSchema: Yup.object({
-            remito: Yup.string().required('El remito es obligatorio')                        
+            remito: Yup.string().required('El remito es obligatorio'),
+            cliente: Yup.string().required('El cliente es obligatorio')   
         }),
         onSubmit: async valores => {   
-            const { remito } = valores;
+            const { remito, cliente } = valores;
             setRemito(remito);
+            setCliente(cliente);
             handleOpenClose();
         }
     })
@@ -56,7 +59,6 @@ const NuevaSalida = () => {
     );
 
     let lotes = [];
-    const clientes = dataClientes.obtenerClientes;
     dataStock.obtenerProductosTerminados.map(i => {
         lotes.push({
             id: i.loteID,
@@ -64,10 +66,6 @@ const NuevaSalida = () => {
             producto: i.producto,
             disponible: i.cantidad
     })});
-
-    const seleccionarCliente = value => {
-        setCliente(value)
-    }
 
     const seleccionarLote = value => {
         setProductos(value)
@@ -107,15 +105,22 @@ const NuevaSalida = () => {
                                 ) : null  }
 
                                 <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione el Cliente</p>
-                                <Select
-                                    className="mt-3 mb-2"
-                                    options={clientes}
-                                    onChange={opcion => seleccionarCliente(opcion)}
-                                    getOptionValue={opciones => opciones.id}
-                                    getOptionLabel={opciones => opciones.empresa}
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    placeholder="Cliente..."
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 mb-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="cliente"
+                                    type="text"
+                                    placeholder="Ingrese el cliente"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.cliente}
                                 />
+
+                                { formik.touched.cliente && formik.errors.cliente ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formik.errors.cliente}</p>
+                                    </div>
+                                ) : null  }
 
                                 <p className="block text-gray-700 text-sm font-bold mb-2">Seleccione el Lote</p>
                                 <Select
