@@ -3,7 +3,7 @@ import { useTable, useFilters, useSortBy } from "react-table";
 import columnas from './columns';
 import EliminarInsumo from './EliminarInsumo';
 
-const Table = ({registros, rol}) => {
+const Table = ({registros, rol, filtros}) => {
 
     const [filtroNombre, setFiltroNombre] = useState("");
     const columns = useMemo(
@@ -48,6 +48,15 @@ const Table = ({registros, rol}) => {
 
     return (
         <div className="overflow-x-scroll">
+            {filtros ? 
+                <input
+                    className="p-1 border rounded border-gray-800"
+                    value={filtroNombre}
+                    onChange={handleFilterChangeNombre}
+                    placeholder={"Buscar Nombre"}
+                />
+            : null}
+
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
