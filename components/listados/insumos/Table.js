@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
+import Router from 'next/router';
 import columnas from './columns';
 import EliminarInsumo from './EliminarInsumo';
 
@@ -33,7 +34,7 @@ const Table = ({registros, rol, filtros}) => {
         toggleHideColumn
     } = tableInstance;
 
-    const editarInsumo = () => {
+    const editarInsumo = id => {
         Router.push({
             pathname: "/listados/insumos/editarInsumo/[id]",
             query: { id }
