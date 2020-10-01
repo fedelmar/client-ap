@@ -30,13 +30,12 @@ const Salidas = () => {
 
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
-
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
 
     if(loading) return (
         <Layout>
-          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
+          <p className="text-2xl text-gray-800 font-light">Cargando...</p>
         </Layout>
     );
 

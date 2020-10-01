@@ -1,15 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
-import { format } from 'date-fns';
-import MostrarObser from '../MostrarObser';
-import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import Router from 'next/router';
 
-const Table = ({registros, filtros, rol}) => {
+import columnas from './columns';
+import EliminarLote from './EliminarLote';
+import Producto from './Producto';
+
+const Table = ({registros, rol, filtros}) => {
 
     const [filtroLote, setFiltroLote] = useState("");
-    const [filtroOperario, setFiltroOperario] = useState("");
-    const [filtroProducto, setFiltroProducto] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -21,7 +20,10 @@ const Table = ({registros, filtros, rol}) => {
     );
 
     useEffect(() => {
-        if (rol && rol !== 'Admin') toggleHideColumn('eliminar')            
+        if (rol && rol !== 'Admin') {
+            toggleHideColumn('eliminar');
+            toggleHideColumn('editar');
+        }            
     },[rol])
 
     const {
@@ -34,56 +36,37 @@ const Table = ({registros, filtros, rol}) => {
         toggleHideColumn
     } = tableInstance;
 
+    const editarLote = (id) => {
+        Router.push({
+            pathname: "/listados/stockproductos/editarLProducto/[id]",
+            query: { id }
+        })
+    }
+
     const handleFilterChangeLote = e => {
         const value = e.target.value || undefined;
         setFilter("lote", value);
         setFiltroLote(value);
     };
 
-    const handleFilterChangeProducto = e => {
-        const value = e.target.value || undefined;
-        setFilter("producto", value);
-        setFiltroProducto(value);
-    };
-
-    const handleFilterChangeOperario = e => {
-        const value = e.target.value || undefined;
-        setFilter("operario", value);
-        setFiltroOperario(value);
-    };
-
     return (
         <div className="overflow-x-scroll">
             {filtros ? 
-                <div className="flex justify-between">
-                    <input
-                        className="p-1 border rounded border-gray-800"
-                        value={filtroLote}
-                        onChange={handleFilterChangeLote}
-                        placeholder={"Buscar Lote"}
-                    />
-                    <input
-                        className="p-1 border rounded border-gray-800"
-                        value={filtroProducto}
-                        onChange={handleFilterChangeProducto}
-                        placeholder={"Buscar Producto"}
-                    />
-                    <input
-                        className="p-1 border rounded border-gray-800"
-                        value={filtroOperario}
-                        onChange={handleFilterChangeOperario}
-                        placeholder={"Buscar Operario"}
-                    />
-                </div>
+                <input
+                    className="p-1 border rounded border-gray-800"
+                    value={filtroLote}
+                    onChange={handleFilterChangeLote}
+                    placeholder={"Buscar Lote"}
+                />
             : null}
 
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
-                            column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
+                            column.id === 'editar' || column.id === 'eliminar' 
                             ?
-                                rol !== 'Admin' && column.id === 'eliminar' ?
+                                rol !== 'Admin' ?
                                     null
                                 :  
                                     <th 
@@ -116,47 +99,41 @@ const Table = ({registros, filtros, rol}) => {
                     {...getTableBodyProps()}
                 >
                     {rows.map(row => {
-                        prepareRow(row)
-                        return (
+                         prepareRow(row)
+                         return (
                             <tr {...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     return (
                                         <>
-                                            {cell.column.id === 'eliminar' ? 
-                                                <EliminarRegistro props={cell.row.original.id} />
-                                            : 
-                                                cell.column.id === 'observaciones' ? 
-                                                    <MostrarObser observaciones={cell.row.original.observaciones} />   
-                                            :
-                                                cell.column.id === 'fecha' ?
-                                                    <th 
-                                                        className="border px-4 py-2"
-                                                        {...cell.getCellProps()}
+                                            {cell.column.id === 'eliminar' ?
+                                                <EliminarLote props={cell.row.original.id} />
+                                            : cell.column.id === 'editar' ?
+                                                <td className="border px-4 py-2">
+                                                    <button
+                                                        type="button"
+                                                        className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                                                        onClick={() => editarLote(cell.row.original.id)}
                                                     >
-                                                        {format(new Date(cell.row.original.fecha), 'dd/MM/yy')}
-                                                    </th>
-                                            :
-                                                cell.column.id === 'horario' ?
-                                                    <th 
-                                                        className="border px-4 py-2"
-                                                        {...cell.getCellProps()}
-                                                    >
-                                                        De {format(new Date(cell.row.original.fecha), 'HH:mm')} a {cell.row.original.horaCierre}
-                                                    </th>
+                                                        <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                                    </button>
+                                                </td>
+                                            : cell.column.id === 'producto' ?
+                                                <Producto id={cell.value} />
                                             :
                                                 <th 
                                                     className="border px-4 py-2"
                                                     {...cell.getCellProps()}
                                                 >
                                                     {cell.render('Cell')}
-                                                </th>}                        
+                                                </th>
+                                            }
                                         </>
                                     )
                                 })}
                             </tr>
-                        )
+                         )
                     })}
-                </tbody>            
+                </tbody>
             </table>
         </div>
     );
