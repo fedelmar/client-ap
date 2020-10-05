@@ -131,11 +131,11 @@ const IniciarProduccion = () => {
     const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
     const [registro, setRegistro] = useState({
-        dia: '',
-        fecha: '',
+        dia:  format(new Date(Date.now()), 'dd/MM/yy'),
+        fecha: Date.now(),
         operario: nombre,
         lote: '',
-        horaInicio: '',
+        horaInicio: format(new Date(Date.now()), 'HH:mm'),
         producto: '',
         productoID: '',
         lBolsa: '',
@@ -198,13 +198,10 @@ const IniciarProduccion = () => {
     const {obtenerStockInsumos} = data;
 
     const handleInicio = valores => {
-        // Iniciar valores de fecha y hora, y guardar el lote
+        // Iniciar valores
         const { lote } = valores
-        const start = Date.now();
-        const dia = format(new Date(start), 'dd/MM/yy')
-        const hora = format(new Date(start), 'HH:mm')
 
-        setRegistro({...registro, horaInicio: hora, fecha: start, dia, lote})
+        setRegistro({...registro, lote})
         setSession(true);
     }
 
