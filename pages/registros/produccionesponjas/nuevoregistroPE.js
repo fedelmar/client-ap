@@ -1,13 +1,14 @@
-import React, {useState, useContext} from 'react';
-import Layout from '../../../components/Layout';
-import { format } from 'date-fns'
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import React, {useState, useContext, useEffect} from 'react';
 import Select from 'react-select';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation } from '@apollo/client';
+import { format } from 'date-fns';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Swal from 'sweetalert2';
+import Layout from '../../../components/Layout';
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
+import ManejoDeStock from '../../../components/registros/produccionesponjas/ManejoDeStock';
 
 const LISTA_STOCK = gql `
     query obtenerStockInsumos{
@@ -16,18 +17,6 @@ const LISTA_STOCK = gql `
             insumo
             lote
             cantidad
-        }
-    }
-`;
-
-const OBTENER_STOCK = gql`
-    query obtenerProductosStock{
-        obtenerProductosStock{
-            id
-            lote
-            cantidad
-            producto
-            estado
         }
     }
 `;
@@ -51,19 +40,6 @@ const LISTA_REGISTROS = gql `
     }
 `;
 
-const CREAR_LOTE = gql`
-    mutation nuevoProductoStock($input: sProductoInput){
-        nuevoProductoStock(input: $input){
-            id
-            lote
-            producto        
-            estado
-            cantidad
-        }
-    }
-`;
-
-
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroCE($input: CPEInput){
         nuevoRegistroCE(input: $input){
@@ -81,39 +57,12 @@ const NUEVO_REGISTRO = gql`
             observaciones
         }
     }
-`;
-
-const ACTUALIZAR_INSUMO = gql `
-    mutation actualizarInsumoStock($id: ID!, $input: sInsumoInput){
-        actualizarInsumoStock(id: $id, input: $input) {
-            id
-            lote
-            insumo
-            cantidad
-        }
-    }
-`;
+`
 
 const IniciarProduccion = () => {
 
     const router = useRouter();
     const { data, loading } = useQuery(LISTA_STOCK);
-    useQuery(OBTENER_STOCK);
-    const [ actualizarInsumoStock ] = useMutation(ACTUALIZAR_INSUMO);
-    const [ nuevoProductoStock ] = useMutation(CREAR_LOTE, {
-        update(cache, {data: { nuevoProductoStock }}) {
-            const { obtenerProductosStock } = cache.readQuery({ query: OBTENER_STOCK});
-
-            if (!obtenerProductosStock.some(i => i.id === nuevoProductoStock.id)) {
-                cache.writeQuery({
-                    query: OBTENER_STOCK,
-                    data: {
-                        obtenerProductosStock: [...obtenerProductosStock, nuevoProductoStock]
-                    }
-                })
-            }           
-        }
-    })
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroCE }}) {
             const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -143,7 +92,9 @@ const IniciarProduccion = () => {
         bolsaDisp: 0,
         lEsponja: '',
         lEsponjaID: '',
-        esponjaDisp: 0
+        esponjaDisp: 0,
+        cantProducida: 0,
+        cantDescarte: 0
     });
     const [session, setSession] = useState(false);
     
@@ -166,29 +117,22 @@ const IniciarProduccion = () => {
         }
     })
 
-    let menor;
-    registro.bolsaDisp <= registro.esponjaDisp ? menor = registro.bolsaDisp : menor = registro.esponjaDisp;
-    
     // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
-            cantProducida: '',
             cantDescarte: 0,
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantProducida: Yup.number()
-                                .max(menor, `Debe ser menor o igual a ${menor}`)
-                                .required('Ingrese la cantidad producida'),
             cantDescarte: Yup.number()
-                                .max(Yup.ref('cantProducida'), `Debe ser menor a la cantidad producida`)
-                                .required('Ingrese el descarte generado'),
+                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
+                            .required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
             terminarProduccion(valores);            
         }
-    })    
+    });
 
     if(loading) return (
         <Layout>
@@ -198,9 +142,7 @@ const IniciarProduccion = () => {
     const {obtenerStockInsumos} = data;
 
     const handleInicio = valores => {
-        // Iniciar valores
-        const { lote } = valores
-
+        const { lote } = valores;
         setRegistro({...registro, lote})
         setSession(true);
     }
@@ -219,20 +161,20 @@ const IniciarProduccion = () => {
         const hora = format(new Date(fin), 'HH:mm')
 
         //Volver a planillas de produccion y modificar base de datos
-        const {cantDescarte, cantProducida, observaciones} = valores;
-        setRegistro({...registro, cantDescarte, cantProducida, observaciones, horaCierre: hora})
+        const {observaciones, cantDescarte} = valores;
+        setRegistro({...registro, cantDescarte, observaciones, horaCierre: hora})
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
-                    "Operario: " + registro.operario + "</br>" +
+                    "Operario: " + nombre + "</br>" +
                     "Lote de Esponja: " + registro.lEsponja + "</br>" +
                     "Lote de Bolsa: " + registro.lBolsa + "</br>" +
                     "Dia: " + registro.dia + "</br>" +
                     "Hora de Inicio: " + registro.horaInicio + "</br>" +
                     "Hora de cierre: " + hora + "</br>" +
-                    "Cantidad producida: " + cantProducida + "</br>" +
+                    "Cantidad producida: " + registro.cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
@@ -248,47 +190,19 @@ const IniciarProduccion = () => {
                         variables: {
                             input: {
                                 fecha: registro.fecha,
-                                operario: registro.operario,
+                                operario: nombre,
                                 lote: registro.lote,
                                 horaInicio: registro.horaInicio,
                                 horaCierre: hora,
                                 producto: registro.producto,
                                 lBolsa: registro.lBolsa,
                                 lEsponja: registro.lEsponja,
-                                cantProducida: cantProducida,
+                                cantProducida: registro.cantProducida,
                                 cantDescarte: cantDescarte,
                                 observaciones: observaciones
                             }
                         }                
                     });
-                    await nuevoProductoStock({
-                        variables: {
-                            input: {
-                                lote: registro.lote,
-                                producto: registro.productoID,
-                                estado: "Proceso",
-                                cantidad: cantProducida - cantDescarte
-                            }
-                        }
-                    });
-                    await actualizarInsumoStock({
-                        variables: {
-                            id: registro.lBolsaID,
-                            input: {
-                                lote: registro.lbolsa,
-                                cantidad: registro.bolsaDisp - cantProducida
-                            }
-                        }
-                    })
-                    await actualizarInsumoStock({
-                        variables: {
-                            id: registro.lEsponjaID,
-                            input: {
-                                lote: registro.lEsponja,
-                                cantidad: registro.esponjaDisp - cantProducida
-                            }
-                        }
-                    })
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
                         data.nuevoRegistroCE,
@@ -342,7 +256,12 @@ const IniciarProduccion = () => {
                 cantidad: i.cantidad
             })
         : null
-    })
+    });
+
+    const cantidades = valores => {
+        const {esponjas} = valores;
+        setRegistro({...registro, cantProducida: registro.cantProducida + esponjas, esponjaDisp: registro.esponjaDisp - esponjas, bolsaDisp: registro.bolsaDisp - esponjas})
+    };
 
     return (
         <Layout>
@@ -351,7 +270,7 @@ const IniciarProduccion = () => {
             {mensaje && mostrarMensaje()}
 
             <div>
-               { !session ? (
+               {!session ? (
                     <div className="flex justify-center mt-5">
                         <div className="w-full max-w-lg">
                             <form
@@ -439,100 +358,84 @@ const IniciarProduccion = () => {
             
                 ) : (
                     <div className="flex justify-center mt-5">
-                        <div className="w-full max-w-lg">
+                        <div className="w-full max-w-lg bg-white shadow-md p-4">
+                            <div className="mb-2 border-b-2 border-gray-600">
+                                <div className="flex justify-between pb-2">
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
+                                        <p className="text-gray-700 font-light ">{registro.dia}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
+                                        <p className="text-gray-700 font-light">{registro.horaInicio}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
+                                    <p className="text-gray-700 font-light">{registro.lote}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
+                                    <p className="text-gray-700 font-light">{registro.producto}</p>
+                                </div>
+                                <div className="flex justify-between">
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Esponja: </p>
+                                        <p className="text-gray-700 font-light ">{registro.lEsponja}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
+                                        <p className="text-gray-700 font-light">{registro.esponjaDisp}</p>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between pb-2">
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
+                                        <p className="text-gray-700 font-light ">{registro.lBolsa}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
+                                        <p className="text-gray-700 font-light">{registro.bolsaDisp}</p>
+                                    </div>
+                                </div>
+                              
+                                <div className="flex py-2">
+                                    <p className="text-gray-700 text-lg font-bold mr-1">Cantidad Producida: </p>
+                                    <p className="text-gray-700 text-lg font-light ">{registro.cantProducida}</p>
+                                </div>
+                            </div>
+
+                            <ManejoDeStock registro={registro} cantidades={cantidades}/>
+
                             <form
-                                className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
+                                className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
                                 onSubmit={formikCierre.handleSubmit}
                             >
-                                <div className="mb-2 border-b-2 border-gray-600">
-                                    <div className="flex justify-between pb-2">
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                            <p className="text-gray-700 font-light ">{registro.dia}</p>
-                                        </div>
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                            <p className="text-gray-700 font-light">{registro.horaInicio}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
-                                        <p className="text-gray-700 font-light">{registro.lote}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
-                                        <p className="text-gray-700 font-light">{registro.producto}</p>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de Esponja: </p>
-                                            <p className="text-gray-700 font-light ">{registro.lEsponja}</p>
-                                        </div>
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-                                            <p className="text-gray-700 font-light">{registro.esponjaDisp}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between pb-2">
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-                                            <p className="text-gray-700 font-light ">{registro.lBolsa}</p>
-                                        </div>
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-                                            <p className="text-gray-700 font-light">{registro.bolsaDisp}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantProducida">
-                                        Cantidad producida
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarte">
+                                        Descarte
                                     </label>
-    
+
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantProducida"
-                                        type="number"
-                                        placeholder="Ingrese la cantidad producida..."
-                                        onChange={formikCierre.handleChange}
-                                        onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.cantProducida}
-                                    />
-                                </div>
-
-                                { formikCierre.touched.cantProducida && formikCierre.errors.cantProducida ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.cantProducida}</p>
-                                    </div>
-                                ) : null  }
-
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
-                                        Cantidad de descarte
-                                    </label>
-    
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantDescarte"
+                                        id="descarte"
                                         type="number"
                                         placeholder="Ingrese la cantidad de descarte..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.cantDescarte}
+                                        value={formikCierre.values.descarte}
                                     />
                                 </div>
 
-                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                { formikCierre.touched.descarte && formikCierre.errors.descarte ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.cantDescarte}</p>
+                                        <p>{formikCierre.errors.descarte}</p>
                                     </div>
                                 ) : null  }
 
-                                <div className="mb-4">
+                                <div className="mb-2">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
                                         Observaciones
                                     </label>
@@ -557,10 +460,10 @@ const IniciarProduccion = () => {
     
                                 <input
                                     type="submit"
-                                    className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900"
+                                    className="bg-red-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-red-900"
                                     value="Finalizar Producción"
                                 />
-                                <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
+                                <button className="bg-gray-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
                             </form>
                         </div>
                     </div> 
