@@ -155,13 +155,13 @@ const IniciarProduccion = () => {
 
     const terminarProduccion = async valores => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos e insumos
-
         // Se registra el horario de cierre de produccion
         const fin = Date.now();
         const hora = format(new Date(fin), 'HH:mm')
 
         //Volver a planillas de produccion y modificar base de datos
         const {observaciones, cantDescarte} = valores;
+    
         setRegistro({...registro, cantDescarte, observaciones, horaCierre: hora})
 
         Swal.fire({
@@ -204,7 +204,7 @@ const IniciarProduccion = () => {
                         }                
                     });
                     Swal.fire(
-                        'Se guardo el registro y se creo un nuevo lote en stock de productos',
+                        'Se guardo el registro y se actualizo el stock de productos',
                         data.nuevoRegistroCE,
                         'success'
                     )
@@ -413,25 +413,25 @@ const IniciarProduccion = () => {
                                 onSubmit={formikCierre.handleSubmit}
                             >
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarte">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
                                         Descarte
                                     </label>
 
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="descarte"
+                                        id="cantDescarte"
                                         type="number"
-                                        placeholder="Ingrese la cantidad de descarte..."
+                                        placeholder="Ingrese la cantidad de cantDescarte..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.descarte}
+                                        value={formikCierre.values.cantDescarte}
                                     />
                                 </div>
 
-                                { formikCierre.touched.descarte && formikCierre.errors.descarte ? (
+                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.descarte}</p>
+                                        <p>{formikCierre.errors.cantDescarte}</p>
                                     </div>
                                 ) : null  }
 
