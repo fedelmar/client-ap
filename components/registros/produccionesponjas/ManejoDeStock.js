@@ -105,7 +105,6 @@ const ManejoDeStock = ({registro, cantidades}) => {
                     }
                 }
             })
-            console.log(dataLote)
         } catch (error) {
             console.log(error);
         }

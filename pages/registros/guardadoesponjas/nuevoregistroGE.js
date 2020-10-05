@@ -4,7 +4,7 @@ import Layout from '../../../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
-import {gql, useQuery, useMutation} from '@apollo/client';
+import {gql, useQuery, useMutation, useLazyQuery} from '@apollo/client';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
@@ -42,6 +42,17 @@ const LISTA_REGISTROS = gql `
         }
 `;
 
+const LOTE = gql `
+    query obtenerProductoStock($id: ID!){
+        obtenerProductoStock(id: $id){
+            id
+            lote
+            producto
+            estado
+            cantidad
+        }
+    }
+`;
 
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroGE($input: CGEInput){
@@ -68,6 +79,9 @@ const NuevoRegistroGE = () => {
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
     const { data, loading } = useQuery(LOTES_ESPONJAS);
+    const [getLote, { loading: loadingLote, data: dataLote }] = useLazyQuery(LOTE, {
+        pollInterval: 500
+    });
     const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroGE }}) {
             const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -89,8 +103,7 @@ const NuevoRegistroGE = () => {
         horaInicio: '',
         operario: nombre,
         cantidad: ''
-    })
-    
+    });  
     const formikCierre = useFormik({
         initialValues: {
             cantGuardada: '',
@@ -111,7 +124,7 @@ const NuevoRegistroGE = () => {
         onSubmit: valores => {       
             terminarProduccion(valores);            
         }
-    })   
+    });
 
     if(loading) return (
         <Layout>
@@ -202,6 +215,7 @@ const NuevoRegistroGE = () => {
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
         console.log(loteID)
+        getLote({ variables: { id: loteID } })
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
     }
 
@@ -212,6 +226,11 @@ const NuevoRegistroGE = () => {
                 <p>{mensaje}</p>
             </div>
         )
+    }
+    
+    const actualizarLote = () => {
+        getLote({ variables: { id: registro.loteID } })
+        setRegistro({...registro, cantidad: dataLote.obtenerProductoStock.cantidad})
     }
 
     return (
@@ -249,47 +268,53 @@ const NuevoRegistroGE = () => {
                 ) : (
                     <div className="flex justify-center mt-5">
                         <div className="w-full max-w-lg">
+                            <div className="mb-2 border-b-2 border-gray-600">
+                                <div className="flex justify-between pb-2">
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
+                                        <p className="text-gray-700 font-light ">{registro.dia}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
+                                        <p className="text-gray-700 font-light">{registro.horaInicio}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
+                                    <p className="text-gray-700 font-light">{registro.lote}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
+                                    <p className="text-gray-700 font-light">{registro.producto}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
+                                    <p className="text-gray-700 font-light">{registro.estado}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
+                                    <p className="text-gray-700 font-light">{registro.caja}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Cantidad por caja: </p>
+                                    <p className="text-gray-700 font-light">{registro.cantCaja}</p>
+                                </div>
+                            </div>
+                            <div className="flex justify-center">
+                                    <p className="text-gray-700 text-lg font-bold mr-1 mb-2 mt-1">Esponjas disponibles: </p>
+                                    <p className="text-gray-700 text-lg font-light mt-1">{registro.cantidad}</p>
+                                    <button 
+                                        className="text-white rounded uppercase font-bold ml-4 bg-red-700 mb-2 p-1" 
+                                        onClick={() => actualizarLote()}
+                                    >
+                                        Actualizar
+                                    </button>
+                                </div>
                             <form
                                 className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
                                 onSubmit={formikCierre.handleSubmit}
                             >
-                                <div className="mb-2 border-b-2 border-gray-600">
-                                    <div className="flex justify-between pb-2">
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                            <p className="text-gray-700 font-light ">{registro.dia}</p>
-                                        </div>
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                            <p className="text-gray-700 font-light">{registro.horaInicio}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
-                                        <p className="text-gray-700 font-light">{registro.lote}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
-                                        <p className="text-gray-700 font-light">{registro.producto}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
-                                        <p className="text-gray-700 font-light">{registro.estado}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Esponjas disponibles: </p>
-                                        <p className="text-gray-700 font-light">{registro.cantidad}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
-                                        <p className="text-gray-700 font-light">{registro.caja}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1 mb-2">Cantidad por caja: </p>
-                                        <p className="text-gray-700 font-light">{registro.cantCaja}</p>
-                                    </div>
-                                </div>
 
                                 <div className="mb-4 mt-1">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="cantGuardada">
