@@ -214,7 +214,6 @@ const NuevoRegistroGE = () => {
 
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
-        console.log(loteID)
         getLote({ variables: { id: loteID } })
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
     }
@@ -230,6 +229,7 @@ const NuevoRegistroGE = () => {
     
     const actualizarLote = () => {
         getLote({ variables: { id: registro.loteID } })
+        if(loadingLote) return 'Cargando...';
         setRegistro({...registro, cantidad: dataLote.obtenerProductoStock.cantidad})
     }
 
@@ -301,9 +301,9 @@ const NuevoRegistroGE = () => {
                                     <p className="text-gray-700 font-light">{registro.cantCaja}</p>
                                 </div>
                             </div>
-                            <div className="flex justify-center">
-                                    <p className="text-gray-700 text-lg font-bold mr-1 mb-2 mt-1">Esponjas disponibles: </p>
-                                    <p className="text-gray-700 text-lg font-light mt-1">{registro.cantidad}</p>
+                            <div className="flex justify-center mt-1 ">
+                                    <p className="text-gray-700 text-xl font-bold mr-1">Esponjas disponibles: </p>
+                                    <p className="text-gray-700 text-xl font-light px-2">{registro.cantidad}</p>
                                     <button 
                                         className="text-white rounded uppercase font-bold ml-4 bg-red-700 mb-2 p-1" 
                                         onClick={() => actualizarLote()}
