@@ -10,13 +10,14 @@ import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import ManejoDeStock from '../../../components/registros/produccionesponjas/ManejoDeStock';
 
-const LISTA_STOCK = gql `
-    query obtenerStockInsumos{
-        obtenerStockInsumos{
+const LISTA_STOCK_CATEGORIA = gql `
+    query obtneterStockInsumosPorCategoria($input: String!){
+        obtneterStockInsumosPorCategoria(input: $input) {
             id
             insumo
-            lote
+            insumoID
             cantidad
+            lote
         }
     }
 `;
@@ -58,11 +59,19 @@ const NUEVO_REGISTRO = gql`
         }
     }
 `
-
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data, loading } = useQuery(LISTA_STOCK);
+    const { data: dataEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
+        variables: {
+            input: "Esponjas"
+        }
+    });
+    const { data: dataBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
+        variables: {
+            input: "Polietileno"
+        }
+    })
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroCE }}) {
             const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -76,9 +85,10 @@ const IniciarProduccion = () => {
         }
     });
     const usuarioContext = useContext(UsuarioContext);
-    const { productos, insumos } = usuarioContext;
+    const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
+    const [session, setSession] = useState(false);
     const [registro, setRegistro] = useState({
         dia:  format(new Date(Date.now()), 'dd/MM/yy'),
         fecha: Date.now(),
@@ -96,8 +106,6 @@ const IniciarProduccion = () => {
         cantProducida: 0,
         cantDescarte: 0
     });
-    const [session, setSession] = useState(false);
-    
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
@@ -133,14 +141,7 @@ const IniciarProduccion = () => {
             terminarProduccion(valores);            
         }
     });
-
-    if(loading) return (
-        <Layout>
-          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
-        </Layout>
-    );
-    const {obtenerStockInsumos} = data;
-
+    
     const handleInicio = valores => {
         const { lote } = valores;
         setRegistro({...registro, lote})
@@ -221,10 +222,18 @@ const IniciarProduccion = () => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     }
     const seleccionarLEsponja = lote => {
-        setRegistro({...registro, lEsponja: lote.lote, lEsponjaID: lote.loteId, esponjaDisp: lote.cantidad})
+        setRegistro({...registro, 
+            lEsponja: lote.lote, 
+            lEsponjaID: lote.id, 
+            esponjaDisp: lote.cantidad
+        })
     }
     const seleccionarLBolsa = lote => {
-        setRegistro({...registro, lBolsa: lote.lote, lBolsaID: lote.loteId, bolsaDisp: lote.cantidad})
+        setRegistro({...registro, 
+            lBolsa: lote.lote, 
+            lBolsaID: lote.id, 
+            bolsaDisp: lote.cantidad
+        })
     }
 
     // Mostrar mensaje de base de datos si hubo un error
@@ -237,30 +246,16 @@ const IniciarProduccion = () => {
     }
 
     // Definir lotes de esponjas y bolsas, segun el stock de insumos y la info en context de insumos
-    let lotesEsponjas = []
-    let lotesBolsas = []
-    if (insumos.length > 0) obtenerStockInsumos.map(i => {
-        const infoInsumo = insumos.find(a => a.id === i.insumo);
-        (infoInsumo && infoInsumo.categoria == 'Esponjas') ? 
-            lotesEsponjas.push({
-                loteId: i.id,
-                lote: i.lote,
-                nombre: infoInsumo.nombre,
-                cantidad: i.cantidad
-            })
-        :  (infoInsumo.categoria == 'Polietileno') ? 
-            lotesBolsas.push({
-                loteId: i.id,
-                lote: i.lote,
-                nombre: infoInsumo.nombre,
-                cantidad: i.cantidad
-            })
-        : null
-    });
+    const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
+    const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
 
     const cantidades = valores => {
         const {esponjas} = valores;
-        setRegistro({...registro, cantProducida: registro.cantProducida + esponjas, esponjaDisp: registro.esponjaDisp - esponjas, bolsaDisp: registro.bolsaDisp - esponjas})
+        setRegistro({...registro, 
+            cantProducida: registro.cantProducida + esponjas, 
+            esponjaDisp: registro.esponjaDisp - esponjas, 
+            bolsaDisp: registro.bolsaDisp - esponjas
+        })
     };
 
     return (
@@ -316,10 +311,10 @@ const IniciarProduccion = () => {
                                 <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={lotesEsponjas}
+                                    options={listaEsponjas}
                                     onChange={opcion => seleccionarLEsponja(opcion) }
-                                    getOptionValue={ opciones => opciones.loteId }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.nombre} Disp: ${opciones.cantidad}`}
+                                    getOptionValue={ opciones => opciones.id }
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
@@ -329,10 +324,10 @@ const IniciarProduccion = () => {
                                 <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={lotesBolsas}
+                                    options={listaBolsas}
                                     onChange={opcion => seleccionarLBolsa(opcion) }
-                                    getOptionValue={ opciones => opciones.loteId }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.nombre} Disp: ${opciones.cantidad}`}
+                                    getOptionValue={ opciones => opciones.id }
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
@@ -472,5 +467,4 @@ const IniciarProduccion = () => {
         </Layout>
     );
 }
-
-export default IniciarProduccion
+export default IniciarProduccion;
