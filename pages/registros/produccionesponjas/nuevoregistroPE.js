@@ -62,12 +62,12 @@ const NUEVO_REGISTRO = gql`
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data: dataEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
+    const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Esponjas"
         }
     });
-    const { data: dataBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
+    const { data: dataBolsas, loading: loadingBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Polietileno"
         }
@@ -141,7 +141,13 @@ const IniciarProduccion = () => {
             terminarProduccion(valores);            
         }
     });
-    
+
+    if(loadingEsponjas || loadingBolsas) return (
+        <Layout>
+          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
+        </Layout>
+    );
+
     const handleInicio = valores => {
         const { lote } = valores;
         setRegistro({...registro, lote})
