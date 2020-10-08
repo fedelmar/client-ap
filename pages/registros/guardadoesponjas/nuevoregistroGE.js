@@ -36,6 +36,7 @@ const LISTA_REGISTROS = gql `
                 descCajas
                 guardado
                 descarte
+                auxiliar
                 observaciones
                 producto
             }
@@ -68,6 +69,7 @@ const NUEVO_REGISTRO = gql `
             descCajas
             guardado
             descarte
+            auxiliar
             observaciones
         }
     }
@@ -79,9 +81,7 @@ const NuevoRegistroGE = () => {
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
     const { data, loading } = useQuery(LOTES_ESPONJAS);
-    const [getLote, { loading: loadingLote, data: dataLote }] = useLazyQuery(LOTE, {
-        pollInterval: 500
-    });
+    const [getLote, { loading: loadingLote, data: dataLote }] = useLazyQuery(LOTE);
     const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroGE }}) {
             const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -109,6 +109,7 @@ const NuevoRegistroGE = () => {
             cantGuardada: '',
             cantDescarte: 0,
             descCajas: 0,
+            auxiliar: '',
             observaciones: ''
         },
         validationSchema: Yup.object({
@@ -119,6 +120,7 @@ const NuevoRegistroGE = () => {
                                 .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
                                 .required('Ingrese el descarte generado'),
             descCajas: Yup.number(),
+            auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
@@ -139,10 +141,9 @@ const NuevoRegistroGE = () => {
         // Se registra el horario de cierre de produccion
         const fin = Date.now();
         const hora = format(new Date(fin), 'HH:mm')
-        console.log('hora de cierre', hora)
 
         //Volver a planillas de produccion y modificar base de datos
-        const {cantDescarte, cantGuardada, descCajas, observaciones} = valores;
+        const {cantDescarte, cantGuardada, descCajas, observaciones, auxiliar} = valores;
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -155,6 +156,7 @@ const NuevoRegistroGE = () => {
                     "Esponjas guardadas: " + cantGuardada + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Cajas descartadas: " + descCajas + "</br>" +
+                    "Auxiliar/es: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -179,10 +181,12 @@ const NuevoRegistroGE = () => {
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
                                 descCajas: 0,
+                                auxiliar: auxiliar,
                                 observaciones: observaciones
                             }
                         }                
                     });
+                    console.log(data)
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
                         data.nuevoRegistroGE,
@@ -382,6 +386,29 @@ const NuevoRegistroGE = () => {
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
                                         <p>{formikCierre.errors.descCajas}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
+                                        Auxiliar/es
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="auxiliar"
+                                        type="text"
+                                        placeholder="auxiliar..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.auxiliar}
+                                    />
+                                </div>
+    
+                                { formikCierre.touched.auxiliar && formikCierre.errors.auxiliar ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.auxiliar}</p>
                                     </div>
                                 ) : null  }
 
