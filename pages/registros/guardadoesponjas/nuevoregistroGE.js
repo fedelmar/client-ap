@@ -128,7 +128,7 @@ const NuevoRegistroGE = () => {
             terminarProduccion(valores);            
         }
     });
-    useEffect(()=>{
+    useEffect(() => {
         if (data) {
             data.obtenerStockEsponjas.map(i => 
                 i.loteID === registro.loteID ?
@@ -137,6 +137,11 @@ const NuevoRegistroGE = () => {
             )
         }
     },[data])
+    useEffect (() => {
+        if (nombre) {
+            setRegistro({...registro, operario: nombre})
+        }
+    },[nombre])
     
     if(loading) return (
         <Layout>

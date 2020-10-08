@@ -141,6 +141,12 @@ const IniciarProduccion = () => {
             terminarProduccion(valores);            
         }
     });
+    
+    useEffect (() => {
+        if (nombre) {
+            setRegistro({...registro, operario: nombre})
+        }
+    },[nombre])
 
     if(loadingEsponjas || loadingBolsas) return (
         <Layout>
