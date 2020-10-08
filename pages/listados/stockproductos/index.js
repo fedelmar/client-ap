@@ -19,7 +19,9 @@ const OBTENER_STOCK = gql`
 
 const StockProductos = () => {
 
-    const {data, loading} = useQuery(OBTENER_STOCK);
+    const {data, loading} = useQuery(OBTENER_STOCK, {
+        pollInterval: 500,
+    });
     const [ filtros, setFiltros ] = useState(false);
     const pedidoContext = useContext(UsuarioContext);
     const { rol } = pedidoContext.usuario;
