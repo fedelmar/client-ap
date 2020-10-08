@@ -1,10 +1,10 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
-import {gql, useQuery, useMutation, useLazyQuery} from '@apollo/client';
+import {gql, useQuery, useMutation} from '@apollo/client';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
@@ -80,8 +80,9 @@ const NuevoRegistroGE = () => {
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
-    const { data, loading } = useQuery(LOTES_ESPONJAS);
-    const [getLote, { loading: loadingLote, data: dataLote }] = useLazyQuery(LOTE);
+    const { data, loading } = useQuery(LOTES_ESPONJAS, {
+        pollInterval: 500,
+    });
     const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroGE }}) {
             const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -127,7 +128,16 @@ const NuevoRegistroGE = () => {
             terminarProduccion(valores);            
         }
     });
-
+    useEffect(()=>{
+        if (data) {
+            data.obtenerStockEsponjas.map(i => 
+                i.loteID === registro.loteID ?
+                    setRegistro({...registro, cantidad: i.cantidad})
+                : null
+            )
+        }
+    },[data])
+    
     if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
@@ -218,7 +228,6 @@ const NuevoRegistroGE = () => {
 
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
-        getLote({ variables: { id: loteID } })
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
     }
 
@@ -231,12 +240,6 @@ const NuevoRegistroGE = () => {
         )
     }
     
-    const actualizarLote = () => {
-        getLote({ variables: { id: registro.loteID } })
-        if(loadingLote) return 'Cargando...';
-        setRegistro({...registro, cantidad: dataLote.obtenerProductoStock.cantidad})
-    }
-
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Nuevo Registro</h1>
@@ -308,13 +311,7 @@ const NuevoRegistroGE = () => {
                             <div className="flex justify-center mt-1 ">
                                     <p className="text-gray-700 text-xl font-bold mr-1">Esponjas disponibles: </p>
                                     <p className="text-gray-700 text-xl font-light px-2">{registro.cantidad}</p>
-                                    <button 
-                                        className="text-white rounded uppercase font-bold ml-4 bg-red-700 mb-2 p-1" 
-                                        onClick={() => actualizarLote()}
-                                    >
-                                        Actualizar
-                                    </button>
-                                </div>
+                            </div>
                             <form
                                 className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
                                 onSubmit={formikCierre.handleSubmit}
