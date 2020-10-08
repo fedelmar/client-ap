@@ -19,6 +19,7 @@ const LISTA_REGISTROS = gql `
                 descCajas
                 guardado
                 descarte
+                auxiliar
                 observaciones
                 producto
             }
