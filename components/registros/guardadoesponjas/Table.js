@@ -124,8 +124,11 @@ const Table = ({registros, filtros, rol}) => {
                                             {cell.column.id === 'eliminar' && rol === "Admin" ?
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             : 
-                                                cell.column.id === 'observaciones' ? 
-                                                    <MostrarObser observaciones={cell.row.original.observaciones} />
+                                                cell.column.id === 'observaciones' ?
+                                                    cell.row.original.auxiliar ?              
+                                                        <MostrarObser observaciones={cell.row.original.observaciones + "Auxiliares: " + cell.row.original.auxiliar} />
+                                                    :
+                                                        <MostrarObser observaciones={cell.row.original.observaciones} />
                                             :
                                                 cell.column.id === 'fecha' ?
                                                     <th 

@@ -19,6 +19,7 @@ const LISTA_REGISTROS = gql `
                 descCajas
                 guardado
                 descarte
+                auxiliar
                 observaciones
                 producto
             }
@@ -31,7 +32,9 @@ const GuardadoEsponjas = () => {
     const { rol } = usuarioContext.usuario;
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
-    const { data, loading } = useQuery(LISTA_REGISTROS);
+    const { data, loading } = useQuery(LISTA_REGISTROS, {
+        pollInterval: 500,
+    });
 
     if(loading) return (
         <Layout>

@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import { useFormik } from 'formik';
@@ -36,12 +36,24 @@ const LISTA_REGISTROS = gql `
                 descCajas
                 guardado
                 descarte
+                auxiliar
                 observaciones
                 producto
             }
         }
 `;
 
+const LOTE = gql `
+    query obtenerProductoStock($id: ID!){
+        obtenerProductoStock(id: $id){
+            id
+            lote
+            producto
+            estado
+            cantidad
+        }
+    }
+`;
 
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroGE($input: CGEInput){
@@ -57,6 +69,7 @@ const NUEVO_REGISTRO = gql `
             descCajas
             guardado
             descarte
+            auxiliar
             observaciones
         }
     }
@@ -67,7 +80,9 @@ const NuevoRegistroGE = () => {
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
-    const { data, loading } = useQuery(LOTES_ESPONJAS);
+    const { data, loading } = useQuery(LOTES_ESPONJAS, {
+        pollInterval: 500,
+    });
     const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroGE }}) {
             const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -89,13 +104,13 @@ const NuevoRegistroGE = () => {
         horaInicio: '',
         operario: nombre,
         cantidad: ''
-    })
-    
+    });  
     const formikCierre = useFormik({
         initialValues: {
             cantGuardada: '',
             cantDescarte: 0,
             descCajas: 0,
+            auxiliar: '',
             observaciones: ''
         },
         validationSchema: Yup.object({
@@ -106,13 +121,28 @@ const NuevoRegistroGE = () => {
                                 .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
                                 .required('Ingrese el descarte generado'),
             descCajas: Yup.number(),
+            auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
             terminarProduccion(valores);            
         }
-    })   
-
+    });
+    useEffect(() => {
+        if (data) {
+            data.obtenerStockEsponjas.map(i => 
+                i.loteID === registro.loteID ?
+                    setRegistro({...registro, cantidad: i.cantidad})
+                : null
+            )
+        }
+    },[data])
+    useEffect (() => {
+        if (nombre) {
+            setRegistro({...registro, operario: nombre})
+        }
+    },[nombre])
+    
     if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
@@ -126,10 +156,9 @@ const NuevoRegistroGE = () => {
         // Se registra el horario de cierre de produccion
         const fin = Date.now();
         const hora = format(new Date(fin), 'HH:mm')
-        console.log('hora de cierre', hora)
 
         //Volver a planillas de produccion y modificar base de datos
-        const {cantDescarte, cantGuardada, descCajas, observaciones} = valores;
+        const {cantDescarte, cantGuardada, descCajas, observaciones, auxiliar} = valores;
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -142,6 +171,7 @@ const NuevoRegistroGE = () => {
                     "Esponjas guardadas: " + cantGuardada + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Cajas descartadas: " + descCajas + "</br>" +
+                    "Auxiliar/es: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -166,10 +196,12 @@ const NuevoRegistroGE = () => {
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
                                 descCajas: 0,
+                                auxiliar: auxiliar,
                                 observaciones: observaciones
                             }
                         }                
                     });
+                    console.log(data)
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
                         data.nuevoRegistroGE,
@@ -201,7 +233,6 @@ const NuevoRegistroGE = () => {
 
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
-        console.log(loteID)
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
     }
 
@@ -213,7 +244,7 @@ const NuevoRegistroGE = () => {
             </div>
         )
     }
-
+    
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Nuevo Registro</h1>
@@ -248,48 +279,48 @@ const NuevoRegistroGE = () => {
             
                 ) : (
                     <div className="flex justify-center mt-5">
-                        <div className="w-full max-w-lg">
+                        <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
+                            <div className="mb-2 border-b-2 border-gray-600">
+                                <div className="flex justify-between pb-2">
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
+                                        <p className="text-gray-700 font-light ">{registro.dia}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
+                                        <p className="text-gray-700 font-light">{registro.horaInicio}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
+                                    <p className="text-gray-700 font-light">{registro.lote}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
+                                    <p className="text-gray-700 font-light">{registro.producto}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
+                                    <p className="text-gray-700 font-light">{registro.estado}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
+                                    <p className="text-gray-700 font-light">{registro.caja}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Cantidad por caja: </p>
+                                    <p className="text-gray-700 font-light">{registro.cantCaja}</p>
+                                </div>
+                            </div>
+                            <div className="flex justify-center mt-1 ">
+                                    <p className="text-gray-700 text-xl font-bold mr-1">Esponjas disponibles: </p>
+                                    <p className="text-gray-700 text-xl font-light px-2">{registro.cantidad}</p>
+                            </div>
                             <form
                                 className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
                                 onSubmit={formikCierre.handleSubmit}
                             >
-                                <div className="mb-2 border-b-2 border-gray-600">
-                                    <div className="flex justify-between pb-2">
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                            <p className="text-gray-700 font-light ">{registro.dia}</p>
-                                        </div>
-                                        <div className="flex">
-                                            <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                            <p className="text-gray-700 font-light">{registro.horaInicio}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
-                                        <p className="text-gray-700 font-light">{registro.lote}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
-                                        <p className="text-gray-700 font-light">{registro.producto}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
-                                        <p className="text-gray-700 font-light">{registro.estado}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Esponjas disponibles: </p>
-                                        <p className="text-gray-700 font-light">{registro.cantidad}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
-                                        <p className="text-gray-700 font-light">{registro.caja}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1 mb-2">Cantidad por caja: </p>
-                                        <p className="text-gray-700 font-light">{registro.cantCaja}</p>
-                                    </div>
-                                </div>
 
                                 <div className="mb-4 mt-1">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="cantGuardada">
@@ -357,6 +388,29 @@ const NuevoRegistroGE = () => {
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
                                         <p>{formikCierre.errors.descCajas}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
+                                        Auxiliar/es
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="auxiliar"
+                                        type="text"
+                                        placeholder="auxiliar..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.auxiliar}
+                                    />
+                                </div>
+    
+                                { formikCierre.touched.auxiliar && formikCierre.errors.auxiliar ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.auxiliar}</p>
                                     </div>
                                 ) : null  }
 
