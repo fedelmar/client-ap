@@ -95,7 +95,7 @@ const Footer = () => {
                     Registros                    
                 </button>
             </nav>
-            <p className="absolute bottom-0 right-0 p-2 text-white">Echo con ❤</p>
+            <p className="absolute bottom-0 right-0 p-2 text-white">Hecho con ❤</p>
         </footer>       
     );
 }
