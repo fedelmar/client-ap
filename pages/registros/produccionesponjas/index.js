@@ -30,7 +30,9 @@ const ProduccionEsponjas = () => {
 
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
-    const { data, loading } = useQuery(LISTA_REGISTROS);
+    const { data, loading } = useQuery(LISTA_REGISTROS, {
+      pollInterval: 500,
+    });
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
     const [ activos, setActivos ] = useState(false);
