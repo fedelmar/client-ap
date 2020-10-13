@@ -12,17 +12,17 @@ const LISTA_REGISTROS = gql `
     query obtenerRegistrosCE {
         obtenerRegistrosCE{
             id
-            fecha
+            creado
+            modificado
             operario
             lote
-            horaInicio
-            horaCierre
             producto
             lBolsa
             lEsponja
             cantProducida
             cantDescarte
             observaciones
+            estado
         }
     }
 `;
