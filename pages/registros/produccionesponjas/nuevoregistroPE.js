@@ -233,6 +233,7 @@ const IniciarProduccion = () => {
     const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
     const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
 
+    // Funcion para exportar en complemento ManejoDeStock
     const cantidades = valores => {
         const {esponjas} = valores;
         setRegistro({...registro, 
