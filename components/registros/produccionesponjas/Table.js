@@ -55,7 +55,7 @@ const Table = ({registros, filtros, rol}) => {
     return (
         <div className="overflow-x-scroll">
             {filtros ? 
-                <div className="flex justify-between">
+                <div className="flex justify-between mt-1">
                     <input
                         className="p-1 border rounded border-gray-800"
                         value={filtroLote}

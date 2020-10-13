@@ -60,7 +60,7 @@ const ProduccionEsponjas = () => {
 
     return (
       <Layout>
-        <h1 className="text-2xl text-gray-800 font-light" >Registros de produccion de Esponjas</h1>
+        <h1 className="text-2xl text-gray-800 font-light">Registros de produccion de Esponjas</h1>
 
         <div className="flex justify-between">
           <div>
