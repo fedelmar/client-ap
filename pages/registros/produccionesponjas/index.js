@@ -89,19 +89,28 @@ const ProduccionEsponjas = () => {
           />
         : null }
 
-        {activos ? 
+        {activos && registrosAbiertos.length > 0 ? 
           <Table 
             registros={registrosAbiertos}
             filtros={filtros}
             rol={rol}
           />
+        : activos ?
+          <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+            <p className="text-xl text-center">No hay registros activos para mostrar</p>
+          </div>
         : null}
 
-        <Table 
-          registros={registrosCerrados}
-          filtros={filtros}
-          rol={rol}
-        />
+        {registrosCerrados.length > 0 ?
+          <Table 
+            registros={registrosCerrados}
+            filtros={filtros}
+            rol={rol}
+          />
+        :           
+          <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+            <p className="text-xl text-center">No hay registros para mostrar</p>
+          </div>}
         
       </Layout>    
     );
