@@ -1,7 +1,7 @@
 const columnas = [
     {
       Header: 'Fecha',
-      accessor: 'fecha',
+      accessor: 'creado',
     },
     {
       Header: 'Operario',
