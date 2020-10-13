@@ -22,25 +22,6 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosCE {
-        obtenerRegistrosCE{
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
-            cantDescarte
-            observaciones
-            estado
-        }
-    }
-`;
-
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroCE($id: ID, $input: CPEInput){
         nuevoRegistroCE(id: $id, input: $input){
