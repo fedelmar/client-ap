@@ -72,18 +72,7 @@ const IniciarProduccion = () => {
             input: "Polietileno"
         }
     })
-    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO, {
-        update(cache, {data: { nuevoRegistroCE }}) {
-            const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
-
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosCE: [...obtenerRegistrosCE, nuevoRegistroCE ]
-                }
-            })
-        }
-    });
+    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
@@ -122,7 +111,6 @@ const IniciarProduccion = () => {
             handleInicio(valores);            
         }
     })
-
     // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
@@ -139,7 +127,6 @@ const IniciarProduccion = () => {
             terminarProduccion(valores);            
         }
     });
-
     useEffect (() => {
         if (nombre) {
             setRegistro({...registro, operario: nombre})
@@ -155,7 +142,6 @@ const IniciarProduccion = () => {
     const handleInicio = async valores => {
         const { lote } = valores;
         setRegistro({...registro, lote})
-        setSession(true);
         try {
             const { data } = await nuevoRegistroCE({
                 variables: {
@@ -172,6 +158,7 @@ const IniciarProduccion = () => {
         } catch (error) {
             guardarMensaje(error.message.replace('GraphQL error: ', ''));
         }
+        setSession(true);
     }
 
     const handleCierre = () => {
@@ -209,6 +196,7 @@ const IniciarProduccion = () => {
                 try {
                     const { data } = await nuevoRegistroCE({
                         variables: {
+                            id: sesionActiva.id,
                             input: {
                                 operario: nombre,
                                 lote: registro.lote,
@@ -273,7 +261,6 @@ const IniciarProduccion = () => {
         })
     };
 
-    console.log(sesionActiva)
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
