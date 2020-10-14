@@ -141,7 +141,8 @@ const IniciarProduccion = () => {
                         lote: lote,
                         producto: registro.producto,
                         lBolsa: registro.lBolsa,
-                        lEsponja: registro.lEsponja
+                        lEsponja: registro.lEsponja,
+                        cantProducida: 0
                     }
                 }                
             });
