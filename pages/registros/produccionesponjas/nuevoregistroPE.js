@@ -259,7 +259,6 @@ const IniciarProduccion = () => {
                         cantProducida: registro.cantProducida + esponjas
                     }
                 }})
-            console.log(data)
         } catch (error) {
             console.log(error);
         }

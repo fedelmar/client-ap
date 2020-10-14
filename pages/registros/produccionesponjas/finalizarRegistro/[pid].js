@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { format } from 'date-fns';
 import { useRouter} from 'next/router';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import Layout from '../../../../components/Layout';
 import ManejoDeStock from '../../../../components/registros/produccionesponjas/ManejoDeStock';
 import { useFormik } from 'formik';
@@ -18,6 +18,7 @@ const REGISTRO = gql `
             producto
             lBolsa
             lEsponja
+            cantProducida
         }
     }
 `;
@@ -34,6 +35,14 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
+const ACTUALIZAR_REGISTRO = gql`
+    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
+            actualizarRegistroCE(id: $id, input: $input){
+            cantProducida            
+        }
+    }
+`;
+
 const FinalizarRegistro = () => {
 
     const router = useRouter();
@@ -41,6 +50,7 @@ const FinalizarRegistro = () => {
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
+    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Esponjas"
@@ -99,7 +109,8 @@ const FinalizarRegistro = () => {
                 lBolsaID: loteBolsa.id,
                 lote: obtenerRegistroCE.lote,
                 producto: obtenerRegistroCE.producto,
-                productoID: productoID
+                productoID: productoID,
+                cantProducida: obtenerRegistroCE.cantProducida
 
             })
         }
@@ -114,15 +125,26 @@ const FinalizarRegistro = () => {
     const { obtenerRegistroCE } = data;
 
     const terminarProduccion = valores => {
-        console.log(valores, obtenerRegistroCE)
+        console.log(valores, registro)
     }
-    const cantidades = valores => {
+    const cantidades = async valores => {
         const {esponjas} = valores;
         setRegistro({...registro, 
             cantProducida: registro.cantProducida + esponjas, 
             esponjaDisp: registro.esponjaDisp - esponjas, 
             bolsaDisp: registro.bolsaDisp - esponjas
         })
+        try {
+            const { data } = await actualizarRegistroCE({
+                variables: {
+                    id: id,
+                    input: {
+                        cantProducida: registro.cantProducida + esponjas
+                    }
+                }})
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
