@@ -39,7 +39,16 @@ const NUEVO_REGISTRO = gql`
             estado
         }
     }
-`
+`;
+
+const ACTUALIZAR_REGISTRO = gql`
+    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
+            actualizarRegistroCE(id: $id, input: $input){
+            cantProducida            
+        }
+    }
+`;
+
 const IniciarProduccion = () => {
 
     const router = useRouter();
@@ -53,6 +62,7 @@ const IniciarProduccion = () => {
             input: "Polietileno"
         }
     })
+    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
@@ -234,13 +244,25 @@ const IniciarProduccion = () => {
     const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
 
     // Funcion para exportar en complemento ManejoDeStock
-    const cantidades = valores => {
+    const cantidades = async valores => {
         const {esponjas} = valores;
         setRegistro({...registro, 
             cantProducida: registro.cantProducida + esponjas, 
             esponjaDisp: registro.esponjaDisp - esponjas, 
             bolsaDisp: registro.bolsaDisp - esponjas
         })
+        try {
+            const { data } = await actualizarRegistroCE({
+                variables: {
+                    id: sesionActiva.id,
+                    input: {
+                        cantProducida: registro.cantProducida + esponjas
+                    }
+                }})
+            console.log(data)
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
