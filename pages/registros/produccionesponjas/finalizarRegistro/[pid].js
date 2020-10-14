@@ -35,6 +35,25 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
+const NUEVO_REGISTRO = gql`
+    mutation nuevoRegistroCE($id: ID, $input: CPEInput){
+        nuevoRegistroCE(id: $id, input: $input){
+            id
+            creado
+            modificado
+            operario
+            lote
+            producto
+            lBolsa
+            lEsponja
+            cantProducida
+            cantDescarte
+            observaciones
+            estado
+        }
+    }
+`;
+
 const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
             actualizarRegistroCE(id: $id, input: $input){
@@ -51,6 +70,7 @@ const FinalizarRegistro = () => {
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
     const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Esponjas"
@@ -125,7 +145,50 @@ const FinalizarRegistro = () => {
     const { obtenerRegistroCE } = data;
 
     const terminarProduccion = valores => {
-        console.log(valores, registro)
+        const { cantDescarte, observaciones } = valores;
+        Swal.fire({
+            title: 'Verifique los datos antes de confirmar',
+            html:   "Lote: " + registro.lote + "</br>" + 
+                    "Producto: " + registro.producto + "</br>" +
+                    "Operario: " + nombre + "</br>" +
+                    "Lote de Esponja: " + registro.lEsponja + "</br>" +
+                    "Lote de Bolsa: " + registro.lBolsa + "</br>" +
+                    "Cantidad producida: " + registro.cantProducida + "</br>" +
+                    "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Observaciones: " + observaciones + "</br>",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+          }).then( async (result) => {
+            if (result.value) {
+                try {
+                    const { data } = await nuevoRegistroCE({
+                        variables: {
+                            id: id,
+                            input: {
+                                operario: nombre,
+                                lote: registro.lote,
+                                producto: registro.producto,
+                                cantProducida: registro.cantProducida,
+                                cantDescarte: cantDescarte,
+                                observaciones: observaciones
+                            }
+                        }                
+                    });
+                    Swal.fire(
+                        'Se guardo el registro y se actualizo el stock de productos',
+                        data.nuevoRegistroCE,
+                        'success'
+                    )
+                    router.push('/registros/produccionesponjas');
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+          })        
     }
     const cantidades = async valores => {
         const {esponjas} = valores;
@@ -150,7 +213,7 @@ const FinalizarRegistro = () => {
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Finalizar Registro</h1>
-            
+
             <div className="flex justify-center mt-5">
                 <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
                     <div className="mb-2 border-b-2 border-gray-600">

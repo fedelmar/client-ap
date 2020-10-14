@@ -24,7 +24,6 @@ const Table = ({registros, filtros, rol}) => {
     useEffect(() => {
         if (rol && rol !== 'Admin') toggleHideColumn('eliminar');
         if (registros.every(i => i.estado === true)) {
-            toggleHideColumn('cantProducida');
             toggleHideColumn('cantDescarte');
         }             
     },[rol])
@@ -58,7 +57,6 @@ const Table = ({registros, filtros, rol}) => {
     };
 
     const retomarRegistro = id => {
-        console.log(id)
         Router.push({
             pathname: "/registros/produccionesponjas/finalizarRegistro/[id]",
             query: { id }
@@ -111,7 +109,7 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                column.id === 'cantProducida' || column.id === 'cantDescarte' ?
+                                column.id === 'cantDescarte' ?
                                     registros.every(i => i.estado === true) ? 
                                         null
                                     :    <th 
