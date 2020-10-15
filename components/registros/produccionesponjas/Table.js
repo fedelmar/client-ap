@@ -187,7 +187,7 @@ const Table = ({registros, filtros, rol}) => {
                                                     >
                                                         De {format(new Date(cell.row.original.creado), 'HH:mm')} a 
                                                         {cell.row.original.modificado ?
-                                                            format(new Date(cell.row.original.creado), ' HH:mm')
+                                                            format(new Date(cell.row.original.modificado), ' HH:mm')
                                                         : ' finalizar'}
                                                     </th>
                                             :
