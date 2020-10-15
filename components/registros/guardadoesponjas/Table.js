@@ -20,7 +20,12 @@ const Table = ({registros, filtros, rol}) => {
         useSortBy
     )
     useEffect(() => {
-        if (rol && rol !== 'Admin') toggleHideColumn('eliminar')            
+        if (rol && rol !== 'Admin') toggleHideColumn('eliminar');
+        if (registros.every(i => i.estado === true)) {
+            toggleHideColumn('descarte');
+            toggleHideColumn('guardado');
+            toggleHideColumn('descCajas');
+        }                 
     },[rol])
 
     const {
@@ -80,7 +85,9 @@ const Table = ({registros, filtros, rol}) => {
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
-                            column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
+                            column.id === 'horario' || 
+                            column.id === 'observaciones' || 
+                            column.id === 'eliminar' 
                             ?
                                 rol !== 'Admin' && column.id === 'eliminar' ?
                                     null
@@ -94,19 +101,41 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                <th 
-                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                >                              
-                                    {column.render('Header')}
-                                    <span>
-                                        {column.isSorted
-                                        ? column.isSortedDesc
-                                            ? ' ▽'
-                                            : ' △'
-                                        : ''}
-                                    </span>                        
-                                </th>                        
+                                column.id === 'descCajas'||
+                                column.id === 'guardado' ||
+                                column.id === 'descarte'
+                                ?
+                                    registros.every(i => i.estado === true) ?
+                                        null
+                                    :
+                                        <th 
+                                            className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                            {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        >                              
+                                            {column.render('Header')}
+                                            <span>
+                                                {column.isSorted
+                                                ? column.isSortedDesc
+                                                    ? ' ▽'
+                                                    : ' △'
+                                                : ''}
+                                            </span>                        
+                                        </th>    
+
+                                :
+                                    <th 
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    >                              
+                                        {column.render('Header')}
+                                        <span>
+                                            {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? ' ▽'
+                                                : ' △'
+                                            : ''}
+                                        </span>                        
+                                    </th>                        
                         ))}
                     </tr>
                 </thead>
@@ -135,7 +164,7 @@ const Table = ({registros, filtros, rol}) => {
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
                                                     >
-                                                        {format(new Date(cell.row.original.fecha), 'dd/MM/yy')}
+                                                        {format(new Date(cell.row.original.creado), 'dd/MM/yy')}
                                                     </th>
                                             :
                                                 cell.column.id === 'horario' ?
@@ -143,7 +172,10 @@ const Table = ({registros, filtros, rol}) => {
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
                                                     >
-                                                        De {format(new Date(cell.row.original.fecha), 'HH:mm')} a {cell.row.original.horaCierre}
+                                                        De {format(new Date(cell.row.original.creado), 'HH:mm')} a 
+                                                        {cell.row.original.modificado ?
+                                                            format(new Date(cell.row.original.modificado), ' HH:mm')
+                                                        : ' finalizar'}
                                                     </th>
                                             :
                                                 <th 

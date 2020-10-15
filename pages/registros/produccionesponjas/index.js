@@ -85,7 +85,7 @@ const ProduccionEsponjas = () => {
 
         {pdfOpen ?
           <ExportarRegistro 
-            registros={registros}
+            registros={registrosCerrados}
           />
         : null }
 

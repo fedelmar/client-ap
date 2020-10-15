@@ -112,7 +112,8 @@ const Table = ({registros, filtros, rol}) => {
                                 column.id === 'cantDescarte' ?
                                     registros.every(i => i.estado === true) ? 
                                         null
-                                    :    <th 
+                                    :    
+                                        <th 
                                             className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                         >                              
