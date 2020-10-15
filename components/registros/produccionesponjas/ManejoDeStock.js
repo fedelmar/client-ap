@@ -39,6 +39,7 @@ const OBTENER_STOCK = gql`
 `;
 
 const ManejoDeStock = ({registro, cantidades}) => {
+    //console.log('Registro en Manejo de Stock : ',registro)
 
     useQuery(OBTENER_STOCK);
     const [ actualizarInsumoStock ] = useMutation(ACTUALIZAR_INSUMO);

@@ -22,43 +22,33 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosCE {
-        obtenerRegistrosCE{
+const NUEVO_REGISTRO = gql`
+    mutation nuevoRegistroCE($id: ID, $input: CPEInput){
+        nuevoRegistroCE(id: $id, input: $input){
             id
-            fecha
+            creado
+            modificado
             operario
             lote
-            horaInicio
-            horaCierre
             producto
             lBolsa
             lEsponja
             cantProducida
             cantDescarte
             observaciones
+            estado
         }
     }
 `;
 
-const NUEVO_REGISTRO = gql`
-    mutation nuevoRegistroCE($input: CPEInput){
-        nuevoRegistroCE(input: $input){
-            id
-            fecha
-            operario
-            lote
-            horaInicio
-            horaCierre
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
-            cantDescarte
-            observaciones
+const ACTUALIZAR_REGISTRO = gql`
+    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
+            actualizarRegistroCE(id: $id, input: $input){
+            cantProducida            
         }
     }
-`
+`;
+
 const IniciarProduccion = () => {
 
     const router = useRouter();
@@ -72,29 +62,17 @@ const IniciarProduccion = () => {
             input: "Polietileno"
         }
     })
-    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO, {
-        update(cache, {data: { nuevoRegistroCE }}) {
-            const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
-
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosCE: [...obtenerRegistrosCE, nuevoRegistroCE ]
-                }
-            })
-        }
-    });
+    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
     const [session, setSession] = useState(false);
+    const [sesionActiva, setSesionActiva] = useState();
     const [registro, setRegistro] = useState({
-        dia:  format(new Date(Date.now()), 'dd/MM/yy'),
-        fecha: Date.now(),
         operario: nombre,
         lote: '',
-        horaInicio: format(new Date(Date.now()), 'HH:mm'),
         producto: '',
         productoID: '',
         lBolsa: '',
@@ -124,7 +102,6 @@ const IniciarProduccion = () => {
             handleInicio(valores);            
         }
     })
-
     // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
@@ -141,7 +118,6 @@ const IniciarProduccion = () => {
             terminarProduccion(valores);            
         }
     });
-
     useEffect (() => {
         if (nombre) {
             setRegistro({...registro, operario: nombre})
@@ -154,9 +130,26 @@ const IniciarProduccion = () => {
         </Layout>
     );
 
-    const handleInicio = valores => {
+    const handleInicio = async valores => {
         const { lote } = valores;
         setRegistro({...registro, lote})
+        try {
+            const { data } = await nuevoRegistroCE({
+                variables: {
+                    input: {
+                        operario: nombre,
+                        lote: lote,
+                        producto: registro.producto,
+                        lBolsa: registro.lBolsa,
+                        lEsponja: registro.lEsponja,
+                        cantProducida: 0
+                    }
+                }                
+            });
+            setSesionActiva(data.nuevoRegistroCE);            
+        } catch (error) {
+            guardarMensaje(error.message.replace('GraphQL error: ', ''));
+        }
         setSession(true);
     }
 
@@ -168,14 +161,11 @@ const IniciarProduccion = () => {
 
     const terminarProduccion = async valores => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos e insumos
-        // Se registra el horario de cierre de produccion
-        const fin = Date.now();
-        const hora = format(new Date(fin), 'HH:mm')
 
         //Volver a planillas de produccion y modificar base de datos
         const {observaciones, cantDescarte} = valores;
     
-        setRegistro({...registro, cantDescarte, observaciones, horaCierre: hora})
+        setRegistro({...registro, cantDescarte, observaciones})
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -184,9 +174,6 @@ const IniciarProduccion = () => {
                     "Operario: " + nombre + "</br>" +
                     "Lote de Esponja: " + registro.lEsponja + "</br>" +
                     "Lote de Bolsa: " + registro.lBolsa + "</br>" +
-                    "Dia: " + registro.dia + "</br>" +
-                    "Hora de Inicio: " + registro.horaInicio + "</br>" +
-                    "Hora de cierre: " + hora + "</br>" +
                     "Cantidad producida: " + registro.cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
@@ -201,15 +188,11 @@ const IniciarProduccion = () => {
                 try {
                     const { data } = await nuevoRegistroCE({
                         variables: {
+                            id: sesionActiva.id,
                             input: {
-                                fecha: registro.fecha,
                                 operario: nombre,
                                 lote: registro.lote,
-                                horaInicio: registro.horaInicio,
-                                horaCierre: hora,
                                 producto: registro.producto,
-                                lBolsa: registro.lBolsa,
-                                lEsponja: registro.lEsponja,
                                 cantProducida: registro.cantProducida,
                                 cantDescarte: cantDescarte,
                                 observaciones: observaciones
@@ -252,7 +235,7 @@ const IniciarProduccion = () => {
     const mostrarMensaje = () => {
         return(
             <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
-                <p>{mensaje}</p>
+                <p>No existe el lote en el Stock</p>
             </div>
         )
     }
@@ -261,13 +244,25 @@ const IniciarProduccion = () => {
     const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
     const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
 
-    const cantidades = valores => {
+    // Funcion para exportar en complemento ManejoDeStock
+    const cantidades = async valores => {
         const {esponjas} = valores;
         setRegistro({...registro, 
             cantProducida: registro.cantProducida + esponjas, 
             esponjaDisp: registro.esponjaDisp - esponjas, 
             bolsaDisp: registro.bolsaDisp - esponjas
         })
+        try {
+            const { data } = await actualizarRegistroCE({
+                variables: {
+                    id: sesionActiva.id,
+                    input: {
+                        cantProducida: registro.cantProducida + esponjas
+                    }
+                }})
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -370,11 +365,11 @@ const IniciarProduccion = () => {
                                 <div className="flex justify-between pb-2">
                                     <div className="flex">
                                         <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                        <p className="text-gray-700 font-light ">{registro.dia}</p>
+                                        <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'dd/MM/yy')}</p>
                                     </div>
                                     <div className="flex">
                                         <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                        <p className="text-gray-700 font-light">{registro.horaInicio}</p>
+                                        <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'HH:mm')}</p>
                                     </div>
                                 </div>
                                 
