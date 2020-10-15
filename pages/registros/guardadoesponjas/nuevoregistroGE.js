@@ -27,11 +27,9 @@ const LISTA_REGISTROS = gql `
     query obtenerRegistrosGE{
         obtenerRegistrosGE{
                 id
-                fecha
+                creado
                 operario
                 lote
-                horaInicio
-                horaCierre
                 caja
                 descCajas
                 guardado
@@ -39,6 +37,7 @@ const LISTA_REGISTROS = gql `
                 auxiliar
                 observaciones
                 producto
+                estado
             }
         }
 `;
@@ -56,21 +55,21 @@ const LOTE = gql `
 `;
 
 const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGE($input: CGEInput){
-        nuevoRegistroGE(input: $input){
-            fecha
+    mutation nuevoRegistroGE($id: ID, $input: CGEInput){
+        nuevoRegistroGE(id: $id, input: $input){
+            id
+            creado
             operario
             lote
             producto
             loteID
-            horaInicio
-            horaCierre
             caja
             descCajas
             guardado
             descarte
             auxiliar
             observaciones
+            estado
         }
     }
 `;
@@ -99,9 +98,8 @@ const NuevoRegistroGE = () => {
     const [session, setSession] = useState(false);
     const [registro, setRegistro] = useState({
         lote: '',
-        dia: '',
-        fecha: '',
-        horaInicio: '',
+        creado: '',
+        id: '',
         operario: nombre,
         cantidad: ''
     });  
@@ -153,10 +151,6 @@ const NuevoRegistroGE = () => {
     const terminarProduccion = async valores => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos
 
-        // Se registra el horario de cierre de produccion
-        const fin = Date.now();
-        const hora = format(new Date(fin), 'HH:mm')
-
         //Volver a planillas de produccion y modificar base de datos
         const {cantDescarte, cantGuardada, descCajas, observaciones, auxiliar} = valores;
 
@@ -165,9 +159,6 @@ const NuevoRegistroGE = () => {
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + registro.operario + "</br>" +
-                    "Dia: " + registro.dia + "</br>" +
-                    "Hora de Inicio: " + registro.horaInicio + "</br>" +
-                    "Hora de cierre: " + hora + "</br>" +
                     "Esponjas guardadas: " + cantGuardada + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Cajas descartadas: " + descCajas + "</br>" +
@@ -184,15 +175,9 @@ const NuevoRegistroGE = () => {
                 try {
                     const { data } = await nuevoRegistroGE({
                         variables: {
+                            id: registro.id,
                             input: {
-                                fecha: registro.fecha,
-                                operario: registro.operario,
                                 lote: registro.lote,
-                                loteID: registro.loteID,
-                                horaInicio: registro.horaInicio,
-                                horaCierre: hora,
-                                producto: registro.producto,
-                                caja: registro.caja,
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
                                 descCajas: 0,
@@ -201,7 +186,6 @@ const NuevoRegistroGE = () => {
                             }
                         }                
                     });
-                    console.log(data)
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
                         data.nuevoRegistroGE,
@@ -209,20 +193,33 @@ const NuevoRegistroGE = () => {
                     )
                     router.push('/registros/guardadoesponjas');
                 } catch (error) {
+                    console.log(error)
                     guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
             }
           })
     }
 
-    const handleInicio = () => {
-        // Iniciar valores de fecha y hora       
-        const start = Date.now();
-        const dia = format(new Date(start), 'dd/MM/yy')
-        const hora = format(new Date(start), 'HH:mm')
-
-        setRegistro({...registro, horaInicio: hora, fecha: start, dia})
-        setSession(true);
+    const handleInicio = async () => {    
+      
+        try {
+            const { data } = await nuevoRegistroGE({
+                variables: {
+                    input: {
+                        operario: registro.operario,
+                        lote: registro.lote,
+                        loteID: registro.loteID,
+                        producto: registro.producto,
+                        caja: registro.caja
+                    }
+                }                
+            });
+            
+            setRegistro({...registro, creado: data.nuevoRegistroGE.creado, id: data.nuevoRegistroGE.id})
+            setSession(true);
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleCierre = () => {
@@ -234,6 +231,7 @@ const NuevoRegistroGE = () => {
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
+
     }
 
     // Mostrar mensaje de base de datos si hubo un error
@@ -244,7 +242,7 @@ const NuevoRegistroGE = () => {
             </div>
         )
     }
-    
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Nuevo Registro</h1>
@@ -284,11 +282,11 @@ const NuevoRegistroGE = () => {
                                 <div className="flex justify-between pb-2">
                                     <div className="flex">
                                         <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                        <p className="text-gray-700 font-light ">{registro.dia}</p>
+                                        <p className="text-gray-700 font-light ">{format(new Date(registro.creado), 'dd/MM/yy')}</p>
                                     </div>
                                     <div className="flex">
                                         <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                        <p className="text-gray-700 font-light">{registro.horaInicio}</p>
+                                        <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'HH:mm')}</p>
                                     </div>
                                 </div>
                                 

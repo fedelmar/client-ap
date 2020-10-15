@@ -58,7 +58,6 @@ const GuardadoEsponjas = () => {
     registrosAbiertos.reverse();
     registrosCerrados.reverse();
 
-    console.log(registrosAbiertos, registrosCerrados)
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Guardado de Esponjas</h1>
@@ -84,7 +83,7 @@ const GuardadoEsponjas = () => {
 
             {pdfOpen ? (
                 <ExportarRegistro 
-                    registros={registros}
+                    registros={registrosCerrados}
                 />
             ) : null }
 

@@ -155,7 +155,7 @@ const Table = ({registros, filtros, rol}) => {
                                             : 
                                                 cell.column.id === 'observaciones' ?
                                                     cell.row.original.auxiliar ?              
-                                                        <MostrarObser observaciones={cell.row.original.observaciones + "Auxiliares: " + cell.row.original.auxiliar} />
+                                                        <MostrarObser observaciones={cell.row.original.observaciones + " | Auxiliares: " + cell.row.original.auxiliar} />
                                                     :
                                                         <MostrarObser observaciones={cell.row.original.observaciones} />
                                             :
