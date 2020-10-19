@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
+import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
@@ -55,6 +56,13 @@ const Table = ({registros, filtros, rol}) => {
         setFilter("operario", value);
         setFiltroOperario(value);
     };
+
+    const retomarRegistro = id => {
+        Router.push({
+            pathname: "/registros/guardadoesponjas/finalizarRegistro/[id]",
+            query: { id }
+        })
+    }
 
     return (
         <div className="overflow-x-scroll">
@@ -154,10 +162,24 @@ const Table = ({registros, filtros, rol}) => {
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             : 
                                                 cell.column.id === 'observaciones' ?
-                                                    cell.row.original.auxiliar ?              
-                                                        <MostrarObser observaciones={cell.row.original.observaciones + " | Auxiliares: " + cell.row.original.auxiliar} />
-                                                    :
-                                                        <MostrarObser observaciones={cell.row.original.observaciones} />
+                                                    cell.row.original.estado === false ?
+                                                        cell.row.original.auxiliar ?              
+                                                            <MostrarObser observaciones={cell.row.original.observaciones + " | Auxiliares: " + cell.row.original.auxiliar} />
+                                                        :
+                                                            <MostrarObser observaciones={cell.row.original.observaciones} />
+                                                    :   <th 
+                                                            className="border px-4 py-2"
+                                                            {...cell.getCellProps()}
+                                                        >
+                                                            <button
+                                                                    type="button"
+                                                                    className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                                                                    onClick={() => retomarRegistro(cell.row.original.id)}
+                                                            >
+                                                                Continuar
+                                                            </button>  
+                                                        </th>
+                                        
                                             :
                                                 cell.column.id === 'fecha' ?
                                                     <th 

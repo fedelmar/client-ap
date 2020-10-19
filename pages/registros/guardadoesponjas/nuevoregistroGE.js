@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 
 const LOTES_ESPONJAS = gql `
     query	obtenerStockEsponjas{
-        obtenerStockEsponjas{
+        obtenerStockEsponjas{   
             lote
             loteID
             producto
@@ -42,17 +42,6 @@ const LISTA_REGISTROS = gql `
         }
 `;
 
-const LOTE = gql `
-    query obtenerProductoStock($id: ID!){
-        obtenerProductoStock(id: $id){
-            id
-            lote
-            producto
-            estado
-            cantidad
-        }
-    }
-`;
 
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroGE($id: ID, $input: CGEInput){
@@ -201,7 +190,7 @@ const NuevoRegistroGE = () => {
     }
 
     const handleInicio = async () => {    
-      
+        console.log(registro.loteID)
         try {
             const { data } = await nuevoRegistroGE({
                 variables: {
@@ -230,6 +219,7 @@ const NuevoRegistroGE = () => {
 
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
+        console.log(loteID)
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
 
     }
@@ -242,6 +232,8 @@ const NuevoRegistroGE = () => {
             </div>
         )
     }
+
+    console.log(data.obtenerStockEsponjas)
 
     return (
         <Layout>
