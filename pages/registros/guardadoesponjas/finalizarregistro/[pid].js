@@ -4,6 +4,7 @@ import { useRouter} from 'next/router';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 import UsuarioContext from '../../../../context/usuarios/UsuarioContext';
 
@@ -33,6 +34,26 @@ const LOTES_ESPONJAS = gql `
     }
 `;
 
+const NUEVO_REGISTRO = gql `
+    mutation nuevoRegistroGE($id: ID, $input: CGEInput){
+        nuevoRegistroGE(id: $id, input: $input){
+            id
+            creado
+            operario
+            lote
+            producto
+            loteID
+            caja
+            descCajas
+            guardado
+            descarte
+            auxiliar
+            observaciones
+            estado
+        }
+    }
+`;
+
 const FinalizarRegistro = () => {
 
     const router = useRouter();
@@ -52,6 +73,7 @@ const FinalizarRegistro = () => {
     const { data: dataLote, loading: loadingLote } = useQuery(LOTES_ESPONJAS, {
         pollInterval: 500,
     });
+    const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
             cantGuardada: '',
@@ -114,8 +136,53 @@ const FinalizarRegistro = () => {
     );
 
     const terminarProduccion = valores => {
-        console.log(valores, registro)
+        //Volver a planillas de produccion y modificar base de datos
+        const {cantDescarte, cantGuardada, descCajas, observaciones, auxiliar} = valores;
+        Swal.fire({
+            title: 'Verifique los datos antes de confirmar',
+            html:   "Lote: " + registro.lote + "</br>" + 
+                    "Producto: " + registro.producto + "</br>" +
+                    "Operario: " + registro.operario + "</br>" +
+                    "Esponjas guardadas: " + cantGuardada + "</br>" +
+                    "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Cajas descartadas: " + descCajas + "</br>" +
+                    "Auxiliar/es: " + auxiliar + "</br>" +
+                    "Observaciones: " + observaciones + "</br>",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then( async (result) => {
+            if (result.value) {
+                try {
+                    const { data } = await nuevoRegistroGE({
+                        variables: {
+                            id,
+                            input: {
+                                lote: registro.lote,
+                                guardado: cantGuardada,
+                                descarte: cantDescarte,
+                                descCajas: 0,
+                                auxiliar: auxiliar,
+                                observaciones: observaciones
+                            }
+                        }                
+                    });
+                    Swal.fire(
+                        'Se guardo el registro y se creo actualizo el stock.',
+                        data.nuevoRegistroGE,
+                        'success'
+                    )
+                    router.push('/registros/guardadoesponjas');
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        })
     }
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Finalizar Registro</h1>

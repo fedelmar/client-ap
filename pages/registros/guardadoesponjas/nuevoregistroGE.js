@@ -182,15 +182,13 @@ const NuevoRegistroGE = () => {
                     )
                     router.push('/registros/guardadoesponjas');
                 } catch (error) {
-                    console.log(error)
                     guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
             }
           })
     }
 
-    const handleInicio = async () => {    
-        console.log(registro.loteID)
+    const handleInicio = async () => {   
         try {
             const { data } = await nuevoRegistroGE({
                 variables: {
@@ -219,7 +217,6 @@ const NuevoRegistroGE = () => {
 
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
-        console.log(loteID)
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
 
     }
@@ -232,8 +229,6 @@ const NuevoRegistroGE = () => {
             </div>
         )
     }
-
-    console.log(data.obtenerStockEsponjas)
 
     return (
         <Layout>
