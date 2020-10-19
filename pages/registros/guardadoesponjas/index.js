@@ -10,11 +10,10 @@ const LISTA_REGISTROS = gql `
     query obtenerRegistrosGE{
         obtenerRegistrosGE{
                 id
-                fecha
+                creado
+                modificado
                 operario
                 lote
-                horaInicio
-                horaCierre
                 caja
                 descCajas
                 guardado
@@ -22,6 +21,7 @@ const LISTA_REGISTROS = gql `
                 auxiliar
                 observaciones
                 producto
+                estado
             }
         }
 `;
@@ -32,6 +32,7 @@ const GuardadoEsponjas = () => {
     const { rol } = usuarioContext.usuario;
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
+    const [ activos, setActivos ] = useState(false);
     const { data, loading } = useQuery(LISTA_REGISTROS, {
         pollInterval: 500,
     });
@@ -45,22 +46,31 @@ const GuardadoEsponjas = () => {
     const handleOpenClosePDF = () => {
         setPdfOpen(!pdfOpen);
     }
-
     const handleOpenCloseFiltros = () => {
         setFiltros(!filtros);
+    }    
+    const handleOpenCloseActivos = () => {
+      setActivos(!activos);
     }
-    
-    let registros = data.obtenerRegistrosGE.map(i => i);
-    registros.reverse();
-    
+
+    let registrosCerrados = data.obtenerRegistrosGE.filter(i => i.estado === false);
+    let registrosAbiertos = data.obtenerRegistrosGE.filter(i => i.estado === true);
+    registrosAbiertos.reverse();
+    registrosCerrados.reverse();
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Guardado de Esponjas</h1>
 
             <div className="flex justify-between">
-                <Link href="/registros/guardadoesponjas/nuevoregistroGE">
-                    <a className="bg-blue-800 py-2 px-5 mt-3 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Iniciar Registro</a>
-                </Link>
+                <div>
+                    <Link href="/registros/guardadoesponjas/nuevoregistroGE">
+                        <a className="bg-blue-800 py-2 px-5 mt-3 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Iniciar Registro</a>
+                    </Link>
+                    <button onClick={() => handleOpenCloseActivos()}>
+                        <a className="bg-blue-800 py-2 px-5 mt-3 ml-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Registros Activos</a>
+                    </button>
+                </div>
                 <div>
                     <button onClick={() => handleOpenCloseFiltros()}>
                         <a className="bg-blue-800 py-2 px-5 mt-3 mr-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Buscar</a>
@@ -73,15 +83,32 @@ const GuardadoEsponjas = () => {
 
             {pdfOpen ? (
                 <ExportarRegistro 
-                    registros={registros}
+                    registros={registrosCerrados}
                 />
             ) : null }
 
+            {activos && registrosAbiertos.length > 0 ? 
             <Table 
-                registros={registros}
+                registros={registrosAbiertos}
                 filtros={filtros}
                 rol={rol}
-            />            
+            />
+            : activos ?
+            <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+                <p className="text-xl text-center">No hay registros activos para mostrar</p>
+            </div>
+            : null}
+
+            {registrosCerrados.length > 0 ?
+            <Table 
+                registros={registrosCerrados}
+                filtros={filtros}
+                rol={rol}
+            />
+            :           
+            <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+                <p className="text-xl text-center">No hay registros para mostrar</p>
+            </div>} 
         </Layout>
     );
 }

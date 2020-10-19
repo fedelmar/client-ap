@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
+import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
@@ -20,7 +21,12 @@ const Table = ({registros, filtros, rol}) => {
         useSortBy
     )
     useEffect(() => {
-        if (rol && rol !== 'Admin') toggleHideColumn('eliminar')            
+        if (rol && rol !== 'Admin') toggleHideColumn('eliminar');
+        if (registros.every(i => i.estado === true)) {
+            toggleHideColumn('descarte');
+            toggleHideColumn('guardado');
+            toggleHideColumn('descCajas');
+        }                 
     },[rol])
 
     const {
@@ -51,6 +57,13 @@ const Table = ({registros, filtros, rol}) => {
         setFiltroOperario(value);
     };
 
+    const retomarRegistro = id => {
+        Router.push({
+            pathname: "/registros/guardadoesponjas/finalizarRegistro/[id]",
+            query: { id }
+        })
+    }
+
     return (
         <div className="overflow-x-scroll">
             {filtros ? 
@@ -80,7 +93,9 @@ const Table = ({registros, filtros, rol}) => {
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
-                            column.id === 'horario' || column.id === 'observaciones' || column.id === 'eliminar' 
+                            column.id === 'horario' || 
+                            column.id === 'observaciones' || 
+                            column.id === 'eliminar' 
                             ?
                                 rol !== 'Admin' && column.id === 'eliminar' ?
                                     null
@@ -94,19 +109,41 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                <th 
-                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                >                              
-                                    {column.render('Header')}
-                                    <span>
-                                        {column.isSorted
-                                        ? column.isSortedDesc
-                                            ? ' ▽'
-                                            : ' △'
-                                        : ''}
-                                    </span>                        
-                                </th>                        
+                                column.id === 'descCajas'||
+                                column.id === 'guardado' ||
+                                column.id === 'descarte'
+                                ?
+                                    registros.every(i => i.estado === true) ?
+                                        null
+                                    :
+                                        <th 
+                                            className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                            {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        >                              
+                                            {column.render('Header')}
+                                            <span>
+                                                {column.isSorted
+                                                ? column.isSortedDesc
+                                                    ? ' ▽'
+                                                    : ' △'
+                                                : ''}
+                                            </span>                        
+                                        </th>    
+
+                                :
+                                    <th 
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    >                              
+                                        {column.render('Header')}
+                                        <span>
+                                            {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? ' ▽'
+                                                : ' △'
+                                            : ''}
+                                        </span>                        
+                                    </th>                        
                         ))}
                     </tr>
                 </thead>
@@ -125,17 +162,31 @@ const Table = ({registros, filtros, rol}) => {
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             : 
                                                 cell.column.id === 'observaciones' ?
-                                                    cell.row.original.auxiliar ?              
-                                                        <MostrarObser observaciones={cell.row.original.observaciones + "Auxiliares: " + cell.row.original.auxiliar} />
-                                                    :
-                                                        <MostrarObser observaciones={cell.row.original.observaciones} />
+                                                    cell.row.original.estado === false ?
+                                                        cell.row.original.auxiliar ?              
+                                                            <MostrarObser observaciones={cell.row.original.observaciones + " | Auxiliares: " + cell.row.original.auxiliar} />
+                                                        :
+                                                            <MostrarObser observaciones={cell.row.original.observaciones} />
+                                                    :   <th 
+                                                            className="border px-4 py-2"
+                                                            {...cell.getCellProps()}
+                                                        >
+                                                            <button
+                                                                    type="button"
+                                                                    className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
+                                                                    onClick={() => retomarRegistro(cell.row.original.id)}
+                                                            >
+                                                                Continuar
+                                                            </button>  
+                                                        </th>
+                                        
                                             :
                                                 cell.column.id === 'fecha' ?
                                                     <th 
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
                                                     >
-                                                        {format(new Date(cell.row.original.fecha), 'dd/MM/yy')}
+                                                        {format(new Date(cell.row.original.creado), 'dd/MM/yy')}
                                                     </th>
                                             :
                                                 cell.column.id === 'horario' ?
@@ -143,7 +194,10 @@ const Table = ({registros, filtros, rol}) => {
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
                                                     >
-                                                        De {format(new Date(cell.row.original.fecha), 'HH:mm')} a {cell.row.original.horaCierre}
+                                                        De {format(new Date(cell.row.original.creado), 'HH:mm')} a 
+                                                        {cell.row.original.modificado ?
+                                                            format(new Date(cell.row.original.modificado), ' HH:mm')
+                                                        : ' finalizar'}
                                                     </th>
                                             :
                                                 <th 

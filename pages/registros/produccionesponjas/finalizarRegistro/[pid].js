@@ -320,7 +320,6 @@ const FinalizarRegistro = () => {
                             className="bg-red-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-red-900"
                             value="Finalizar Producción"
                         />
-                        <button className="bg-gray-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
                     </form>
                 </div>
             </div>
