@@ -124,7 +124,7 @@ const FinalizarRegistro = () => {
                 lEsponja: loteEsponja.lote,
                 esponjaDisp: loteEsponja.cantidad,
                 lEsponjaID: loteEsponja.id,
-                lBolsa: loteEsponja.lote,
+                lBolsa: loteBolsa.lote,
                 bolsaDisp: loteBolsa.cantidad,
                 lBolsaID: loteBolsa.id,
                 lote: obtenerRegistroCE.lote,
