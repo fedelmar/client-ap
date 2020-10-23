@@ -252,7 +252,7 @@ const IniciarProduccion = () => {
             cantProducida: registro.cantProducida + esponjas, 
             esponjaDisp: registro.esponjaDisp - esponjas, 
             bolsaDisp: registro.bolsaDisp - esponjas
-        })
+        });
         try {
             const { data } = await actualizarRegistroCE({
                 variables: {
@@ -260,7 +260,29 @@ const IniciarProduccion = () => {
                     input: {
                         cantProducida: registro.cantProducida + esponjas
                     }
-                }})
+                }
+            });
+            let timerInterval
+            Swal.fire({
+                html: `Se sumaron ${esponjas} esponjas`,
+                timer: 1000,
+                position: 'top',
+                showConfirmButton: false,
+                width: 300,
+                padding: 10,
+                willOpen: () => {
+                    Swal.showLoading()
+                    timerInterval = setInterval(() => {
+                        const content = Swal.getContent()
+                            if (content) {
+                                const b = content.querySelector('b')
+                                if (b) {
+                                b.textContent = Swal.getTimerLeft()
+                                }
+                            }
+                        }, 100)
+                    },
+            });
         } catch (error) {
             console.log(error);
         }
@@ -271,6 +293,7 @@ const IniciarProduccion = () => {
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
 
             {mensaje && mostrarMensaje()}
+
 
             <div>
                {!session ? (
