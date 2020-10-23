@@ -93,7 +93,7 @@ const IniciarProduccion = () => {
             lEsponja: ''
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('Campo obligatorio'),
+            lote: Yup.string().required('Ingrese un numero'),
             producto: Yup.string(),
             lBolsa: Yup.string(),
             lEsponja: Yup.string()                        
@@ -132,13 +132,13 @@ const IniciarProduccion = () => {
 
     const handleInicio = async valores => {
         const { lote } = valores;
-        setRegistro({...registro, lote})
+        
         try {
             const { data } = await nuevoRegistroCE({
                 variables: {
                     input: {
                         operario: nombre,
-                        lote: lote,
+                        lote: `Lote ${lote}`,
                         producto: registro.producto,
                         lBolsa: registro.lBolsa,
                         lEsponja: registro.lEsponja,
@@ -146,7 +146,8 @@ const IniciarProduccion = () => {
                     }
                 }                
             });
-            setSesionActiva(data.nuevoRegistroCE);            
+            setSesionActiva(data.nuevoRegistroCE);
+            setRegistro({...registro, lote: `L${lote}-${format(new Date(data.nuevoRegistroCE.creado), 'ddMMyy')}`});   
         } catch (error) {
             guardarMensaje(error.message.replace('GraphQL error: ', ''));
         }
@@ -287,7 +288,7 @@ const IniciarProduccion = () => {
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="lote"
-                                        type="text"
+                                        type="number"
                                         placeholder="Ingrese el lote..."
                                         onChange={formikInicio.handleChange}
                                         onBlur={formikInicio.handleBlur}
