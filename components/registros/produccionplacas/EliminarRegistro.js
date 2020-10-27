@@ -3,24 +3,25 @@ import Swal from 'sweetalert2';
 import { gql, useMutation } from '@apollo/client';
 
 const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroCE($id: ID!){
-        eliminarRegistroCE(id: $id)
+    mutation eliminarRegistroPP($id: ID!){
+        eliminarRegistroPP(id: $id)
     }
 `;
 
 const LISTA_REGISTROS = gql `
-    query obtenerRegistrosCE {
-        obtenerRegistrosCE{
+    query obtenerRegistrosPP{
+        obtenerRegistrosPP{
             id
             creado
             modificado
+            producto
             operario
             lote
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
+            lTapon
+            lPcm
+            lPlaca
             cantDescarte
+            cantProducida
             observaciones
             estado
         }
