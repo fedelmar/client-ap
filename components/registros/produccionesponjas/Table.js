@@ -63,7 +63,6 @@ const Table = ({registros, filtros, rol}) => {
         })
     }
 
-
     return (
         <div className="overflow-x-scroll">
             {filtros ? 
@@ -93,8 +92,8 @@ const Table = ({registros, filtros, rol}) => {
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (
-                            column.id === 'horario' || 
-                            column.id === 'observaciones' || 
+                            column.id === 'horario' ||
+                            column.id === 'observaciones' ||
                             column.id === 'eliminar'
                             ?
                                 rol !== 'Admin' && column.id === 'eliminar' ?
