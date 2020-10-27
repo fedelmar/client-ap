@@ -294,7 +294,6 @@ const IniciarProduccion = () => {
 
             {mensaje && mostrarMensaje()}
 
-
             <div>
                {!session ? (
                     <div className="flex justify-center mt-5">
