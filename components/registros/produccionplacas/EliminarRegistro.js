@@ -28,7 +28,6 @@ const LISTA_REGISTROS = gql `
     }
 `;
 
-
 const EliminarRegistro = (props) => {
 
     const id = props.props;
