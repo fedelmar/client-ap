@@ -132,13 +132,13 @@ const IniciarProduccion = () => {
 
     const handleInicio = async valores => {
         const { lote } = valores;
-        
+        const date = Date.now();
         try {
             const { data } = await nuevoRegistroCE({
                 variables: {
                     input: {
                         operario: nombre,
-                        lote: `Lote ${lote}`,
+                        lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
                         producto: registro.producto,
                         lBolsa: registro.lBolsa,
                         lEsponja: registro.lEsponja,
