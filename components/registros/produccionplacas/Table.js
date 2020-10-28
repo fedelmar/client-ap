@@ -25,6 +25,7 @@ const Table = ({registros, filtros, rol}) => {
         if (rol && rol !== 'Admin') toggleHideColumn('eliminar');
         if (registros.every(i => i.estado === true)) {
             toggleHideColumn('cantDescarte');
+            toggleHideColumn('cantProducida');
         }             
     },[rol])
 
@@ -108,7 +109,7 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                column.id === 'cantDescarte' ?
+                                column.id === 'cantDescarte' || column.id === 'cantProducida' ?
                                     registros.every(i => i.estado === true) ? 
                                         null
                                     :    
