@@ -174,10 +174,12 @@ const NuevoRegistro = () => {
                                 lote: registro.lote,
                                 producto: registro.producto,
                                 productoID: registro.productoID,
+                                lTaponID: registro.lTaponID,
+                                lPlacaID: registro.lPlacaID,
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
                                 observaciones: observaciones
-                            }
+                            }   
                         }                
                     });
                     Swal.fire(
