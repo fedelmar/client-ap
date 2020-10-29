@@ -16,7 +16,7 @@ const ExportarRegistro = ({registros}) => {
     if (startDate && endDate) {
         startDate.setHours(0);
         endDate.setHours(0);
-        registrosExportados = registros.filter (registro => new Date(registro.fecha) >= startDate && new Date(registro.fecha) <= endDate);
+        registrosExportados = registros.filter (registro => new Date(registro.creado) >= startDate && new Date(registro.creado) <= endDate);
     }
     
     const exportar = () => {
@@ -39,11 +39,11 @@ const ExportarRegistro = ({registros}) => {
                 "Observaciones"]
             ],
             body: registrosExportados.map (i => [
-                format(new Date(i.fecha), 'dd/MM/yy'),
+                format(new Date(i.creado), 'dd/MM/yy'),
                 i.operario,
                 i.lote,
-                i.horaInicio,
-                i.horaCierre,
+                format(new Date(i.creado), 'HH:mm'),
+                format(new Date(i.modificado), 'HH:mm'),
                 i.producto,
                 i.lBolsa,
                 i.lEsponja,
