@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Table from '../../../components/registros/produccionplacas/Table';
+import ExportarRegistro from '../../../components/registros/produccionplacas/ExportarRegistroPP';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosPP{
@@ -81,6 +82,12 @@ const ProduccionPlacas = () => {
                     </button>
                 </div>
             </div>
+
+            {pdfOpen ?
+                <ExportarRegistro 
+                    registros={registrosCerrados}
+                />
+            : null }
 
             {activos && registrosAbiertos.length > 0 ? 
                 <Table 
