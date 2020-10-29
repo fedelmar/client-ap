@@ -59,7 +59,7 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/produccionesponjas/finalizarRegistro/[id]",
+            pathname: "/registros/produccionplacas/finalizarRegistro/[id]",
             query: { id }
         })
     }
