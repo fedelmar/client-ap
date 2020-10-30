@@ -103,6 +103,7 @@ const FinalizarRegistro = () => {
             terminarProduccion(valores);            
         }
     });
+    // Iniciar estado según base de datos
     useEffect(() => {
         if (data) {
             const { obtenerRegistroPP } = data;
@@ -131,6 +132,7 @@ const FinalizarRegistro = () => {
         </Layout>
     );
 
+    // Encontrar id segun nombre del producto
     let producto = productos.find(i => i.nombre === registro.producto);
 
     const terminarProduccion = valores => {
