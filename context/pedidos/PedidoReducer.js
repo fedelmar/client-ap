@@ -5,7 +5,7 @@ import {
 } from '../../types'
 
 
-export default ( state, action ) => {
+const Reducer = ( state, action ) => {
     switch(action.type) {
         case SELECCIONAR_CLIENTE: 
             return {
@@ -27,3 +27,5 @@ export default ( state, action ) => {
             return state
     }
 }
+
+export default Reducer;
