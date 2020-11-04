@@ -32,11 +32,11 @@ const ExportarRegistro = ({registros}) => {
                 "Inicio",
                 "Cierre",
                 "Producto",
-                "Bolsa", 
-                "Esponja",
+                "Placa", 
+                "Tapón",
+                "PCM",
                 "Produccion",
-                "Descarte",
-                "Observaciones"]
+                "Descarte"]
             ],
             body: registrosExportados.map (i => [
                 format(new Date(i.creado), 'dd/MM/yy'),
@@ -45,11 +45,11 @@ const ExportarRegistro = ({registros}) => {
                 format(new Date(i.creado), 'HH:mm'),
                 format(new Date(i.modificado), 'HH:mm'),
                 i.producto,
-                i.lBolsa,
-                i.lEsponja,
+                i.lPlaca,
+                i.lTapon,
+                i.lPcm,
                 i.cantProducida,
-                i.cantDescarte,
-                i.observaciones
+                i.cantDescarte
             ]),
             didDrawPage: function (data) {
                 // Header

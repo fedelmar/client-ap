@@ -4,7 +4,7 @@ import {
     LISTA_PRODUCTOS
 } from '../../types'
 
-export default ( state, action ) => {
+const Reducer = ( state, action ) => {
     switch(action.type) {
         case DATOS_USUARIO:
             return {
@@ -25,3 +25,5 @@ export default ( state, action ) => {
             return state
     }
 }
+
+export default Reducer;

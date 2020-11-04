@@ -8,7 +8,6 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import ManejoDeStock from '../../../components/registros/produccionesponjas/ManejoDeStock';
 
 const LISTA_STOCK_CATEGORIA = gql `
     query obtneterStockInsumosPorCategoria($input: String!){
@@ -22,17 +21,18 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
-const NUEVO_REGISTRO = gql`
-    mutation nuevoRegistroCE($id: ID, $input: CPEInput){
-        nuevoRegistroCE(id: $id, input: $input){
+const NUEVO_REGISTRO = gql `
+    mutation nuevoRegistroPP($id: ID, $input: CPPInput){
+        nuevoRegistroPP(id: $id, input: $input){
             id
             creado
             modificado
             operario
             lote
             producto
-            lBolsa
-            lEsponja
+            lTapon
+            lPcm
+            lPlaca
             cantProducida
             cantDescarte
             observaciones
@@ -41,76 +41,58 @@ const NUEVO_REGISTRO = gql`
     }
 `;
 
-const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
-            actualizarRegistroCE(id: $id, input: $input){
-            cantProducida            
-        }
-    }
-`;
-
-const IniciarProduccion = () => {
+const NuevoRegistro = () => {
 
     const router = useRouter();
-    const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
+    const { data: dataPlacas, loading: loadingPlacas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
-            input: "Esponjas"
+            input: "Placas"
         }
     });
-    const { data: dataBolsas, loading: loadingBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
+    const { data: data, loading: loading } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Polietileno"
         }
-    })
-    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
-    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
+    });
+    const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
-    const [mensaje, guardarMensaje] = useState(null);
     const [session, setSession] = useState(false);
     const [sesionActiva, setSesionActiva] = useState();
     const [registro, setRegistro] = useState({
-        operario: nombre,
-        lote: '',
-        producto: '',
-        productoID: '',
-        lBolsa: '',
-        lBolsaID: '',
-        bolsaDisp: 0,
-        lEsponja: '',
-        lEsponjaID: '',
-        esponjaDisp: 0,
-        cantProducida: 0,
-        cantDescarte: 0
+        placaDisp: 0,
+        taponDisp: 0
     });
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
             lote: '',
-            producto: '',
-            lBolsa: '',
-            lEsponja: ''
+            lPcm: ''
         },
         validationSchema: Yup.object({
             lote: Yup.string().required('Ingrese un numero'),
-            producto: Yup.string(),
-            lBolsa: Yup.string(),
-            lEsponja: Yup.string()                        
+            lPcm: Yup.string().required('Ingrese el lote de PCM')                         
         }),
-        onSubmit: valores => {        
+        onSubmit: valores => {     
             handleInicio(valores);            
         }
-    })
+    });
     // Formato del formulario de cierre de sesion
+    let menor;
+    registro.taponDisp <= registro.placaDisp ? menor = registro.taponDisp : menor = registro.placaDisp;
     const formikCierre = useFormik({
         initialValues: {
+            cantProducida: 0,
             cantDescarte: 0,
             observaciones: ''
         },
         validationSchema: Yup.object({
+            cantProducida: Yup.number()
+                            .max(menor, `Debe ser menor o igual a ${menor}`)
+                            .required('Ingrese la cantidad Producida'),
             cantDescarte: Yup.number()
-                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
+                            .max(Yup.ref('cantProducida'), `Debe ser menor a la cantidad producida`)
                             .required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
         }),
@@ -122,60 +104,57 @@ const IniciarProduccion = () => {
         if (nombre) {
             setRegistro({...registro, operario: nombre})
         }
-    },[nombre])
+    },[nombre]);
 
-    if(loadingEsponjas || loadingBolsas) return (
+    if(loadingPlacas || loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
 
-    const handleInicio = async valores => {
-        const { lote } = valores;
+    // Definir lotes segun el stock de insumos
+    const listaPlacas = dataPlacas.obtneterStockInsumosPorCategoria;
+    const listaTapon = data.obtneterStockInsumosPorCategoria;
+
+    const handleInicio =  async valores => {
+        const { lote, lPcm } = valores;
         const date = Date.now();
         try {
-            const { data } = await nuevoRegistroCE({
+            const { data } = await nuevoRegistroPP({
                 variables: {
                     input: {
                         operario: nombre,
                         lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
                         producto: registro.producto,
-                        lBolsa: registro.lBolsa,
-                        lEsponja: registro.lEsponja,
-                        cantProducida: 0
+                        lPlaca: registro.lPlaca,
+                        lTapon: registro.lTapon,
+                        lPcm: lPcm
                     }
                 }                
             });
-            setSesionActiva(data.nuevoRegistroCE);
-            setRegistro({...registro, lote: `L${lote}-${format(new Date(data.nuevoRegistroCE.creado), 'ddMMyy')}`});   
+            setSesionActiva(data.nuevoRegistroPP)
+            setRegistro({...registro, 
+                lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`, 
+                lPcm: lPcm
+            })
+            setSession(true);
         } catch (error) {
-            guardarMensaje(error.message.replace('GraphQL error: ', ''));
+            console.log(error)
         }
-        setSession(true);
-    }
 
-    const handleCierre = () => {
-        // Volver a iniciar por si hubo algun error
-        setRegistro({...registro})
-        setSession(false);        
-    }
-
-    const terminarProduccion = async valores => {
-        // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos e insumos
-
-        //Volver a planillas de produccion y modificar base de datos
-        const {observaciones, cantDescarte} = valores;
-    
-        setRegistro({...registro, cantDescarte, observaciones})
+    };
+    const terminarProduccion = valores => {
+        const {observaciones, cantDescarte, cantProducida} = valores;
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + nombre + "</br>" +
-                    "Lote de Esponja: " + registro.lEsponja + "</br>" +
-                    "Lote de Bolsa: " + registro.lBolsa + "</br>" +
-                    "Cantidad producida: " + registro.cantProducida + "</br>" +
+                    "Lote de Placa: " + registro.lPlaca + "</br>" +
+                    "Lote de Tapón: " + registro.lTapon + "</br>" +
+                    "Lote de Pcm: " + registro.lPcm + "</br>" +
+                    "Cantidad producida: " + cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
@@ -187,112 +166,57 @@ const IniciarProduccion = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroCE({
+                    const { data } = await nuevoRegistroPP({
                         variables: {
                             id: sesionActiva.id,
                             input: {
                                 operario: nombre,
                                 lote: registro.lote,
                                 producto: registro.producto,
-                                cantProducida: registro.cantProducida,
+                                productoID: registro.productoID,
+                                lTaponID: registro.lTaponID,
+                                lPlacaID: registro.lPlacaID,
+                                cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
                                 observaciones: observaciones
-                            }
+                            }   
                         }                
                     });
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        data.nuevoRegistroCE,
+                        data.nuevoRegistroPP,
                         'success'
                     )
-                    router.push('/registros/produccionesponjas');
+                    router.push('/registros/produccionplacas');
                 } catch (error) {
-                    guardarMensaje(error.message.replace('GraphQL error: ', ''));
+                    console.log(error)
                 }
             }
           })        
-    }
+    };
 
     // Manejo de los campos select del formulario (On Change)
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
-    }
-    const seleccionarLEsponja = lote => {
+    };
+    const seleccionarLPlacas = lote => {
         setRegistro({...registro, 
-            lEsponja: lote.lote, 
-            lEsponjaID: lote.id, 
-            esponjaDisp: lote.cantidad
+            lPlaca: lote.lote, 
+            lPlacaID: lote.id, 
+            placaDisp: lote.cantidad
         })
-    }
-    const seleccionarLBolsa = lote => {
+    };
+    const seleccionarLTapon = lote => {
         setRegistro({...registro, 
-            lBolsa: lote.lote, 
-            lBolsaID: lote.id, 
-            bolsaDisp: lote.cantidad
+            lTapon: lote.lote, 
+            lTaponID: lote.id, 
+            taponDisp: lote.cantidad
         })
-    }
-
-    // Mostrar mensaje de base de datos si hubo un error
-    const mostrarMensaje = () => {
-        return(
-            <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
-                <p>No existe el lote en el Stock</p>
-            </div>
-        )
-    }
-
-    // Definir lotes de esponjas y bolsas, segun el stock de insumos y la info en context de insumos
-    const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
-    const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
-
-    // Funcion para exportar en complemento ManejoDeStock
-    const cantidades = async valores => {
-        const {esponjas} = valores;
-        setRegistro({...registro, 
-            cantProducida: registro.cantProducida + esponjas, 
-            esponjaDisp: registro.esponjaDisp - esponjas, 
-            bolsaDisp: registro.bolsaDisp - esponjas
-        });
-        try {
-            const { data } = await actualizarRegistroCE({
-                variables: {
-                    id: sesionActiva.id,
-                    input: {
-                        cantProducida: registro.cantProducida + esponjas
-                    }
-                }
-            });
-            let timerInterval
-            Swal.fire({
-                html: `Se sumaron ${esponjas} esponjas`,
-                timer: 1000,
-                position: 'top',
-                showConfirmButton: false,
-                width: 300,
-                padding: 10,
-                willOpen: () => {
-                    Swal.showLoading()
-                    timerInterval = setInterval(() => {
-                        const content = Swal.getContent()
-                            if (content) {
-                                const b = content.querySelector('b')
-                                if (b) {
-                                b.textContent = Swal.getTimerLeft()
-                                }
-                            }
-                        }, 100)
-                    },
-            });
-        } catch (error) {
-            console.log(error);
-        }
     };
 
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
-
-            {mensaje && mostrarMensaje()}
 
             <div>
                {!session ? (
@@ -338,11 +262,11 @@ const IniciarProduccion = () => {
                                     isMulti={false}
                                 />
 
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
+                                <p className="block text-gray-700 font-bold mb-2">Lote de Placas</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={listaEsponjas}
-                                    onChange={opcion => seleccionarLEsponja(opcion) }
+                                    options={listaPlacas}
+                                    onChange={opcion => seleccionarLPlacas(opcion) }
                                     getOptionValue={ opciones => opciones.id }
                                     getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
@@ -351,26 +275,41 @@ const IniciarProduccion = () => {
                                     isMulti={false}
                                 />
 
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
+                                <p className="block text-gray-700 font-bold mb-2">Lote de Tapón</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={listaBolsas}
-                                    onChange={opcion => seleccionarLBolsa(opcion) }
+                                    options={listaTapon}
+                                    onChange={opcion => seleccionarLTapon(opcion) }
                                     getOptionValue={ opciones => opciones.id }
                                     getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
                                     isMulti={false}
-                                />                          
+                                />
 
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="lPcm">
+                                        Lote de PCM
+                                    </label>
     
-                                { formikInicio.touched.lBolsa && formikInicio.errors.lBolsa ? (
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="lPcm"
+                                        type="text"
+                                        placeholder="Ingrese el lote de PCM..."
+                                        onChange={formikInicio.handleChange}
+                                        onBlur={formikInicio.handleBlur}
+                                        value={formikInicio.values.lPcm}
+                                    />
+                                </div>
+    
+                                { formikInicio.touched.lPcm && formikInicio.errors.lPcm ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikInicio.errors.lBolsa}</p>
+                                        <p>{formikInicio.errors.lPcm}</p>
                                     </div>
-                                ) : null  }
+                                ) : null  } 
     
                                 <input
                                     type="submit"
@@ -395,7 +334,6 @@ const IniciarProduccion = () => {
                                         <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'HH:mm')}</p>
                                     </div>
                                 </div>
-                                
                                 <div className="flex">
                                     <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
                                     <p className="text-gray-700 font-light">{registro.lote}</p>
@@ -404,39 +342,59 @@ const IniciarProduccion = () => {
                                     <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
                                     <p className="text-gray-700 font-light">{registro.producto}</p>
                                 </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Lote de PCM: </p>
+                                    <p className="text-gray-700 font-light">{registro.lPcm}</p>
+                                </div>
                                 <div className="flex justify-between">
                                     <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Esponja: </p>
-                                        <p className="text-gray-700 font-light ">{registro.lEsponja}</p>
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Placa: </p>
+                                        <p className="text-gray-700 font-light ">{registro.lPlaca}</p>
                                     </div>
                                     <div className="flex">
                                         <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-                                        <p className="text-gray-700 font-light">{registro.esponjaDisp}</p>
+                                        <p className="text-gray-700 font-light">{registro.placaDisp}</p>
                                     </div>
                                 </div>
                                 <div className="flex justify-between pb-2">
                                     <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-                                        <p className="text-gray-700 font-light ">{registro.lBolsa}</p>
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Tapón: </p>
+                                        <p className="text-gray-700 font-light ">{registro.lTapon}</p>
                                     </div>
                                     <div className="flex">
                                         <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-                                        <p className="text-gray-700 font-light">{registro.bolsaDisp}</p>
+                                        <p className="text-gray-700 font-light">{registro.taponDisp}</p>
                                     </div>
                                 </div>
-                              
-                                <div className="flex py-2">
-                                    <p className="text-gray-700 text-lg font-bold mr-1">Cantidad Producida: </p>
-                                    <p className="text-gray-700 text-lg font-light ">{registro.cantProducida}</p>
-                                </div>
                             </div>
-
-                            <ManejoDeStock registro={registro} cantidades={cantidades}/>
 
                             <form
                                 className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
                                 onSubmit={formikCierre.handleSubmit}
                             >
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantProducida">
+                                        Cantidad Producida
+                                    </label>
+
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="cantProducida"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad de cantProducida..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.cantProducida}
+                                    />
+                                </div>
+
+                                { formikCierre.touched.cantProducida && formikCierre.errors.cantProducida ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.cantProducida}</p>
+                                    </div>
+                                ) : null  }
+                                
                                 <div className="mb-4">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
                                         Descarte
@@ -464,7 +422,7 @@ const IniciarProduccion = () => {
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
                                         Observaciones
                                     </label>
-    
+
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="observaciones"
@@ -475,14 +433,14 @@ const IniciarProduccion = () => {
                                         value={formikCierre.values.observaciones}
                                     />
                                 </div>
-    
+
                                 { formikCierre.touched.observaciones && formikCierre.errors.observaciones ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
                                         <p>{formikCierre.errors.observaciones}</p>
                                     </div>
                                 ) : null  }
-    
+
                                 <input
                                     type="submit"
                                     className="bg-red-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-red-900"
@@ -493,8 +451,9 @@ const IniciarProduccion = () => {
                         </div>
                     </div> 
                 )}
-            </div>            
+            </div>   
         </Layout>
     );
 }
-export default IniciarProduccion;
+
+export default NuevoRegistro;

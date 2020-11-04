@@ -25,6 +25,7 @@ const Table = ({registros, filtros, rol}) => {
         if (rol && rol !== 'Admin') toggleHideColumn('eliminar');
         if (registros.every(i => i.estado === true)) {
             toggleHideColumn('cantDescarte');
+            toggleHideColumn('cantProducida');
         }             
     },[rol])
 
@@ -58,7 +59,7 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/produccionesponjas/finalizarRegistro/[id]",
+            pathname: "/registros/produccionplacas/finalizarRegistro/[id]",
             query: { id }
         })
     }
@@ -90,7 +91,7 @@ const Table = ({registros, filtros, rol}) => {
 
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
-                    <tr className="text-white">
+                <tr className="text-white">
                         {headers.map(column => (
                             column.id === 'horario' ||
                             column.id === 'observaciones' ||
@@ -108,7 +109,7 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                column.id === 'cantDescarte' ?
+                                column.id === 'cantDescarte' || column.id === 'cantProducida' ?
                                     registros.every(i => i.estado === true) ? 
                                         null
                                     :    
@@ -142,6 +143,7 @@ const Table = ({registros, filtros, rol}) => {
                         ))}
                     </tr>
                 </thead>
+                
                 <tbody 
                     className="bg-white"
                     {...getTableBodyProps()}
@@ -203,7 +205,7 @@ const Table = ({registros, filtros, rol}) => {
                             </tr>
                         )
                     })}
-                </tbody>            
+                </tbody>   
             </table>
         </div>
     );
