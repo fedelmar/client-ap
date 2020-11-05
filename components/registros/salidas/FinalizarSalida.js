@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-
 const NUEVA_SALIDA = gql `
     mutation nuevoRegistroSalida($input: SalidaInput){
         nuevoRegistroSalida(input: $input){
@@ -109,7 +108,7 @@ const FinalizarSalida = (datos) => {
             </div>
         )
     }
-
+    
     return(
         <div>
             {mensaje && mostrarMensaje()}
@@ -121,7 +120,7 @@ const FinalizarSalida = (datos) => {
                 </div>
                 <div className="flex">
                     <p className="block text-gray-700 text-m font-bold mb-2 pr-2">Cliente:</p>
-                    <p className="block text-gray-700 text-m mb-2">{cliente.empresa}</p>
+                    <p className="block text-gray-700 text-m mb-2">{cliente}</p>
                 </div>
             </div>
             <p className="block text-center text-gray-700 text-xl font-bold mb-2">Seleccione las cantidades</p>

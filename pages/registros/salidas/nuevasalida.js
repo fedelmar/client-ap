@@ -6,15 +6,6 @@ import FinalizarSalida from '../../../components/registros/salidas/FinalizarSali
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-const OBTENER_CLIENTES = gql `
-  query obtenerClientes {
-      obtenerClientes{
-          id
-          empresa
-        }
-      }
-`;
-
 const OBTENER_STOCK = gql`
     query obtenerProductosTerminados{
         obtenerProductosTerminados{
@@ -28,8 +19,9 @@ const OBTENER_STOCK = gql`
 
 const NuevaSalida = () => {
 
-    const { data: dataClientes, loading: loadingClientes } = useQuery(OBTENER_CLIENTES);
-    const { data: dataStock, loading: loadingStock } = useQuery(OBTENER_STOCK);
+    const { data: dataStock, loading: loadingStock } = useQuery(OBTENER_STOCK, {
+        pollInterval: 500,
+    });
     const [ cliente, setCliente ] = useState();
     const [ remito, setRemito ] = useState();
     const [ productos, setProductos ] = useState([]);
@@ -52,7 +44,7 @@ const NuevaSalida = () => {
         }
     })
 
-    if(loadingClientes || loadingStock)  return (
+    if(loadingStock)  return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
