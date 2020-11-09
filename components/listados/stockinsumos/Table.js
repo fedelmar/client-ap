@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import Router from 'next/router';
+import { format } from 'date-fns';
 import columnas from './columns';
 import EliminarLote from './EliminarLote';
 import Insumo from './Insumo';
@@ -117,6 +118,13 @@ const Table = ({registros, rol, filtros}) => {
                                                 </td>
                                             : cell.column.id === 'insumo' ?
                                                 <Insumo id={cell.value} />
+                                            : cell.column.id === 'creado' ?
+                                                <th 
+                                                    className="border px-4 py-2"
+                                                    {...cell.getCellProps()}
+                                                >
+                                                   {format(new Date(cell.row.original.creado), 'dd/MM/yy')} 
+                                                </th>
                                             :
                                                 <th 
                                                     className="border px-4 py-2"

@@ -13,6 +13,7 @@ const LISTA_STOCK = gql `
             insumo
             lote
             cantidad
+            creado
         }
     }
 `;
@@ -43,7 +44,7 @@ const StockInsumos = () => {
         </Layout>
     );
     
-    console.log(dataSumados);
+    console.log(data);
     let registrosSumados = dataSumados.obtenerInsumosPorInsumo;
     let registros = data.obtenerStockInsumos.map(i => i)
     registros.reverse();
