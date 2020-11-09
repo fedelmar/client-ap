@@ -12,6 +12,10 @@ const columnas = [
         accessor: 'cantidad',
     },
     {
+        Header: 'Ingreso',
+        accessor: 'creado',
+    },
+    {
         Header: 'Editar',
         accessor: 'editar',
     },
