@@ -40,7 +40,7 @@ const columnas = [
       accessor: 'observaciones',
     },
     {
-      Header: 'Eliminar',
+      Header: 'Editar/Eliminar',
       accessor: 'eliminar',
     },
   ]
