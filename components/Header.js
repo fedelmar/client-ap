@@ -32,7 +32,7 @@ const Header = ({usuario}) => {
             </button>
             <div className="flex-col">     
                 <p className="text-base bg-gray-800 text-right text-white font-light">
-                    Usuario: {usuario.nombre} {usuario.apellido}
+                    Usuario: {nombre} {apellido}
                 </p>       
                 <div className="flex justify-end">
                     {rol === "Admin" ? (
