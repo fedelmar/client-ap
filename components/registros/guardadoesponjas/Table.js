@@ -89,7 +89,7 @@ const Table = ({registros, filtros, rol}) => {
                 </div>
             : null}
 
-            <table className="table-auto shadow-md mt-2 w-full w-lg">
+            <table className="table-auto shadow-md w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
                         {headers.map(column => (

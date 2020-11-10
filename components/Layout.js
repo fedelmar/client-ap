@@ -116,12 +116,10 @@ const Layout = ({children}) => {
             </div>
         ) : (
             <div className="flex flex-col justify-between h-auto pb-10">
-                {!usuario ? (null) : (<Header usuario={usuario} />)} 
+                {!usuario ? (null) : (<Header usuario={usuario} />)}
                 
-             
-     
-                <div className="bg-gray-200 p-2 mb-auto min-h-screen" > 
-                        {children}
+                <div className="bg-gray-200 p-1 mb-auto min-h-screen" > 
+                  {children}
                 </div>   
                 
                 <Footer />

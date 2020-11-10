@@ -22,7 +22,7 @@ const Header = ({usuario}) => {
     }
  
     return (
-        <header className="flex items-center justify-between bg-gray-800 px-4 py-3">
+        <header className="flex items-center justify-between bg-gray-800 px-2 py-2">
             <button
                 type="button"
                 className="text-white font-black text-2xl "
@@ -30,30 +30,34 @@ const Header = ({usuario}) => {
             >
                 Sistema AP
             </button>
-            <p className="text-2xl text-white font-light">Hola {nombre} {apellido}!</p>
-            <div className="flex">
-                {rol === "Admin" ? (
-                        <div className="px-2" >
-                            <button
-                                onClick={() => router.push('/registro')}
-                                className="uppercase shadow-md text-white text-xs sm:w-auto p-2 font-black bg-green-700 rounded w-full lg:w-auto text-center" 
-                                type="button"
-                            >
-                                Nuevo Usuario
-                            </button>
-                        </div>
-                    ) : null}
+            <div className="flex-col">     
+                <p className="text-base bg-gray-800 text-right text-white font-light">
+                    Usuario: {nombre} {apellido}
+                </p>       
+                <div className="flex justify-end">
+                    {rol === "Admin" ? (
+                            <div className="px-1" >
+                                <button
+                                    onClick={() => router.push('/registro')}
+                                    className="uppercase shadow-md text-white text-xs sm:w-auto p-1 font-black bg-green-700 rounded w-full lg:w-auto text-center" 
+                                    type="button"
+                                >
+                                    Nuevo Usuario
+                                </button>
+                            </div>
+                        ) : null}
 
-                <div>
-                    <button
-                        onClick={() => cerrarSesion(client)}
-                        className="uppercase shadow-md text-white text-xs sm:w-auto p-2 font-black bg-red-700 rounded w-full lg:w-auto text-center" 
-                        type="button"
-                    >
-                        Cerrar Sessión
-                    </button>
+                    <div>
+                        <button
+                            onClick={() => cerrarSesion(client)}
+                            className="uppercase shadow-md text-white text-xs sm:w-auto p-1 font-black bg-red-700 rounded w-full lg:w-auto text-center" 
+                            type="button"
+                        >
+                            Cerrar Sessión
+                        </button>
+                    </div>
                 </div>
-            </div>             
+            </div>         
         </header>        
     );
 }
