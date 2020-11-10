@@ -30,7 +30,7 @@ const Header = ({usuario}) => {
             >
                 Sistema AP
             </button>
-            <p className="text-2xl text-white font-light">Hola {nombre} {apellido}!</p>
+            
             <div className="flex">
                 {rol === "Admin" ? (
                         <div className="px-2" >
@@ -53,7 +53,7 @@ const Header = ({usuario}) => {
                         Cerrar Sessión
                     </button>
                 </div>
-            </div>             
+            </div>         
         </header>        
     );
 }
