@@ -6,7 +6,7 @@ const Index = () => {
   return (
     <Layout>
 
-      <div className="sm:flex justify-center  " >
+      <div className="flex justify-center" >
         <img src='/imagenAP.png' />
       </div>
 

@@ -117,12 +117,9 @@ const Layout = ({children}) => {
         ) : (
             <div className="flex flex-col justify-between h-auto pb-10">
                 {!usuario ? (null) : (<Header usuario={usuario} />)}
-                <p className="text-base pr-2 bg-gray-200 text-right text-gray-800 font-light">Usuario: {usuario.nombre} {usuario.apellido}</p>     
                 
-             
-     
-                <div className="bg-gray-200 p-1 pt-0 mb-auto min-h-screen" > 
-                        {children}
+                <div className="bg-gray-200 p-1 mb-auto min-h-screen" > 
+                  {children}
                 </div>   
                 
                 <Footer />
