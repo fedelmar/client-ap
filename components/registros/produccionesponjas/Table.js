@@ -29,7 +29,6 @@ const Table = ({registros, filtros, rol}) => {
     },[rol])
 
     const {
-        getTableProps,
         getTableBodyProps,
         headers,
         rows,
@@ -154,7 +153,7 @@ const Table = ({registros, filtros, rol}) => {
                                     return (
                                         <>
                                             {cell.column.id === 'eliminar' ? 
-                                                <EliminarRegistro props={cell.row.original.id} />
+                                                    <EliminarRegistro props={cell.row.original.id} />                
                                             : 
                                                 cell.column.id === 'observaciones' ?
                                                     cell.row.original.estado === false ?

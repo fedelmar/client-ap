@@ -44,7 +44,6 @@ const StockInsumos = () => {
         </Layout>
     );
     
-    console.log(data);
     let registrosSumados = dataSumados.obtenerInsumosPorInsumo;
     let registros = data.obtenerStockInsumos.map(i => i)
     registros.reverse();
