@@ -2,6 +2,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import { gql, useMutation } from '@apollo/client';
 import Router from 'next/router';
+import { isThisHour } from 'date-fns';
 
 const ELIMINAR_REGISTRO = gql `
     mutation eliminarRegistroCE($id: ID!){
@@ -80,30 +81,17 @@ const EliminarRegistro = ({props}) => {
           })
     }
 
-    const editarRegistro = id => {
-        Router.push({
-            pathname: "/registros/produccionesponjas/editarRegistro/[id]",
-            query: { id }
-        })
-    }
     
     return (
-        <td className="flex-col border justify-center px-3">
-            <button
-                type="button"
-                className="flex justify-center items-center bg-green-600  my-1 py-2 px-2 w-full text-white rounded text-xs uppercase font-bold"
-                onClick={() => editarRegistro(id)}
-            >
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-            </button>
+        <th className="border px-3">
             <button
                 type="button"
                 onClick={() => confimarEliminarRegistro()}
-                className="flex justify-center item-center bg-red-800  my-1 py-2 px-2 w-full text-white rounded uppercase font-bold text-xs"    
+                className="flex justify-center item-center bg-red-800  py-2 px-1 w-full text-white rounded uppercase font-bold text-xs"    
             >
                 <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </button>
-        </td> 
+        </th> 
     );
 }
 

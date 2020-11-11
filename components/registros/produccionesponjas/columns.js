@@ -40,7 +40,11 @@ const columnas = [
       accessor: 'observaciones',
     },
     {
-      Header: 'Editar/Eliminar',
+      Header: 'Editar',
+      accessor: 'editar',
+    },
+    {
+      Header: 'Eliminar',
       accessor: 'eliminar',
     },
   ]
