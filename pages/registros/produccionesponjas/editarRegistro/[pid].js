@@ -44,8 +44,7 @@ const EditarRegistro = () => {
     });
     const [registro, setRegistro] = useState({
         cantProducida: '',
-        cantDescarte: '',
-        observaciones: ''
+        cantDescarte: ''
     });
     const schemaValidacion = Yup.object({
         cantProducida: Yup.number(),
@@ -115,7 +114,7 @@ const EditarRegistro = () => {
 
     return (
         <Layout>
-            <h1 className="text-2xl text-gray-800 font-light">Finalizar Registro</h1>
+            <h1 className="text-2xl text-gray-800 font-light">Editar Registro</h1>
 
             <div className="flex justify-center mt-5">
                 <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
@@ -217,9 +216,6 @@ const EditarRegistro = () => {
                     )
                 }}
                 </Formik>
-
-        
-
                 </div>
             </div>
         </Layout>
