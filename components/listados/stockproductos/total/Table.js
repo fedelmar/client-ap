@@ -4,7 +4,7 @@ import columnas from './columns';
 
 const Table = ({registros, filtros}) => {
 
-    //const [filtroLote, setFiltroLote] = useState("");
+    const [filtroProducto, setFiltroProducto] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -23,22 +23,22 @@ const Table = ({registros, filtros}) => {
         setFilter,
     } = tableInstance;
 
-    /* const handleFilterChangeLote = e => {
+     const handleFilterChangeProducto = e => {
         const value = e.target.value || undefined;
-        setFilter("lote", value);
-        setFiltroLote(value);
-    };*/
+        setFilter("producto", value);
+        setFiltroProducto(value);
+    };
 
     return (
         <div className="overflow-x-scroll">
-            {/*filtros ? 
+            {filtros ? 
                 <input
                     className="p-1 border rounded border-gray-800"
-                    value={filtroLote}
-                    onChange={handleFilterChangeLote}
-                    placeholder={"Buscar Lote"}
+                    value={filtroProducto}
+                    onChange={handleFilterChangeProducto}
+                    placeholder={"Buscar Producto"}
                 />
-            : null*/}
+            : null}
 
             <table className="table-auto shadow-md mt-2 w-full w-lg">
                 <thead className="bg-gray-800">
@@ -46,10 +46,16 @@ const Table = ({registros, filtros}) => {
                         {headers.map(column => (
                             <th 
                                 className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                {...column.getHeaderProps()}
+                                {...column.getHeaderProps(column.getSortByToggleProps())}
                             >                              
                                 {column.render('Header')}
-                                        
+                                <span>
+                                    {column.isSorted
+                                    ? column.isSortedDesc
+                                        ? ' ▽'
+                                        : ' △'
+                                    : ''}
+                                </span>                        
                             </th>
                         ))}
                     </tr>
