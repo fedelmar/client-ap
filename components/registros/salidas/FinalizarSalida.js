@@ -3,9 +3,10 @@ import { Formik, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import Swal from 'sweetalert2';
 
 const NUEVA_SALIDA = gql `
-    mutation nuevoRegistroSalida($input: SalidaInput){
+    mutation nuevoRegistroSalida($input: SalidaInput){ 
         nuevoRegistroSalida(input: $input){
             id
             fecha
@@ -94,6 +95,11 @@ const FinalizarSalida = (datos) => {
                     }
                 }                
             });
+            Swal.fire(
+                'Se creo un nuevo registro y se actualizo stock de productos',
+                ' ',
+                'success'
+            )
             router.push('/registros/salidas');
         } catch (error) {
             guardarMensaje(error.message.replace('GraphQL error: ', ''));
