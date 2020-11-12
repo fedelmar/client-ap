@@ -17,9 +17,23 @@ const OBTENER_STOCK = gql`
     }
 `;
 
+const STOCK_TOTAL =  gql `
+    query obtenerProductosTotal{
+        obtenerProductosTotal{
+            producto
+            cantidad
+            estado
+            lotes
+        }
+    }
+`;
+
 const StockProductos = () => {
 
     const {data, loading} = useQuery(OBTENER_STOCK, {
+        pollInterval: 500,
+    });
+    const {data: dataTotal, loading: loadingTotal} = useQuery(STOCK_TOTAL, {
         pollInterval: 500,
     });
     const [ filtros, setFiltros ] = useState(false);
@@ -27,11 +41,13 @@ const StockProductos = () => {
     const { rol } = pedidoContext.usuario;
 
 
-    if(loading) return (
+    if(loading && loadingTotal) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
+
+    console.log(dataTotal)
 
     let registros = data.obtenerProductosStock.map(i => i)
     registros.reverse();
