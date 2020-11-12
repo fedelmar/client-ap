@@ -42,7 +42,7 @@ const StockProductos = () => {
     const pedidoContext = useContext(UsuarioContext);
     const { rol } = pedidoContext.usuario;
 
-    if(loading && loadingTotal) return (
+    if(loading || loadingTotal) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
