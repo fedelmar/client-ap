@@ -161,57 +161,73 @@ const EditarRegistro = () => {
                             className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
                             onSubmit={props.handleSubmit}
                         >
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantProducida">
-                                        Cantidad producida
-                                    </label>
-
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantProducida"
-                                        type="number"
-                                        placeholder="Cantidad producida"
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.cantProducida}
-                                    />
-                                </div>
-
-                                { props.touched.cantProducida && props.errors.cantProducida ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{props.errors.cantProducida}</p>
-                                    </div>
-                                ) : null  }
-                                
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
-                                        Cantidad de descarte
-                                    </label>
-
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantDescarte"
-                                        type="number"
-                                        placeholder="Cantidad de descarte"
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.cantDescarte}
-                                    />
-                                </div>
-
-                                { props.touched.cantDescarte && props.errors.cantDescarte ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{props.errors.cantDescarte}</p>
-                                    </div>
-                                ) : null  }          
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lote">
+                                    Lote
+                                </label>
 
                                 <input
-                                    type="submit"
-                                    className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
-                                    value="Editar Registro"
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="lote"
+                                    type="string"
+                                    placeholder="Lote"
+                                    onChange={props.handleChange}
+                                    onBlur={props.handleBlur}
+                                    value={props.values.lote}
                                 />
+                            </div>
+                        
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantProducida">
+                                    Cantidad producida
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="cantProducida"
+                                    type="number"
+                                    placeholder="Cantidad producida"
+                                    onChange={props.handleChange}
+                                    onBlur={props.handleBlur}
+                                    value={props.values.cantProducida}
+                                />
+                            </div>
+
+                            { props.touched.cantProducida && props.errors.cantProducida ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{props.errors.cantProducida}</p>
+                                </div>
+                            ) : null  }
+                            
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
+                                    Cantidad de descarte
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="cantDescarte"
+                                    type="number"
+                                    placeholder="Cantidad de descarte"
+                                    onChange={props.handleChange}
+                                    onBlur={props.handleBlur}
+                                    value={props.values.cantDescarte}
+                                />
+                            </div>
+
+                            { props.touched.cantDescarte && props.errors.cantDescarte ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{props.errors.cantDescarte}</p>
+                                </div>
+                            ) : null  }          
+
+                            <input
+                                type="submit"
+                                className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
+                                value="Editar Registro"
+                            />
                         </form>      
                     )
                 }}
