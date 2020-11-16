@@ -11,6 +11,7 @@ const REGISTRO = gql `
     query obtenerRegistroCE($id: ID!){
         obtenerRegistroCE(id: $id){
             creado
+            modificado
             operario
             lote
             producto
@@ -76,10 +77,11 @@ const EditarRegistro = () => {
     );
 
     const finalizar = async valores => {
-        const {cantProducida, cantDescarte} = valores;
+        const {cantProducida, cantDescarte, lote} = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
-            html:   "Cantidad producida: " + cantProducida + "</br>" +
+            html:   "Lote: " + lote + "</br>" +
+                    "Cantidad producida: " + cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>", 
             icon: 'warning',
             showCancelButton: true,
@@ -94,6 +96,7 @@ const EditarRegistro = () => {
                         variables: {
                             id: id,
                             input: {
+                                lote: lote,
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte
                             }
@@ -125,15 +128,13 @@ const EditarRegistro = () => {
                                 <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
-                                <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'HH:mm')}</p>
+                                <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light mx-1">a</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
                         
-                        <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
-                            <p className="text-gray-700 font-light">{registro.lote}</p>
-                        </div>
                         <div className="flex">
                             <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
                             <p className="text-gray-700 font-light">{registro.producto}</p>
