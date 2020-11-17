@@ -6,6 +6,10 @@ import EliminarRegistro from './EliminarRegistro';
 
 const Table = ({registros, filtros}) => {
 
+    const [filtroProveedor, setFiltroProveedor] = useState("");
+    const [filtroRemito, setFiltroRemito] = useState("");
+    const [filtroLote, setFiltroLote] = useState("");
+    const [filtroInsumo, setFiltroInsumo] = useState("");
     const columns = useMemo(
         () => columnas,
         []
@@ -25,9 +29,61 @@ const Table = ({registros, filtros}) => {
         toggleHideColumn
     } = tableInstance;
 
+    const handleFilterChangeProveedor = e => {
+        const value = e.target.value || undefined;
+        setFilter("proveedor", value);
+        setFiltroProveedor(value);
+    };
+
+    const handleFilterChangeLote = e => {
+        const value = e.target.value || undefined;
+        setFilter("lote", value);
+        setFiltroLote(value);
+    };
+
+    const handleFilterChangeInsumo = e => {
+        const value = e.target.value || undefined;
+        setFilter("insumo", value);
+        setFiltroInsumo(value);
+    };
+
+    const handleFilterChangeRemito = e => {
+        const value = e.target.value || undefined;
+        setFilter("remito", value);
+        setFiltroRemito(value);
+    };
 
     return (
         <div className="overflow-x-scroll">
+
+            {filtros ? 
+                <div className="flex justify-between">
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroInsumo}
+                        onChange={handleFilterChangeInsumo}
+                        placeholder={"Buscar Insumo"}
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroLote}
+                        onChange={handleFilterChangeLote}
+                        placeholder={"Buscar Lote"}
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroProveedor}
+                        onChange={handleFilterChangeProveedor}
+                        placeholder={"Buscar Proveedor"}
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroRemito}
+                        onChange={handleFilterChangeRemito}
+                        placeholder={"Buscar Remito"}
+                    />
+                </div>
+            : null}
 
             <table className="table-auto shadow-md w-full w-lg">
                 <thead className="bg-gray-800">
