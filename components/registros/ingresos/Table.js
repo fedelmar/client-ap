@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState }  from 'react';
+import React, { useMemo, useState }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import columnas from './columns';

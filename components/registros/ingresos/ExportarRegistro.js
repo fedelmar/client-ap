@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState }  from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { format } from 'date-fns';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
 
-
-
 const ExportarRegistro = ({registros}) => {
 
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
-    
+
     let registrosExportados; 
     if (startDate && endDate) {
         startDate.setHours(0);
@@ -27,35 +25,25 @@ const ExportarRegistro = ({registros}) => {
             styles: { fontSize: 8 },
             head: [
                 ['Fecha',
-                'Operario',
-                'Lote',
-                "Inicio",
-                "Cierre",
-                "Producto",
-                "Placa", 
-                "Tapón",
-                "PCM",
-                "Produccion",
-                "Descarte"]
+                'Insumo',
+                "Cantidad",
+                "Remito",
+                "Proveedor",
+                "Lote"]
             ],
             body: registrosExportados.map (i => [
                 format(new Date(i.creado), 'dd/MM/yy'),
-                i.operario,
-                i.lote,
-                format(new Date(i.creado), 'HH:mm'),
-                format(new Date(i.modificado), 'HH:mm'),
-                i.producto,
-                i.lPlaca,
-                i.lTapon,
-                i.lPcm,
-                i.cantProducida,
-                i.cantDescarte
+                i.insumo,
+                i.cantidad,
+                i.remito,
+                i.proveedor,
+                i.lote
             ]),
             didDrawPage: function (data) {
                 // Header
                 doc.setFontSize(17)
                 doc.setTextColor(40)
-                doc.text('REGISTRO DE PRODUCCIÓN DE PLACAS', data.settings.margin.left + 35, 10)
+                doc.text('REGISTRO DE INGREO DE INSUMOS', data.settings.margin.left + 35, 10)
           
                 // Footer
                 doc.setFontSize(10)
@@ -69,30 +57,31 @@ const ExportarRegistro = ({registros}) => {
            
         doc.save('registro.pdf')    
     }
-
     return (
         <div className="flex flex-row justify-center">
             <p className="block text-gray-70 font-bold mr-1 mt-1">Seleccione el periodo a exportar: </p>
             <div className="m-1">
-            <DayPickerInput
+                <DayPickerInput
                 value=" Desde... "
                 onDayChange={day => setStartDate(day)}
-            />
+                />
             </div>
             <div className="m-1">
-            <DayPickerInput
+                <DayPickerInput
                 value=" Hasta... "
                 onDayChange={day => setEndDate(day)}
-            />
+                />
             </div>
             {startDate && endDate ?
                 <button 
-                    className="bg-green-700 p-1 ml-1 inline-block text-white rounded text-sm hover:bg-green-800 mb-3 uppercase font-bold w-full lg:w-auto text-center"
+                    className=" bg-green-700 p-1 ml-1 inline-block text-white rounded text-sm hover:bg-green-800 mb-3 uppercase font-bold w-full lg:w-auto text-center"
                     onClick={() => exportar()}
                 >
                     Exportar!
                 </button>
             : null}
+
+
         </div>
     );
 }

@@ -48,7 +48,7 @@ const ExportarRegistro = ({registros}) => {
                 // Header
                 doc.setFontSize(17)
                 doc.setTextColor(40)
-                doc.text('REGISTRO DE GUARDADO DE ESPONJAS', data.settings.margin.left + 35, 10)
+                doc.text('REGISTRO DE SALIDA DE PRODUCTOS', data.settings.margin.left + 35, 10)
           
                 // Footer
                 doc.setFontSize(10)
