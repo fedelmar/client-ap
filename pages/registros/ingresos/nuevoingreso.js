@@ -1,90 +1,101 @@
-import React, { useContext, useState } from 'react';
-import Layout from '../../../components/Layout';
+import React, { useState, useContext } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import Select from 'react-select';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Select from 'react-select';
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import Layout from '../../../components/Layout';
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 
-const CREAR_LOTE = gql`
-    mutation nuevoInsumoStock($input: sInsumoInput){
-        nuevoInsumoStock(input: $input) {
+const NUEVO_INGRESO = gql`
+    mutation nuevoRegistroIngreso($input: IngresoInput){
+        nuevoRegistroIngreso(input: $input){
             id
+            creado
             lote
             cantidad
             insumo
+            remito
+            proveedor
         }
     }
 `;
 
-const OBTENER_STOCK = gql`
-    query obtenerStockInsumos{
-        obtenerStockInsumos{
+const LISTA_REGISTROS = gql `
+    query obtenerRegistrosIngresos{
+        obtenerRegistrosIngresos{
             id
             insumo
-            lote
             cantidad
+            proveedor
+            remito
+            creado
+            lote
         }
     }
 `;
 
-const NuevoLoteInsumo = () => {
+const NuevoIngreso = () => {
 
+    const pedidoContext = useContext(UsuarioContext);
+    const { insumos } = pedidoContext;
     const router = useRouter();
     const [mensaje, guardarMensaje] = useState(null);
-    const [idInsumo, setIdInsumo] = useState();
-
-    const [nuevoInsumoStock] = useMutation(CREAR_LOTE, {
-        update(cache, {data: { nuevoInsumoStock }}) {
-            const { obtenerStockInsumos } = cache.readQuery({ query: OBTENER_STOCK});
+    const [insumo, setInsumo] = useState();
+    const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO, {
+        update(cache, {data: { nuevoRegistroIngreso }}) {
+            const { obtenerRegistrosIngresos } = cache.readQuery({ query: LISTA_REGISTROS});
 
             cache.writeQuery({
-                query: OBTENER_STOCK,
+                query: LISTA_REGISTROS,
                 data: {
-                    obtenerStockInsumos: [...obtenerStockInsumos, nuevoInsumoStock]
+                    obtenerRegistrosIngresos: [...obtenerRegistrosIngresos, nuevoRegistroIngreso]
                 }
             })
         }
     })
 
-    const pedidoContext = useContext(UsuarioContext);
-    const { insumos } = pedidoContext;
-
     const formik = useFormik({
         initialValues: {
+            proveedor: '',
+            remito: '',
             lote: '',
             insumo: '',
             cantidad: 0
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('El lote del producto es obligatorio'),
+            proveedor: '',
+            remito: '',
+            lote: Yup.string(),
             insumo: Yup.string(),
             cantidad: Yup.number()                        
         }),
         onSubmit: async valores => {
-            
-            const{ lote, cantidad } = valores
-            const insumo = idInsumo;
+            const { lote, cantidad, proveedor, remito } = valores;
 
             try {
-                // eslint-disable-next-line no-unused-vars
-                const { data } = await nuevoInsumoStock({
+                const { data } = await nuevoRegistroIngreso({
                     variables: {
                         input: {
                             lote,
-                            insumo,
-                            cantidad
+                            insumo: insumo.nombre,
+                            insumoID: insumo.id,
+                            cantidad,
+                            proveedor,
+                            remito
                         }
                     }
                 });
-
-                router.push('/listados/stockinsumos');
+                router.push('/registros/ingresos');
             } catch (error) {
                 guardarMensaje(error.message.replace('GraphQL error: ', ''));
             }
         }
     })
+
+    const seleccionarInsumo = value => {
+        setInsumo({...insumo, id: value.id, nombre: value.nombre})
+    }
 
     const mostrarMensaje = () => {
         return(
@@ -94,14 +105,10 @@ const NuevoLoteInsumo = () => {
         )
     }
 
-    const seleccionarInsumo = insumo => {
-        setIdInsumo(insumo.id)
-    }
-
     return (
         <Layout>
-            <h1 className="text-2xl text-gray-800 font-light">Nuevo Lote de Insumos</h1>
-        
+            <h1 className="text-2xl text-gray-800 font-light">Ingresar Insumos</h1>
+
             {mensaje && mostrarMensaje()}
 
             <div className="flex justify-center mt-5">
@@ -167,12 +174,44 @@ const NuevoLoteInsumo = () => {
                                     <p className="font-bold">Error</p>
                                     <p>{formik.errors.cantidad}</p>
                                 </div>
-                            ) : null  }                    
+                            ) : null  }
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="remito">
+                                    Remito
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="remito"
+                                    type="text"
+                                    placeholder="Remito"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.remito}
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="proveedor">
+                                    Proveedor
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="proveedor"
+                                    type="text"
+                                    placeholder="Proveedor"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.proveedor}
+                                />
+                            </div>                               
 
                             <input
                                 type="submit"
                                 className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
-                                value="Crear Lote"
+                                value="Ingresar Insumos"
                             />
                     </form>
                 </div>
@@ -181,4 +220,4 @@ const NuevoLoteInsumo = () => {
     );
 }
 
-export default NuevoLoteInsumo
+export default NuevoIngreso;
