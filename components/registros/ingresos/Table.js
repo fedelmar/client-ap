@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import columnas from './columns';
+import EliminarRegistro from './EliminarRegistro';
 
 const Table = ({registros, filtros}) => {
 
@@ -70,7 +71,7 @@ const Table = ({registros, filtros}) => {
                                     return (
                                         <>
                                             {cell.column.id === 'eliminar' ?
-                                                <p>eliminar</p>
+                                                <EliminarRegistro props={cell.row.original.id} />
                                             :
                                                 cell.column.id === 'fecha' ?
                                                     <th 
