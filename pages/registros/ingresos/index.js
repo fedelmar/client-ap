@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import Layout from '../../../components/Layout';
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import {gql, useQuery} from '@apollo/client';
+import Layout from '../../../components/Layout';
+import Table from '../../../components/registros/ingresos/Table';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosIngresos{
@@ -59,6 +59,11 @@ const Ingresos = () => {
                     </button>
                 </div>   
             </div>
+
+            <Table 
+                registros={registros}
+                filtros={filtros}
+            />
         </Layout>
     );
 }
