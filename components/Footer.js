@@ -48,11 +48,18 @@ const Footer = () => {
                             </Link>
                         </li>
                         {rol === "Admin" ? 
-                            <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
-                                <Link href="/registros/salidas">
-                                    <a className="text-white block">Salidas</a>
-                                </Link>
-                            </li>
+                            <>
+                                <li className={router.pathname === "/registros/ingresos" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
+                                    <Link href="/registros/ingresos">
+                                        <a className="text-white block">Ingresos</a>
+                                    </Link>
+                                </li>
+                                <li className={router.pathname === "/registros/salidas" ? "bg-blue-800 p-2 px-5 list-none" : "p-2 px-5 list-none"}>    
+                                    <Link href="/registros/salidas">
+                                        <a className="text-white block">Salidas</a>
+                                    </Link>
+                                </li>
+                            </>
                         : null}
                     </div>
                 : null}
