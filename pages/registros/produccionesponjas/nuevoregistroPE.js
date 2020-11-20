@@ -53,11 +53,13 @@ const IniciarProduccion = () => {
 
     const router = useRouter();
     const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
+        pollInterval: 500,
         variables: {
-            input: "Esponjas"
+            input: "Esponjas" 
         }
     });
     const { data: dataBolsas, loading: loadingBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
+        pollInterval: 500,
         variables: {
             input: "Polietileno"
         }
