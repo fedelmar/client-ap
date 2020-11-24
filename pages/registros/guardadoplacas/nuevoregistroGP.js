@@ -168,8 +168,7 @@ const NuevoRegistroGP = () => {
                         data.nuevoRegistroGP,
                         'success'
                     )
-                    console.log(data)
-                    //router.push('/registros/guardadoesponjas');
+                    router.push('/registros/guardadoplacas');
                 } catch (error) {
                     guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
@@ -209,8 +208,6 @@ const NuevoRegistroGP = () => {
             </div>
         )
     }
-
-    console.log(registro)
 
     return (
         <Layout>
