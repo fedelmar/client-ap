@@ -168,7 +168,7 @@ const NuevoRegistroGE = () => {
                                 lote: registro.lote,
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
-                                descCajas: 0,
+                                descCajas: descCajas,
                                 auxiliar: auxiliar,
                                 observaciones: observaciones
                             }
