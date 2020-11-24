@@ -4,6 +4,26 @@ import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
 import Link from 'next/link';
 
+const LISTA_REGISTROS = gql `
+    query obtnerRegistrosGP{
+        obtenerRegistrosGP{
+            id
+            creado
+            modificado
+            operario
+            lote
+            producto
+            loteID
+            guardado
+            descarte
+            pallet
+            auxiliar
+            observaciones
+            estado
+        }
+    }
+`;
+
 const GuardadoPlacas = () => {
 
     const usuarioContext = useContext(UsuarioContext);
@@ -11,6 +31,17 @@ const GuardadoPlacas = () => {
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
     const [ activos, setActivos ] = useState(false);
+    const { data, loading } = useQuery(LISTA_REGISTROS, {
+        pollInterval: 500,
+    });
+
+    if(loading) return (
+        <Layout>
+          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
+        </Layout>
+    );
+
+    console.log(data)
 
     const handleOpenClosePDF = () => {
         setPdfOpen(!pdfOpen);
@@ -28,7 +59,7 @@ const GuardadoPlacas = () => {
 
             <div className="flex justify-between">
                 <div>
-                    <Link href="/registros/guardadoesponjas/nuevoregistroGE">
+                    <Link href="/registros/guardadoplacas/nuevoregistroGP">
                         <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Iniciar Registro</a>
                     </Link>
                     <button onClick={() => handleOpenCloseActivos()}>
