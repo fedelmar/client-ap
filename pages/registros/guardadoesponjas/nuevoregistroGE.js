@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 
 const LOTES_ESPONJAS = gql `
-    query	obtenerStockEsponjas{
+    query obtenerStockEsponjas{
         obtenerStockEsponjas{   
             lote
             loteID
@@ -41,7 +41,6 @@ const LISTA_REGISTROS = gql `
             }
         }
 `;
-
 
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroGE($id: ID, $input: CGEInput){
@@ -218,7 +217,6 @@ const NuevoRegistroGE = () => {
     const seleccionarLEsponja = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
-
     }
 
     // Mostrar mensaje de base de datos si hubo un error
