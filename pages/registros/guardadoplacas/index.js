@@ -4,6 +4,7 @@ import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
 import Link from 'next/link';
 import Table from '../../../components/registros/guardadoplacas/Table';
+import ExportarRegistro from '../../../components/registros/guardadoplacas/ExportarRegistro';
 
 const LISTA_REGISTROS = gql `
     query obtnerRegistrosGP{
@@ -42,8 +43,6 @@ const GuardadoPlacas = () => {
         </Layout>
     );
 
-    console.log(data)
-
     const handleOpenClosePDF = () => {
         setPdfOpen(!pdfOpen);
     }
@@ -58,7 +57,6 @@ const GuardadoPlacas = () => {
     let registrosAbiertos = data.obtenerRegistrosGP.filter(i => i.estado === true);
     registrosAbiertos.reverse();
     registrosCerrados.reverse();
-    console.log(registrosAbiertos, registrosCerrados)
 
     return (
         <Layout>
@@ -84,6 +82,12 @@ const GuardadoPlacas = () => {
                     : null}
                 </div>             
             </div>
+
+            {pdfOpen ? (
+                <ExportarRegistro 
+                    registros={registrosCerrados}
+                />
+            ) : null }
 
             {activos && registrosAbiertos.length > 0 ? 
                 <Table 

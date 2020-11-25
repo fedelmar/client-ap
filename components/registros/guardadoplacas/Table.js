@@ -7,6 +7,10 @@ import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
 const Table = ({registros, filtros, rol}) => {
+
+    const [filtroLote, setFiltroLote] = useState("");
+    const [filtroOperario, setFiltroOperario] = useState("");
+    const [filtroProducto, setFiltroProducto] = useState("");
     const columns = useMemo(
         () => columnas, 
         []
@@ -37,8 +41,49 @@ const Table = ({registros, filtros, rol}) => {
         toggleHideColumn
     } = tableInstance;
 
+    const handleFilterChangeLote = e => {
+        const value = e.target.value || undefined;
+        setFilter("lote", value);
+        setFiltroLote(value);
+    };
+
+    const handleFilterChangeProducto = e => {
+        const value = e.target.value || undefined;
+        setFilter("producto", value);
+        setFiltroProducto(value);
+    };
+
+    const handleFilterChangeOperario = e => {
+        const value = e.target.value || undefined;
+        setFilter("operario", value);
+        setFiltroOperario(value);
+    };
+
     return (
         <div className="overflow-x-scroll">
+            {filtros ? 
+                <div className="flex justify-between">
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroLote}
+                        onChange={handleFilterChangeLote}
+                        placeholder={"Buscar Lote"}
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroProducto}
+                        onChange={handleFilterChangeProducto}
+                        placeholder={"Buscar Producto"}
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroOperario}
+                        onChange={handleFilterChangeOperario}
+                        placeholder={"Buscar Operario"}
+                    />
+                </div>
+            : null}
+
             <table className="table-auto shadow-md w-full w-lg">
                 <thead className="bg-gray-800">
                     <tr className="text-white">
