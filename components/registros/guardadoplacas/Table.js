@@ -28,6 +28,7 @@ const Table = ({registros, filtros, rol}) => {
         if (registros.every(i => i.estado === true)) {
             toggleHideColumn('descarte');
             toggleHideColumn('guardado');
+            toggleHideColumn('pallet');
         }                 
     },[rol])
 
@@ -106,6 +107,7 @@ const Table = ({registros, filtros, rol}) => {
                         
                             :
                                 column.id === 'guardado' ||
+                                column.id === 'pallet' ||
                                 column.id === 'descarte'
                                 ?
                                     registros.every(i => i.estado === true) ?

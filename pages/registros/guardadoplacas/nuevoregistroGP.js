@@ -159,7 +159,8 @@ const NuevoRegistroGP = () => {
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
                                 auxiliar: auxiliar,
-                                observaciones: observaciones
+                                observaciones: observaciones,
+                                pallet: pallet
                             }
                         }                
                     });
