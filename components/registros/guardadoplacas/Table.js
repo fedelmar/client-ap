@@ -32,8 +32,14 @@ const Table = ({registros, filtros, rol}) => {
         }                 
     },[rol])
 
+    const editarRegistro = id => {
+        Router.push({
+            pathname: "/registros/guardadoplacas/editarRegistro/[id]",
+            query: { id }
+        })
+    }
+
     const {
-        getTableProps,
         getTableBodyProps,
         headers,
         rows,

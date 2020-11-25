@@ -8,26 +8,27 @@ import Layout from '../../../../components/Layout';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
 const REGISTRO = gql `
-    query obtenerRegistroGE($id: ID!){
-        obtenerRegistroGE(id: $id){
+    query obtenerRegistroGP($id: ID!){
+        obtenerRegistroGP(id: $id){
             creado
             modificado
             operario
             lote
-            caja
-            descCajas
+            producto
+            loteID
             guardado
             descarte
+            pallet
             auxiliar
             observaciones
-            producto
+            estado
         }
     }
 `;
 
 const ACTUALIZAR_REGISTRO = gql `
-    mutation actualizarRegistroGE($id: ID!, $input: CGEInput){
-        actualizarRegistroGE(id: $id, input: $input){
+    mutation actualizarRegistroGP($id: ID!, $input: CGPInput){
+        actualizarRegistroGP(id: $id, input: $input){
             lote
             guardado
             descarte
@@ -39,7 +40,7 @@ const EditarRegistro = () => {
 
     const router = useRouter();
     const { query: { id } } = router;
-    const [ actualizarRegistroGE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroGP ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
             id
@@ -50,10 +51,8 @@ const EditarRegistro = () => {
         producto: '',
         guardado: 0,
         descarte: 0,
-        descCajas: 0,
         operario: '',
-        caja: '',
-        descCajas: '',
+        pallet: '',
         observaciones: '',
         auxiliar: ''
     });
@@ -63,20 +62,19 @@ const EditarRegistro = () => {
     });
     useEffect(() => {
         if (data) {
-            const { obtenerRegistroGE } = data;
+            const { obtenerRegistroGP } = data;
             setRegistro({...registro,
                 id: id,
-                lote: obtenerRegistroGE.lote,
-                producto: obtenerRegistroGE.producto,
-                guardado: obtenerRegistroGE.guardado,
-                descarte: obtenerRegistroGE.descarte,
-                creado: obtenerRegistroGE.creado,
-                modificado: obtenerRegistroGE.modificado,
-                operario: obtenerRegistroGE.operario,
-                caja: obtenerRegistroGE.caja,
-                descCajas: obtenerRegistroGE.descCajas,
-                observaciones: obtenerRegistroGE.observaciones,
-                auxiliar: obtenerRegistroGE.auxiliar
+                lote: obtenerRegistroGP.lote,
+                producto: obtenerRegistroGP.producto,
+                guardado: obtenerRegistroGP.guardado,
+                descarte: obtenerRegistroGP.descarte,
+                creado: obtenerRegistroGP.creado,
+                modificado: obtenerRegistroGP.modificado,
+                operario: obtenerRegistroGP.operario,
+                pallet: obtenerRegistroGP.pallet,
+                observaciones: obtenerRegistroGP.observaciones,
+                auxiliar: obtenerRegistroGP.auxiliar
             })
         }
     }, [data])
@@ -103,7 +101,7 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = actualizarRegistroGE({
+                    const { data } = actualizarRegistroGP({
                         variables: {
                             id: id,
                             input: {
@@ -118,7 +116,7 @@ const EditarRegistro = () => {
                         ' ',
                         'success'
                     )
-                    router.push('/registros/guardadoesponjas');
+                    router.push('/registros/guardadoplacas');
                 } catch (error) {
                     console.log(error)
                 }
@@ -136,27 +134,23 @@ const EditarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGP.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGP.creado), 'HH:mm',)}</p>
                                 <p className="text-gray-700 font-light mx-1">a</p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.modificado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGP.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
 
                         <div className="flex">
                             <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
                             <p className="text-gray-700 font-light">{registro.producto}</p>
-                        </div>             
+                        </div>
                         <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
-                            <p className="text-gray-700 font-light ">{registro.caja}</p>
-                        </div>   
-                        <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Descarte de Cajas: </p>
-                            <p className="text-gray-700 font-light ">{registro.descCajas}</p>
+                            <p className="text-gray-700 text-mm font-bold mr-1">Pallet: </p>
+                            <p className="text-gray-700 font-light ">{registro.pallet}</p>
                         </div>
                         <div className="flex pb-2">
                             <p className="text-gray-700 text-mm font-bold mr-1">Auxiliares: </p>
