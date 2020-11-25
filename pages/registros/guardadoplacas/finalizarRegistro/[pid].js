@@ -9,25 +9,24 @@ import { format } from 'date-fns';
 import UsuarioContext from '../../../../context/usuarios/UsuarioContext';
 
 const REGISTRO = gql `
-    query obtenerRegistroGE($id: ID!){
-        obtenerRegistroGE(id: $id){
+    query obtenerRegistroGP($id: ID!){
+        obtenerRegistroGP(id: $id){
             creado
             operario
             lote
             loteID
-            caja
         }
     }
 `;
 
-const LOTES_ESPONJAS = gql `
-    query	obtenerStockEsponjas{
-        obtenerStockEsponjas{   
+const LOTES_PLACAS = gql `
+    query obtenerStockPlacas{
+        obtenerStockPlacas{
             lote
             loteID
-            producto
             estado
             caja
+            producto
             cantCaja
             cantidad
         }
@@ -35,18 +34,18 @@ const LOTES_ESPONJAS = gql `
 `;
 
 const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGE($id: ID, $input: CGEInput){
-        nuevoRegistroGE(id: $id, input: $input){
+    mutation nuevoRegistroGP($id: ID, $input: CGPInput){
+        nuevoRegistroGP(id: $id, input: $input){
             id
             creado
+            modificado
             operario
             lote
             producto
             loteID
-            caja
-            descCajas
             guardado
             descarte
+            pallet
             auxiliar
             observaciones
             estado
@@ -70,26 +69,26 @@ const FinalizarRegistro = () => {
             id
         }
     });
-    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_ESPONJAS, {
+    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS, {
         pollInterval: 500,
     });
-    const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
-            cantGuardada: '',
-            cantDescarte: 0,
-            descCajas: 0,
+            guardado: '',
+            descarte: 0,
+            pallet: '',
             auxiliar: '',
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantGuardada: Yup.number()
+            guardado: Yup.number()
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
                                 .required('Ingrese la cantidad producida'),
-            cantDescarte: Yup.number()
-                                .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
+            descarte: Yup.number()
+                                .max(Yup.ref('guardado'), `Debe ser menor a las placas guardadas`)
                                 .required('Ingrese el descarte generado'),
-            descCajas: Yup.number(),
+            pallet: Yup.string(),
             auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
@@ -99,13 +98,12 @@ const FinalizarRegistro = () => {
     });
     useEffect(() => {
         if (dataLote && registro.loteID) {
-            dataLote.obtenerStockEsponjas.map(i => 
+            dataLote.obtenerStockPlacas.map(i => 
                 i.loteID === registro.loteID ?
                     setRegistro({...registro, 
                         cantidad: i.cantidad,
                         producto: i.producto,
                         estado: i.estado,
-                        cantCaja: i.cantCaja
                     })
                 : null
             )
@@ -113,12 +111,12 @@ const FinalizarRegistro = () => {
     }, [dataLote, registro.loteID]);
     useEffect(() => {
         if (data) {
-            const { obtenerRegistroGE } = data;
+            const { obtenerRegistroGP } = data;
             setRegistro({...registro,
-                caja: obtenerRegistroGE.caja,
-                creado: obtenerRegistroGE.creado,
-                lote: obtenerRegistroGE.lote,
-                loteID: obtenerRegistroGE.loteID
+                pallet: obtenerRegistroGP.pallet,
+                creado: obtenerRegistroGP.creado,
+                lote: obtenerRegistroGP.lote,
+                loteID: obtenerRegistroGP.loteID
             })
         };
     }, [data]);
@@ -137,15 +135,15 @@ const FinalizarRegistro = () => {
 
     const terminarProduccion = valores => {
         //Volver a planillas de produccion y modificar base de datos
-        const {cantDescarte, cantGuardada, descCajas, observaciones, auxiliar} = valores;
+        const {descarte, guardado, pallet, observaciones, auxiliar} = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + registro.operario + "</br>" +
-                    "Esponjas guardadas: " + cantGuardada + "</br>" +
-                    "Cantidad de descarte: " + cantDescarte + "</br>" +
-                    "Cajas descartadas: " + descCajas + "</br>" +
+                    "Esponjas guardadas: " + guardado + "</br>" +
+                    "Cantidad de descarte: " + descarte + "</br>" +
+                    "Pallet: " + pallet + "</br>" +
                     "Auxiliar/es: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
@@ -157,14 +155,14 @@ const FinalizarRegistro = () => {
         }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroGE({
+                    const { data } = await nuevoRegistroGP({
                         variables: {
                             id,
                             input: {
                                 lote: registro.lote,
-                                guardado: cantGuardada,
-                                descarte: cantDescarte,
-                                descCajas: descCajas,
+                                guardado: guardado,
+                                descarte: descarte,
+                                pallet: pallet,
                                 auxiliar: auxiliar,
                                 observaciones: observaciones
                             }
@@ -172,10 +170,10 @@ const FinalizarRegistro = () => {
                     });
                     Swal.fire(
                         'Se guardo el registro y se creo actualizo el stock.',
-                        data.nuevoRegistroGE,
+                        data.nuevoRegistroGP,
                         'success'
                     )
-                    router.push('/registros/guardadoesponjas');
+                    router.push('/registros/guardadoplacas');
                 } catch (error) {
                     console.log(error)
                 }
@@ -193,11 +191,11 @@ const FinalizarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light ">{format(new Date(data.obtenerRegistroGE.creado), 'dd:MM:yy')}</p>
+                                <p className="text-gray-700 font-light ">{format(new Date(data.obtenerRegistroGP.creado), 'dd:MM:yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.creado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGP.creado), 'HH:mm')}</p>
                             </div>
                         </div>
                         
@@ -213,17 +211,9 @@ const FinalizarRegistro = () => {
                             <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
                             <p className="text-gray-700 font-light">{registro.estado}</p>
                         </div>
-                        <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
-                            <p className="text-gray-700 font-light">{registro.caja}</p>
-                        </div>
-                        <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Cantidad por caja: </p>
-                            <p className="text-gray-700 font-light">{registro.cantCaja}</p>
-                        </div>
                     </div>
                     <div className="flex justify-center mt-1 ">
-                            <p className="text-gray-700 text-xl font-bold mr-1">Esponjas disponibles: </p>
+                            <p className="text-gray-700 text-xl font-bold mr-1">Placas disponibles: </p>
                             <p className="text-gray-700 text-xl font-light px-2">{registro.cantidad}</p>
                     </div>
                     <form
@@ -232,71 +222,71 @@ const FinalizarRegistro = () => {
                     >
 
                         <div className="mb-4 mt-1">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="cantGuardada">
-                                Esponjas guardadas
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="guardado">
+                                Placas guardadas
                             </label>
 
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="cantGuardada"
+                                id="guardado"
                                 type="number"
                                 placeholder="Ingrese la cantidad producida..."
                                 onChange={formikCierre.handleChange}
                                 onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.cantGuardada}
+                                value={formikCierre.values.guardado}
                             />
                         </div>
 
-                        { formikCierre.touched.cantGuardada && formikCierre.errors.cantGuardada ? (
+                        { formikCierre.touched.guardado && formikCierre.errors.guardado ? (
                             <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                 <p className="font-bold">Error</p>
-                                <p>{formikCierre.errors.cantGuardada}</p>
+                                <p>{formikCierre.errors.guardado}</p>
                             </div>
                         ) : null  }
 
                         <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="descarte">
                                 Cantidad de descarte
                             </label>
 
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="cantDescarte"
+                                id="descarte"
                                 type="number"
                                 placeholder="Ingrese la cantidad de descarte..."
                                 onChange={formikCierre.handleChange}
                                 onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.cantDescarte}
+                                value={formikCierre.values.descarte}
                             />
                         </div>
 
-                        { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                        { formikCierre.touched.descarte && formikCierre.errors.descarte ? (
                             <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                 <p className="font-bold">Error</p>
-                                <p>{formikCierre.errors.cantDescarte}</p>
+                                <p>{formikCierre.errors.descarte}</p>
                             </div>
                         ) : null  }
 
                         <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="descCajas">
-                                Cajas descartadas
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="pallet">
+                                Pallet
                             </label>
 
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="descCajas"
-                                type="number"
-                                placeholder="Ingrese la cantidad de descarte..."
+                                id="pallet"
+                                type="text"
+                                placeholder="Ingrese el pallet..."
                                 onChange={formikCierre.handleChange}
                                 onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.descCajas}
+                                value={formikCierre.values.pallet}
                             />
                         </div>
 
-                        { formikCierre.touched.descCajas && formikCierre.errors.descCajas ? (
+                        { formikCierre.touched.pallet && formikCierre.errors.pallet ? (
                             <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                 <p className="font-bold">Error</p>
-                                <p>{formikCierre.errors.descCajas}</p>
+                                <p>{formikCierre.errors.pallet}</p>
                             </div>
                         ) : null  }
 

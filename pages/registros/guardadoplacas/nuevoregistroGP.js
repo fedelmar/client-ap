@@ -23,26 +23,6 @@ const LOTES_PLACAS = gql `
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtnerRegistrosGP{
-        obtenerRegistrosGP{
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            loteID
-            guardado
-            descarte
-            pallet
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
-
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroGP($id: ID, $input: CGPInput){
         nuevoRegistroGP(id: $id, input: $input){

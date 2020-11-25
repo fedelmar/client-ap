@@ -32,13 +32,7 @@ const Table = ({registros, filtros, rol}) => {
         }                 
     },[rol])
 
-    const editarRegistro = id => {
-        Router.push({
-            pathname: "/registros/guardadoplacas/editarRegistro/[id]",
-            query: { id }
-        })
-    }
-
+    
     const {
         getTableBodyProps,
         headers,
@@ -47,24 +41,38 @@ const Table = ({registros, filtros, rol}) => {
         setFilter,
         toggleHideColumn
     } = tableInstance;
-
+    
     const handleFilterChangeLote = e => {
         const value = e.target.value || undefined;
         setFilter("lote", value);
         setFiltroLote(value);
     };
-
+    
     const handleFilterChangeProducto = e => {
         const value = e.target.value || undefined;
         setFilter("producto", value);
         setFiltroProducto(value);
     };
-
+    
     const handleFilterChangeOperario = e => {
         const value = e.target.value || undefined;
         setFilter("operario", value);
         setFiltroOperario(value);
     };
+
+    const retomarRegistro = id => {
+        Router.push({
+            pathname: "/registros/guardadoplacas/finalizarRegistro/[id]",
+            query: { id }
+        })
+    }
+    
+    const editarRegistro = id => {
+        Router.push({
+            pathname: "/registros/guardadoplacas/editarRegistro/[id]",
+            query: { id }
+        })
+    }
 
     return (
         <div className="overflow-x-scroll">
