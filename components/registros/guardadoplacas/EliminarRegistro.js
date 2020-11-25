@@ -3,26 +3,27 @@ import Swal from 'sweetalert2';
 import { gql, useMutation } from '@apollo/client';
 
 const ELIMINAR_REGISTRO = gql`
-    mutation eliminarRegistroGE($id: ID!){
-        eliminarRegistroGE(id: $id)
+    mutation eliminarRegistroGP($id: ID!){
+        eliminarRegistroGP(id: $id)
     }
 `;
 
 const LISTA_REGISTROS = gql `
-    query obtenerRegistrosGE{
-        obtenerRegistrosGE{
+    query obtnerRegistrosGP{
+        obtenerRegistrosGP{
             id
-            fecha
+            creado
+            modificado
             operario
             lote
-            horaInicio
-            horaCierre
-            caja
-            descCajas
+            producto
+            loteID
             guardado
             descarte
+            pallet
+            auxiliar
             observaciones
-            producto
+            estado
         }
     }
 `;
@@ -31,17 +32,17 @@ const EliminarRegistro = (props) => {
 
     const id = props.props;
 
-    const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO, {
+    const [eliminarRegistroGP] = useMutation(ELIMINAR_REGISTRO, {
         update(cache) {
             // Obtener copia de registros
-            const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
+            const { obtenerRegistrosGP } = cache.readQuery({ query: LISTA_REGISTROS });
 
 
             // Actualizar cache
             cache.writeQuery({
                 query: LISTA_REGISTROS,
                 data: {
-                    obtenerRegistrosGE: obtenerRegistrosGE.filter( registroActual => registroActual.id !== id )
+                    obtenerRegistrosGP: obtenerRegistrosGP.filter( registroActual => registroActual.id !== id )
                 }
             })
         }
@@ -62,7 +63,7 @@ const EliminarRegistro = (props) => {
 
                 try {
                     //Eliminar por id
-                    const { data } = await eliminarRegistroGE({
+                    const { data } = await eliminarRegistroGP({
                         variables: {
                             id
                         }
@@ -70,7 +71,7 @@ const EliminarRegistro = (props) => {
                     //console.log(data);
                     Swal.fire(
                         'Eliminado!',
-                        data.eliminarRegistroGE,
+                        data.eliminarRegistroGP,
                         'success'
                 )
                 } catch (error) {

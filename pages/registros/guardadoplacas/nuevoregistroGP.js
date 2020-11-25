@@ -9,52 +9,33 @@ import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 
-const LOTES_ESPONJAS = gql `
-    query obtenerStockEsponjas{
-        obtenerStockEsponjas{   
+const LOTES_PLACAS = gql `
+    query obtenerStockPlacas{
+        obtenerStockPlacas{
             lote
             loteID
-            producto
             estado
             caja
+            producto
             cantCaja
             cantidad
         }
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosGE{
-        obtenerRegistrosGE{
-                id
-                creado
-                operario
-                lote
-                caja
-                descCajas
-                guardado
-                descarte
-                auxiliar
-                observaciones
-                producto
-                estado
-            }
-        }
-`;
-
 const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGE($id: ID, $input: CGEInput){
-        nuevoRegistroGE(id: $id, input: $input){
+    mutation nuevoRegistroGP($id: ID, $input: CGPInput){
+        nuevoRegistroGP(id: $id, input: $input){
             id
             creado
+            modificado
             operario
             lote
             producto
             loteID
-            caja
-            descCajas
             guardado
             descarte
+            pallet
             auxiliar
             observaciones
             estado
@@ -62,26 +43,11 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
-const NuevoRegistroGE = () => {
+const NuevoRegistroGP = () => {
 
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
-    const { data, loading } = useQuery(LOTES_ESPONJAS, {
-        pollInterval: 500,
-    });
-    const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO, {
-        update(cache, {data: { nuevoRegistroGE }}) {
-            const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
-
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosGE: [...obtenerRegistrosGE, nuevoRegistroGE ]
-                }
-            })
-        }
-    });
     const [mensaje, guardarMensaje] = useState(null);
     const [session, setSession] = useState(false);
     const [registro, setRegistro] = useState({
@@ -90,12 +56,16 @@ const NuevoRegistroGE = () => {
         id: '',
         operario: nombre,
         cantidad: ''
-    });  
+    });
+    const { data, loading } = useQuery(LOTES_PLACAS, {
+        pollInterval: 500,
+    });
+    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
             cantGuardada: '',
             cantDescarte: 0,
-            descCajas: 0,
+            pallet: '',
             auxiliar: '',
             observaciones: ''
         },
@@ -106,7 +76,7 @@ const NuevoRegistroGE = () => {
             cantDescarte: Yup.number()
                                 .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
                                 .required('Ingrese el descarte generado'),
-            descCajas: Yup.number(),
+            pallet: Yup.string(),
             auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
@@ -116,7 +86,7 @@ const NuevoRegistroGE = () => {
     });
     useEffect(() => {
         if (data) {
-            data.obtenerStockEsponjas.map(i => 
+            data.obtenerStockPlacas.map(i => 
                 i.loteID === registro.loteID ?
                     setRegistro({...registro, cantidad: i.cantidad})
                 : null
@@ -128,19 +98,19 @@ const NuevoRegistroGE = () => {
             setRegistro({...registro, operario: nombre})
         }
     },[nombre])
-    
+
     if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-    const {obtenerStockEsponjas} = data;
+    const {obtenerStockPlacas} = data;
 
     const terminarProduccion = async valores => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos
 
         //Volver a planillas de produccion y modificar base de datos
-        const {cantDescarte, cantGuardada, descCajas, observaciones, auxiliar} = valores;
+        const {cantDescarte, cantGuardada, observaciones, auxiliar, pallet} = valores;
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -149,7 +119,7 @@ const NuevoRegistroGE = () => {
                     "Operario: " + registro.operario + "</br>" +
                     "Esponjas guardadas: " + cantGuardada + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
-                    "Cajas descartadas: " + descCajas + "</br>" +
+                    "Pallet: " + pallet + "</br>" +
                     "Auxiliar/es: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
@@ -161,25 +131,25 @@ const NuevoRegistroGE = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroGE({
+                    const { data } = await nuevoRegistroGP({
                         variables: {
                             id: registro.id,
                             input: {
                                 lote: registro.lote,
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
-                                descCajas: descCajas,
                                 auxiliar: auxiliar,
-                                observaciones: observaciones
+                                observaciones: observaciones,
+                                pallet: pallet
                             }
                         }                
                     });
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
-                        data.nuevoRegistroGE,
+                        data.nuevoRegistroGP,
                         'success'
                     )
-                    router.push('/registros/guardadoesponjas');
+                    router.push('/registros/guardadoplacas');
                 } catch (error) {
                     guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
@@ -189,32 +159,24 @@ const NuevoRegistroGE = () => {
 
     const handleInicio = async () => {   
         try {
-            const { data } = await nuevoRegistroGE({
+            const { data } = await nuevoRegistroGP({
                 variables: {
                     input: {
                         operario: registro.operario,
                         lote: registro.lote,
                         loteID: registro.loteID,
-                        producto: registro.producto,
-                        caja: registro.caja
+                        producto: registro.producto
                     }
                 }                
             });
-            
-            setRegistro({...registro, creado: data.nuevoRegistroGE.creado, id: data.nuevoRegistroGE.id})
+            setRegistro({...registro, creado: data.nuevoRegistroGP.creado, id: data.nuevoRegistroGP.id})
             setSession(true);
         } catch (error) {
             console.log(error)
         }
     }
 
-    const handleCierre = () => {
-        // Volver a iniciar por si hubo algun error
-        setRegistro({...registro})
-        setSession(false);        
-    }
-
-    const seleccionarLEsponja = opcion => {
+    const seleccionarLPlaca = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
     }
@@ -230,20 +192,20 @@ const NuevoRegistroGE = () => {
 
     return (
         <Layout>
-            <h1 className="text-2xl text-gray-800 font-light">Nuevo Registro</h1>
+            <h1 className="text-2xl text-gray-800 font-light" >Nuevo Registro de Guardado de Placas</h1>
 
             {mensaje && mostrarMensaje()}
 
             <div>
-               { !session ? (
+                {!session ? (
                     <div className="flex justify-center mt-5">
                         <div className="w-full max-w-lg">
                             <div className="bg-white shadow-md px-8 pt-6 pb-8 mb-4">
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
+                                <p className="block text-gray-700 font-bold mb-2">Lote de Placa</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={obtenerStockEsponjas}
-                                    onChange={opcion => seleccionarLEsponja(opcion)}
+                                    options={obtenerStockPlacas}
+                                    onChange={opcion => seleccionarLPlaca(opcion)}
                                     getOptionValue={ opciones => opciones.loteId }
                                     getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
@@ -259,8 +221,7 @@ const NuevoRegistroGE = () => {
                             </div>
                         </div>
                     </div>
-            
-                ) : (
+                ) :(
                     <div className="flex justify-center mt-5">
                         <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
                             <div className="mb-2 border-b-2 border-gray-600">
@@ -287,17 +248,9 @@ const NuevoRegistroGE = () => {
                                     <p className="text-gray-700 text-mm font-bold mr-1">Estado del producto: </p>
                                     <p className="text-gray-700 font-light">{registro.estado}</p>
                                 </div>
-                                <div className="flex">
-                                    <p className="text-gray-700 text-mm font-bold mr-1">Caja: </p>
-                                    <p className="text-gray-700 font-light">{registro.caja}</p>
-                                </div>
-                                <div className="flex">
-                                    <p className="text-gray-700 text-mm font-bold mr-1">Cantidad por caja: </p>
-                                    <p className="text-gray-700 font-light">{registro.cantCaja}</p>
-                                </div>
                             </div>
                             <div className="flex justify-center mt-1 ">
-                                    <p className="text-gray-700 text-xl font-bold mr-1">Esponjas disponibles: </p>
+                                    <p className="text-gray-700 text-xl font-bold mr-1">Placas disponibles: </p>
                                     <p className="text-gray-700 text-xl font-light px-2">{registro.cantidad}</p>
                             </div>
                             <form
@@ -352,25 +305,25 @@ const NuevoRegistroGE = () => {
                                 ) : null  }
 
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descCajas">
-                                        Cajas descartadas
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
+                                        Pallet
                                     </label>
     
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="descCajas"
-                                        type="number"
-                                        placeholder="Ingrese la cantidad de descarte..."
+                                        id="pallet"
+                                        type="text"
+                                        placeholder="pallet..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.descCajas}
+                                        value={formikCierre.values.pallet}
                                     />
                                 </div>
-
-                                { formikCierre.touched.descCajas && formikCierre.errors.descCajas ? (
+    
+                                { formikCierre.touched.pallet && formikCierre.errors.pallet ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.descCajas}</p>
+                                        <p>{formikCierre.errors.pallet}</p>
                                     </div>
                                 ) : null  }
 
@@ -426,7 +379,7 @@ const NuevoRegistroGE = () => {
                                     value="Finalizar Producción"
                                 />
                                 <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
-                            </form>
+                            </form>                            
                         </div>
                     </div> 
                 )}
@@ -435,4 +388,4 @@ const NuevoRegistroGE = () => {
     );
 }
 
-export default NuevoRegistroGE
+export default NuevoRegistroGP;
