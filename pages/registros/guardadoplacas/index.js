@@ -3,6 +3,7 @@ import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
 import Link from 'next/link';
+import Table from '../../../components/registros/guardadoplacas/Table';
 
 const LISTA_REGISTROS = gql `
     query obtnerRegistrosGP{
@@ -53,6 +54,12 @@ const GuardadoPlacas = () => {
       setActivos(!activos);
     }
 
+    let registrosCerrados = data.obtenerRegistrosGP.filter(i => i.estado === false);
+    let registrosAbiertos = data.obtenerRegistrosGP.filter(i => i.estado === true);
+    registrosAbiertos.reverse();
+    registrosCerrados.reverse();
+    console.log(registrosAbiertos, registrosCerrados)
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Guardado de Placas</h1>
@@ -77,6 +84,30 @@ const GuardadoPlacas = () => {
                     : null}
                 </div>             
             </div>
+
+            {activos && registrosAbiertos.length > 0 ? 
+                <Table 
+                    registros={registrosAbiertos}
+                    filtros={filtros}
+                    rol={rol}
+                />
+                : activos ?
+                <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+                    <p className="text-xl text-center">No hay registros activos para mostrar</p>
+                </div>
+            : null}
+
+            {registrosCerrados.length > 0 ?
+                <Table 
+                    registros={registrosCerrados}
+                    filtros={filtros}
+                    rol={rol}
+                />
+                :           
+                <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+                    <p className="text-xl text-center">No hay registros para mostrar</p>
+                </div>
+            } 
 
         </Layout>
     )
