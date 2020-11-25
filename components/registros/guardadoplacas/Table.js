@@ -3,7 +3,7 @@ import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
-//import EliminarRegistro from './EliminarRegistro';
+import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
 const Table = ({registros, filtros, rol}) => {
@@ -109,7 +109,7 @@ const Table = ({registros, filtros, rol}) => {
                                     return (
                                         <>
                                             {cell.column.id === 'eliminar' && rol === "Admin" ?
-                                                <p>eliminar</p>
+                                                <EliminarRegistro props={cell.row.original.id} />
                                             : 
                                                 cell.column.id === 'observaciones' ?
                                                     cell.row.original.estado === false ?
