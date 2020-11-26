@@ -63,7 +63,7 @@ const NuevoRegistroGP = () => {
     const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
-            cantGuardada: '',
+            cantGuardada: 0,
             cantDescarte: 0,
             pallet: '',
             auxiliar: '',
@@ -73,10 +73,14 @@ const NuevoRegistroGP = () => {
             cantGuardada: Yup.number()
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
                                 .required('Ingrese la cantidad producida'),
+
             cantDescarte: Yup.number()
-                                .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
-                                .required('Ingrese el descarte generado'),
-            pallet: Yup.string(),
+                                .required('Ingrese el descarte generado')
+                                .test('disponibilidad', 'No hay disponibilidad',
+                                function(cantDescarte) {
+                                    return cantDescarte <= registro.cantidad - cantGuardada.value
+                                }),
+            pallet: Yup.string().required('Ingrese el pallet'),
             auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
@@ -267,7 +271,7 @@ const NuevoRegistroGP = () => {
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="cantGuardada"
                                         type="number"
-                                        placeholder="Ingrese la cantidad producida..."
+                                        placeholder="Ingrese la cantidad guardada..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
                                         value={formikCierre.values.cantGuardada}
