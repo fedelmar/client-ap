@@ -197,6 +197,11 @@ const NuevoRegistro = () => {
             }
           })        
     };
+    const handleCierre = () => {
+        // Volver a iniciar por si hubo algun error
+        setRegistro({...registro})
+        setSession(false);        
+    }
 
     // Manejo de los campos select del formulario (On Change)
     const seleccionarProducto = producto => {
