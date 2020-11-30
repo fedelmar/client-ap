@@ -112,7 +112,7 @@ const EditarRegistro = () => {
                         ' ',
                         'success'
                     )
-                    //router.push('/registros/produccionplacas');
+                    router.push('/registros/produccionplacas');
                 } catch (error) {
                     console.log(error)
                 }
