@@ -8,25 +8,27 @@ import Layout from '../../../../components/Layout';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
 const REGISTRO = gql `
-    query obtenerRegistroCE($id: ID!){
-        obtenerRegistroCE(id: $id){
+    query obtenerRegistroPP($id: ID!){
+        obtenerRegistroPP(id: $id){
             creado
             modificado
+            producto
             operario
             lote
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
+            lTapon
+            lPcm
+            lPlaca
             cantDescarte
+            cantProducida
             observaciones
+            estado
         }
     }
 `;
 
 const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
-            actualizarRegistroCE(id: $id, input: $input){
+    mutation actualizarRegistroPP($id: ID!, $input: CPPInput){
+            actualizarRegistroPP(id: $id, input: $input){
                 lote
                 cantDescarte
                 cantProducida         
@@ -38,7 +40,7 @@ const EditarRegistro = () => {
 
     const router = useRouter();
     const { query: { id } } = router;
-    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroPP ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
             id
@@ -55,18 +57,19 @@ const EditarRegistro = () => {
     });
     useEffect(() => {
         if (data) {
-            const { obtenerRegistroCE } = data;
+            const { obtenerRegistroPP } = data;
             setRegistro({...registro,
                 id: id,
-                lote: obtenerRegistroCE.lote,
-                producto: obtenerRegistroCE.producto,
-                cantProducida: obtenerRegistroCE.cantProducida,
-                cantDescarte: obtenerRegistroCE.cantDescarte,
-                creado: obtenerRegistroCE.creado,
-                operario: obtenerRegistroCE.operario,
-                lBolsa: obtenerRegistroCE.lBolsa,
-                lEsponja: obtenerRegistroCE.lEsponja,
-                observaciones: obtenerRegistroCE.observaciones
+                lote: obtenerRegistroPP.lote,
+                producto: obtenerRegistroPP.producto,
+                cantProducida: obtenerRegistroPP.cantProducida,
+                cantDescarte: obtenerRegistroPP.cantDescarte,
+                creado: obtenerRegistroPP.creado,
+                operario: obtenerRegistroPP.operario,
+                lPcm: obtenerRegistroPP.lPcm,
+                lPlaca: obtenerRegistroPP.lPlaca,
+                lTapon: obtenerRegistroPP.lTapon,
+                observaciones: obtenerRegistroPP.observaciones
             })
         }
     }, [data])
@@ -93,7 +96,7 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = actualizarRegistroCE({
+                    const { data } = actualizarRegistroPP({
                         variables: {
                             id: id,
                             input: {
@@ -103,12 +106,13 @@ const EditarRegistro = () => {
                             }
                         }
                     });
+                    console.log(data)
                     Swal.fire(
                         'Registro actualizado, esta acción no actualiza el Stock',
                         ' ',
                         'success'
                     )
-                    router.push('/registros/produccionesponjas');
+                    //router.push('/registros/produccionplacas');
                 } catch (error) {
                     console.log(error)
                 }
@@ -126,13 +130,13 @@ const EditarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroPP.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroPP.creado), 'HH:mm',)}</p>
                                 <p className="text-gray-700 font-light mx-1">a</p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.modificado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroPP.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
                         
@@ -141,12 +145,16 @@ const EditarRegistro = () => {
                             <p className="text-gray-700 font-light">{registro.producto}</p>
                         </div>             
                         <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de Esponja: </p>
-                            <p className="text-gray-700 font-light ">{registro.lEsponja}</p>
-                        </div>   
+                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de Placa: </p>
+                            <p className="text-gray-700 font-light ">{registro.lPlaca}</p>
+                        </div>
+                        <div className="flex">
+                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de Tapón: </p>
+                            <p className="text-gray-700 font-light ">{registro.lPlaca}</p>
+                        </div>      
                         <div className="flex pb-2">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-                            <p className="text-gray-700 font-light ">{registro.lBolsa}</p>
+                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de PCM: </p>
+                            <p className="text-gray-700 font-light ">{registro.lPcm}</p>
                         </div>
                     </div>
 
