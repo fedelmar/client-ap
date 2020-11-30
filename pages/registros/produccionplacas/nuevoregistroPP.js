@@ -49,6 +49,11 @@ const NuevoRegistro = () => {
             input: "Placas"
         }
     });
+    const { data: dataQuimico, loading: loadingQuimico } = useQuery(LISTA_STOCK_CATEGORIA, {
+        variables: {
+            input: "Quimico"
+        }
+    });
     const { data: data, loading: loading } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Polietileno"
@@ -67,12 +72,10 @@ const NuevoRegistro = () => {
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
-            lote: '',
-            lPcm: ''
+            lote: ''
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('Ingrese un numero'),
-            lPcm: Yup.string().required('Ingrese el lote de PCM')                         
+            lote: Yup.string().required('Ingrese el Lote')                      
         }),
         onSubmit: valores => {     
             handleInicio(valores);            
@@ -106,7 +109,7 @@ const NuevoRegistro = () => {
         }
     },[nombre]);
 
-    if(loadingPlacas || loading) return (
+    if(loadingQuimico || loadingPlacas || loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -115,27 +118,26 @@ const NuevoRegistro = () => {
     // Definir lotes segun el stock de insumos
     const listaPlacas = dataPlacas.obtneterStockInsumosPorCategoria;
     const listaTapon = data.obtneterStockInsumosPorCategoria;
+    const listaQuimico = dataQuimico.obtneterStockInsumosPorCategoria;
 
     const handleInicio =  async valores => {
-        const { lote, lPcm } = valores;
-        const date = Date.now();
+        const { lote } = valores;
         try {
             const { data } = await nuevoRegistroPP({
                 variables: {
                     input: {
                         operario: nombre,
-                        lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
+                        lote: lote,
                         producto: registro.producto,
                         lPlaca: registro.lPlaca,
                         lTapon: registro.lTapon,
-                        lPcm: lPcm
+                        lPcm: registro.lPcm
                     }
                 }                
             });
             setSesionActiva(data.nuevoRegistroPP)
             setRegistro({...registro, 
-                lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`, 
-                lPcm: lPcm
+                lote: lote, 
             })
             setSession(true);
         } catch (error) {
@@ -176,6 +178,7 @@ const NuevoRegistro = () => {
                                 productoID: registro.productoID,
                                 lTaponID: registro.lTaponID,
                                 lPlacaID: registro.lPlacaID,
+                                lPcmID: registro.lPcmID,
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
                                 observaciones: observaciones
@@ -213,6 +216,12 @@ const NuevoRegistro = () => {
             taponDisp: lote.cantidad
         })
     };
+    const seleccionarlPcm = lote => {
+        setRegistro({...registro, 
+            lPcm: lote.lote, 
+            lPcmID: lote.id
+        })
+    };
 
     return (
         <Layout>
@@ -234,7 +243,7 @@ const NuevoRegistro = () => {
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="lote"
-                                        type="number"
+                                        type="text"
                                         placeholder="Ingrese el lote..."
                                         onChange={formikInicio.handleChange}
                                         onBlur={formikInicio.handleBlur}
@@ -288,28 +297,18 @@ const NuevoRegistro = () => {
                                     isMulti={false}
                                 />
 
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="lPcm">
-                                        Lote de PCM
-                                    </label>
-    
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="lPcm"
-                                        type="text"
-                                        placeholder="Ingrese el lote de PCM..."
-                                        onChange={formikInicio.handleChange}
-                                        onBlur={formikInicio.handleBlur}
-                                        value={formikInicio.values.lPcm}
-                                    />
-                                </div>
-    
-                                { formikInicio.touched.lPcm && formikInicio.errors.lPcm ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{formikInicio.errors.lPcm}</p>
-                                    </div>
-                                ) : null  } 
+                                <p className="block text-gray-700 font-bold mb-2">Lote de PCM</p>
+                                <Select
+                                    className="mt-3 mb-4"
+                                    options={listaQuimico}
+                                    onChange={opcion => seleccionarlPcm(opcion) }
+                                    getOptionValue={ opciones => opciones.id }
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
+                                    placeholder="Lote..."
+                                    noOptionsMessage={() => "No hay resultados"}
+                                    onBlur={formikInicio.handleBlur}
+                                    isMulti={false}
+                                />
     
                                 <input
                                     type="submit"
