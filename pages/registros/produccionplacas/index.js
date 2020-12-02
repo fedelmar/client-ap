@@ -20,6 +20,7 @@ const LISTA_REGISTROS = gql `
             lPlaca
             cantDescarte
             cantProducida
+            auxiliar
             observaciones
             estado
         }
