@@ -291,7 +291,7 @@ const FinalizarRegistro = () => {
                         ) : null  }
 
                         <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="auxiliar">
                                 Auxiliar/es
                             </label>
 

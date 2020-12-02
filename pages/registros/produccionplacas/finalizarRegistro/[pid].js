@@ -46,6 +46,7 @@ const NUEVO_REGISTRO = gql `
             lPlaca
             cantProducida
             cantDescarte
+            auxiliar
             observaciones
             estado
         }
@@ -88,7 +89,9 @@ const FinalizarRegistro = () => {
         initialValues: {
             cantProducida: 0,
             cantDescarte: 0,
-            observaciones: ''
+            observaciones: '',
+            pcmFinalizado: false,
+            auxiliar: ''
         },
         validationSchema: Yup.object({
             cantProducida: Yup.number()
@@ -97,6 +100,7 @@ const FinalizarRegistro = () => {
             cantDescarte: Yup.number()
                             .max(Yup.ref('cantProducida'), `Debe ser menor a la cantidad producida`)
                             .required('Ingrese el descarte generado'),
+            auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
@@ -136,8 +140,9 @@ const FinalizarRegistro = () => {
     let producto = productos.find(i => i.nombre === registro.producto);
 
     const terminarProduccion = valores => {
-        const {observaciones, cantDescarte, cantProducida} = valores;
-
+        const {observaciones, cantDescarte, cantProducida, pcmFinalizado, auxiliar} = valores;
+        let msjPCM;
+        pcmFinalizado ? msjPCM = ' finalizado.' : msjPCM = ' sin terminar.';
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
@@ -145,9 +150,10 @@ const FinalizarRegistro = () => {
                     "Operario: " + nombre + "</br>" +
                     "Lote de Placa: " + registro.lPlaca + "</br>" +
                     "Lote de Tapón: " + registro.lTapon + "</br>" +
-                    "Lote de Pcm: " + registro.lPcm + "</br>" +
+                    "Lote de Pcm: " + registro.lPcm + msjPCM + "</br>" +
                     "Cantidad producida: " + cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Auxiliares: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -170,6 +176,8 @@ const FinalizarRegistro = () => {
                                 lPlacaID: registro.lPlacaID,
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
+                                pcmFinalizado: pcmFinalizado,
+                                auxiliar: auxiliar,
                                 observaciones: observaciones
                             }   
                         }                
@@ -283,6 +291,45 @@ const FinalizarRegistro = () => {
                             <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                 <p className="font-bold">Error</p>
                                 <p>{formikCierre.errors.cantDescarte}</p>
+                            </div>
+                        ) : null  }
+
+                        <div className="flex mb-3">
+                            <label className="block text-gray-700 font-bold " htmlFor="pcmFinalizado">
+                                Lote de PCM finalizado:
+                            </label>
+
+                            <input
+                                className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                id="pcmFinalizado"
+                                type="checkbox"
+                                placeholder="Ingrese la cantidad de pcmFinalizado..."
+                                onChange={formikCierre.handleChange}
+                                onBlur={formikCierre.handleBlur}
+                                value={formikCierre.values.pcmFinalizado}
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="auxiliar">
+                                Auxiliar/es
+                            </label>
+
+                            <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="auxiliar"
+                                type="text"
+                                placeholder="auxiliar..."
+                                onChange={formikCierre.handleChange}
+                                onBlur={formikCierre.handleBlur}
+                                value={formikCierre.values.auxiliar}
+                            />
+                        </div>
+
+                        { formikCierre.touched.auxiliar && formikCierre.errors.auxiliar ? (
+                            <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                <p className="font-bold">Error</p>
+                                <p>{formikCierre.errors.auxiliar}</p>
                             </div>
                         ) : null  }
 

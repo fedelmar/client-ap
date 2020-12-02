@@ -188,7 +188,7 @@ const EditarRegistro = () => {
                             
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="guardado">
-                                        Esponjas guardadas
+                                        Placas guardadas
                                     </label>
 
                                     <input
