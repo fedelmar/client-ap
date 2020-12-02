@@ -88,7 +88,8 @@ const NuevoRegistro = () => {
         initialValues: {
             cantProducida: 0,
             cantDescarte: 0,
-            observaciones: ''
+            observaciones: '',
+            pcmFinalizado: false
         },
         validationSchema: Yup.object({
             cantProducida: Yup.number()
@@ -146,8 +147,9 @@ const NuevoRegistro = () => {
 
     };
     const terminarProduccion = valores => {
-        const {observaciones, cantDescarte, cantProducida} = valores;
-
+        const {observaciones, cantDescarte, cantProducida, pcmFinalizado} = valores;
+        let msjPCM;
+        pcmFinalizado ? msjPCM = ' finalizado.' : msjPCM = ' sin terminar.';
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
@@ -155,7 +157,7 @@ const NuevoRegistro = () => {
                     "Operario: " + nombre + "</br>" +
                     "Lote de Placa: " + registro.lPlaca + "</br>" +
                     "Lote de Tapón: " + registro.lTapon + "</br>" +
-                    "Lote de Pcm: " + registro.lPcm + "</br>" +
+                    "Lote de Pcm: " + registro.lPcm + msjPCM + "</br>" +
                     "Cantidad producida: " + cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
@@ -181,6 +183,7 @@ const NuevoRegistro = () => {
                                 lPcmID: registro.lPcmID,
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
+                                pcmFinalizado: pcmFinalizado,
                                 observaciones: observaciones
                             }   
                         }                
@@ -282,7 +285,7 @@ const NuevoRegistro = () => {
                                     options={listaPlacas}
                                     onChange={opcion => seleccionarLPlacas(opcion) }
                                     getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
+                                    getOptionLabel={ opciones => `${opciones.lote} - ${opciones.insumo} - Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
@@ -295,7 +298,7 @@ const NuevoRegistro = () => {
                                     options={listaTapon}
                                     onChange={opcion => seleccionarLTapon(opcion) }
                                     getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
+                                    getOptionLabel={ opciones => `${opciones.lote} - ${opciones.insumo} - Disp: ${opciones.cantidad}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
@@ -308,7 +311,7 @@ const NuevoRegistro = () => {
                                     options={listaQuimico}
                                     onChange={opcion => seleccionarlPcm(opcion) }
                                     getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
+                                    getOptionLabel={ opciones => `${opciones.lote}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
@@ -405,7 +408,7 @@ const NuevoRegistro = () => {
                                     </label>
 
                                     <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        className="shadow appearance-none border rounded w-full mb-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="cantDescarte"
                                         type="number"
                                         placeholder="Ingrese la cantidad de cantDescarte..."
@@ -421,6 +424,22 @@ const NuevoRegistro = () => {
                                         <p>{formikCierre.errors.cantDescarte}</p>
                                     </div>
                                 ) : null  }
+
+                                <div className="flex mb-3">
+                                    <label className="block text-gray-700 font-bold " htmlFor="pcmFinalizado">
+                                        Lote de PCM finalizado:
+                                    </label>
+
+                                    <input
+                                        className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                        id="pcmFinalizado"
+                                        type="checkbox"
+                                        placeholder="Ingrese la cantidad de pcmFinalizado..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.pcmFinalizado}
+                                    />
+                                </div>
 
                                 <div className="mb-2">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
