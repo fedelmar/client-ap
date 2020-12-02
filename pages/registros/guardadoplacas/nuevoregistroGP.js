@@ -264,7 +264,7 @@ const NuevoRegistroGP = () => {
 
                                 <div className="mb-4 mt-1">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="cantGuardada">
-                                        Esponjas guardadas
+                                        Placas guardadas
                                     </label>
     
                                     <input
