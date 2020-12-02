@@ -35,6 +35,7 @@ const NUEVO_REGISTRO = gql `
             lPlaca
             cantProducida
             cantDescarte
+            auxiliar
             observaciones
             estado
         }
@@ -89,7 +90,8 @@ const NuevoRegistro = () => {
             cantProducida: 0,
             cantDescarte: 0,
             observaciones: '',
-            pcmFinalizado: false
+            pcmFinalizado: false,
+            auxiliar: ''
         },
         validationSchema: Yup.object({
             cantProducida: Yup.number()
@@ -98,6 +100,7 @@ const NuevoRegistro = () => {
             cantDescarte: Yup.number()
                             .max(Yup.ref('cantProducida'), `Debe ser menor a la cantidad producida`)
                             .required('Ingrese el descarte generado'),
+            auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
@@ -147,7 +150,7 @@ const NuevoRegistro = () => {
 
     };
     const terminarProduccion = valores => {
-        const {observaciones, cantDescarte, cantProducida, pcmFinalizado} = valores;
+        const {observaciones, cantDescarte, cantProducida, pcmFinalizado, auxiliar} = valores;
         let msjPCM;
         pcmFinalizado ? msjPCM = ' finalizado.' : msjPCM = ' sin terminar.';
         Swal.fire({
@@ -160,6 +163,7 @@ const NuevoRegistro = () => {
                     "Lote de Pcm: " + registro.lPcm + msjPCM + "</br>" +
                     "Cantidad producida: " + cantProducida + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Auxiliares: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -184,6 +188,7 @@ const NuevoRegistro = () => {
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
                                 pcmFinalizado: pcmFinalizado,
+                                auxiliar: auxiliar,
                                 observaciones: observaciones
                             }   
                         }                
@@ -440,6 +445,30 @@ const NuevoRegistro = () => {
                                         value={formikCierre.values.pcmFinalizado}
                                     />
                                 </div>
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="auxiliar">
+                                        Auxiliar/es
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="auxiliar"
+                                        type="text"
+                                        placeholder="auxiliar..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.auxiliar}
+                                    />
+                                </div>
+    
+                                { formikCierre.touched.auxiliar && formikCierre.errors.auxiliar ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.auxiliar}</p>
+                                    </div>
+                                ) : null  }
+
 
                                 <div className="mb-2">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
