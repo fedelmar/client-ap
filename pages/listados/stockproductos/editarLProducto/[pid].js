@@ -29,6 +29,7 @@ const ACTUALIZAR_LOTE = gql `
             cantidad
             producto
             estado
+            modificado
         }
     }
 `;
@@ -63,13 +64,13 @@ const EditarLoteProducto = () => {
         lote: Yup.string(),
         producto: Yup.string(),
         estado: Yup.string(),
-        cantidad: Yup.number()
-                    
+        cantidad: Yup.number()             
     });
 
     const actualizarInfoStock = async valores => {
         const { lote, cantidad, estado } = valores;
         const producto = idProducto;
+        let fecha = Date.now();
         try {
             // eslint-disable-next-line no-unused-vars
             const { data } = actualizarProductoStock({
@@ -79,7 +80,8 @@ const EditarLoteProducto = () => {
                         lote,
                         cantidad,
                         estado,
-                        producto
+                        producto,
+                        modificado: fecha
                     }
                 }
             })
