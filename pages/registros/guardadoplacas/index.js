@@ -55,8 +55,6 @@ const GuardadoPlacas = () => {
 
     let registrosCerrados = data.obtenerRegistrosGP.filter(i => i.estado === false);
     let registrosAbiertos = data.obtenerRegistrosGP.filter(i => i.estado === true);
-    registrosAbiertos.reverse();
-    registrosCerrados.reverse();
 
     return (
         <Layout>

@@ -45,8 +45,7 @@ const StockInsumos = () => {
     );
     
     let registrosSumados = dataSumados.obtenerInsumosPorInsumo;
-    let registros = data.obtenerStockInsumos.map(i => i)
-    registros.reverse();
+    let registros = data.obtenerStockInsumos.map(i => i);
 
     const handleOpenClose = () => {
         setFiltros(!filtros);

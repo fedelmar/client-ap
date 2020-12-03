@@ -36,8 +36,7 @@ export default function Pedidos() {
     return router.push('/login');
   }
 
-  let registros = data.obtenerInsumos.map(i => i)
-  registros.reverse();
+  let registros = data.obtenerInsumos.map(i => i);
 
   const handleOpenClose = () => {
       setFiltros(!filtros);

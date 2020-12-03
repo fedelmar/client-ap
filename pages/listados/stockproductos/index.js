@@ -49,8 +49,7 @@ const StockProductos = () => {
     );
 
     let registrosTotal = dataTotal.obtenerProductosTotal;
-    let registros = data.obtenerProductosStock.map(i => i)
-    registros.reverse();
+    let registros = data.obtenerProductosStock.map(i => i);
 
     const handleOpenClose = () => {
         setFiltros(!filtros);

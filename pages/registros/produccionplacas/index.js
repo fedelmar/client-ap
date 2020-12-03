@@ -58,8 +58,6 @@ const ProduccionPlacas = () => {
 
     let registrosCerrados = data.obtenerRegistrosPP.filter(i => i.estado === false);
     let registrosAbiertos = data.obtenerRegistrosPP.filter(i => i.estado === true);
-    registrosAbiertos.reverse();
-    registrosCerrados.reverse();
 
     return (
         <Layout>

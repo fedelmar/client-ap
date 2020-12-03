@@ -40,8 +40,7 @@ const Ingresos = () => {
         setFiltros(!filtros);
     }
 
-    let registros = data.obtenerRegistrosIngresos.map(i => i)
-    registros.reverse();
+    let registros = data.obtenerRegistrosIngresos.map(i => i);
 
     return (
         <Layout>
