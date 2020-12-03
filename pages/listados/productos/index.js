@@ -33,8 +33,7 @@ const Productos = () => {
   );
 
   //console.log(data.obtenerProductos)
-  let registros = data.obtenerProductos.map(i => i)
-  registros.reverse();
+  let registros = data.obtenerProductos.map(i => i);
 
   const handleOpenClose = () => {
       setFiltros(!filtros);

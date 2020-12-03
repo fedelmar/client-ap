@@ -55,8 +55,6 @@ const GuardadoEsponjas = () => {
 
     let registrosCerrados = data.obtenerRegistrosGE.filter(i => i.estado === false);
     let registrosAbiertos = data.obtenerRegistrosGE.filter(i => i.estado === true);
-    registrosAbiertos.reverse();
-    registrosCerrados.reverse();
 
     return (
         <Layout>

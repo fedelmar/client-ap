@@ -57,8 +57,6 @@ const ProduccionEsponjas = () => {
 
     let registrosCerrados = data.obtenerRegistrosCE.filter(i => i.estado === false);
     let registrosAbiertos = data.obtenerRegistrosCE.filter(i => i.estado === true);
-    registrosAbiertos.reverse();
-    registrosCerrados.reverse();
 
     return (
       <Layout>
