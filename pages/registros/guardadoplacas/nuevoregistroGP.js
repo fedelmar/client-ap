@@ -139,6 +139,7 @@ const NuevoRegistroGP = () => {
                         variables: {
                             id: registro.id,
                             input: {
+                                operario: registro.operario,
                                 lote: registro.lote,
                                 guardado: cantGuardada,
                                 descarte: cantDescarte,
