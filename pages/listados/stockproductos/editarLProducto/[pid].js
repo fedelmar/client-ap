@@ -30,6 +30,7 @@ const ACTUALIZAR_LOTE = gql `
             producto
             estado
             modificado
+            responsable
         }
     }
 `;
@@ -51,6 +52,7 @@ const EditarLoteProducto = () => {
 
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
+    const { nombre } = usuarioContext.usuario;
 
     if(loading) return (   
         <Layout>
@@ -69,7 +71,6 @@ const EditarLoteProducto = () => {
 
     const actualizarInfoStock = async valores => {
         const { lote, cantidad, estado } = valores;
-        const producto = idProducto;
         let fecha = Date.now();
         try {
             // eslint-disable-next-line no-unused-vars
@@ -80,8 +81,8 @@ const EditarLoteProducto = () => {
                         lote,
                         cantidad,
                         estado,
-                        producto,
-                        modificado: fecha
+                        modificado: fecha,
+                        responsable: nombre,
                     }
                 }
             })
