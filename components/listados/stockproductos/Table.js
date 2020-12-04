@@ -4,6 +4,7 @@ import Router from 'next/router';
 import columnas from './columns';
 import EliminarLote from './EliminarLote';
 import Producto from './Producto';
+import { format } from 'date-fns';
 
 const Table = ({registros, rol, filtros}) => {
 
@@ -118,6 +119,14 @@ const Table = ({registros, rol, filtros}) => {
                                                 </td>
                                             : cell.column.id === 'producto' ?
                                                 <Producto id={cell.value} />
+
+                                            :  cell.column.id === 'fecha' ?
+                                                <th 
+                                                    className="border px-4 py-2"
+                                                    {...cell.getCellProps()}
+                                                >
+                                                    {format(new Date(cell.row.original.modificado), 'HH:mm - dd/MM')}
+                                                </th>
                                             :
                                                 <th 
                                                     className="border px-4 py-2"

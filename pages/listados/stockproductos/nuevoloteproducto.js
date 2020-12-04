@@ -50,8 +50,9 @@ const NuevoLoteProducto = () => {
         }
     })
 
-    const pedidoContext = useContext(UsuarioContext);
-    const { productos } = pedidoContext;
+    const usuarioContext = useContext(UsuarioContext);
+    const { productos } = usuarioContext;
+    const { nombre } = usuarioContext.usuario;
 
     const formik = useFormik({
         initialValues: {
@@ -79,7 +80,8 @@ const NuevoLoteProducto = () => {
                             lote,
                             producto,
                             estado,
-                            cantidad
+                            cantidad,
+                            responsable: nombre
                         }
                     }
                 });

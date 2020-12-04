@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { Formik, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 
 const NUEVA_SALIDA = gql `
     mutation nuevoRegistroSalida($input: SalidaInput){ 
@@ -41,6 +42,8 @@ const FinalizarSalida = (datos) => {
 
     const router = useRouter();
     const { cliente, productos, remito } = datos;
+    const usuarioContext = useContext(UsuarioContext);
+    const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
     const [ nuevoRegistroSalida ] = useMutation(NUEVA_SALIDA, {
         update(cache, {data: { nuevoRegistroSalida }}) {
@@ -89,6 +92,7 @@ const FinalizarSalida = (datos) => {
             const { data } = await nuevoRegistroSalida({
                 variables: {
                     input: {
+                        operario: nombre,
                         cliente: cliente,
                         remito: remito,
                         lotes: lotesAGuardar

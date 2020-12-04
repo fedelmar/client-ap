@@ -429,7 +429,7 @@ const IniciarProduccion = () => {
                               
                                 <div className="flex py-2">
                                     <p className="text-gray-700 text-lg font-bold mr-1">Cantidad Producida: </p>
-                                    <p className="text-gray-700 text-lg font-light ">{registro.cantProducida}</p>
+                                    <p className="text-red-700 text-xl font-bold ">{registro.cantProducida}</p>
                                 </div>
                             </div>
 

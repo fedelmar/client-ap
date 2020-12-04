@@ -16,6 +16,14 @@ const columnas = [
         accessor: 'estado',
     },
     {
+        Header: 'Modifico',
+        accessor: 'responsable',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
         Header: 'Editar',
         accessor: 'editar',
     },

@@ -102,7 +102,9 @@ const ManejoDeStock = ({registro, cantidades}) => {
                         lote: registro.lote,
                         producto: registro.productoID,
                         estado: "Proceso",
-                        cantidad: valores.esponjas
+                        cantidad: valores.esponjas,
+                        operario: registro.nombre,
+                        modificado: Date.now()
                     }
                 }
             })
