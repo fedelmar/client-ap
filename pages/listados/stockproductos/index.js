@@ -14,6 +14,8 @@ const OBTENER_STOCK = gql`
             cantidad
             producto
             estado
+            modificado
+            responsable
         }
     }
 `;
