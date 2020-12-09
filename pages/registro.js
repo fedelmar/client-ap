@@ -97,7 +97,7 @@ const Registro = () => {
         <>
             <Layout>
                 
-                <h1 className="text-center text-2xl text-white font-ligth">Registro</h1> 
+                <h1 className="text-center text-2xl text-gray-800 font-ligth">Registro</h1> 
 
                 {mensaje && mostrarMensaje() }
 
