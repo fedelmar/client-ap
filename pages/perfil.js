@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import UsuarioContext from '../context/usuarios/UsuarioContext';
 import EditarPerfil from '../components/pages/perfil/EditarPerfil';
+import EditarContraseña from '../components/pages/perfil/EditarContraseña';
 
 const Perfil = () => {
 
@@ -22,10 +23,13 @@ const Perfil = () => {
 
     return (
         <Layout>
+            {usuario ?
+                <>
+                    <EditarPerfil usuario={usuario} />
 
-            <EditarPerfil usuario={usuario} />
-        
-
+                    <EditarContraseña usuario={usuario} />
+                </>
+            : 'Cargando...'}
         </Layout>
     );
 }
