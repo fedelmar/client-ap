@@ -9,8 +9,8 @@ const Footer = () => {
     const router = useRouter();
     const [listados, setListados] = useState(false);
     const [registros, setRegistros] = useState(false);
-    const pedidoContext = useContext(UsuarioContext);
-    const { rol } = pedidoContext.usuario;
+    const usuarioContext = useContext(UsuarioContext);
+    const { rol } = usuarioContext.usuario;
 
     const handleOpenCloseListados = () => {
         setListados(!listados);
