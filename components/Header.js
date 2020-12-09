@@ -7,7 +7,7 @@ const Header = ({usuario}) => {
 
     const router = useRouter();
     
-    const { nombre, apellido, rol } = usuario;
+    const { nombre, rol } = usuario;
 
     const cerrarSesion = client => {
         
@@ -30,10 +30,14 @@ const Header = ({usuario}) => {
             >
                 Sistema AP
             </button>
-            <div className="flex-col">     
-                <p className="text-base bg-gray-800 text-right text-white font-light">
-                    Usuario: {nombre} {apellido}
-                </p>       
+            <div className="flex-col">
+                <button
+                    onClick={() => router.push('/perfil')}
+                    className="text-base bg-gray-800 text-right text-white font-light"
+                    type="button"
+                >
+                    {rol}: {nombre}
+                </button>     
                 <div className="flex justify-end">
                     {rol === "Admin" ? (
                             <div className="px-1" >

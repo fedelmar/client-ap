@@ -28,12 +28,11 @@ const Login = () => {
     // Validacion del formulario
     const formik = useFormik({
         initialValues: {
-            email: '',
+            nombre: '',
             password: ''
         },
         validationSchema: Yup.object({
-            email: Yup.string()
-                            .email('El email no es válido')
+            nombre: Yup.string()
                             .required('Campo obligatorio'),
             password: Yup.string()
                             .required('Campo obligatorio')
@@ -41,17 +40,18 @@ const Login = () => {
         }),
         onSubmit: async valores => {
 
-            const { email, password } = valores;
+            const { nombre, password } = valores;
 
             try {
                 const { data } = await autenticarUsuario({
                     variables: {
                         input: {
-                            email,
+                            nombre,
                             password
                         }
                     }
                 })
+                console.log(data)
 
                 client.resetStore();
 
@@ -96,24 +96,24 @@ const Login = () => {
                             onSubmit={formik.handleSubmit}
                         >
                             <div className="mb-4">
-                                <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="email">
-                                    Email
+                                <label className="block text-gray-70 text-sm font-bold mb-2" htmlFor="nombre">
+                                    Nombre de usuario
                                 </label>
                                 
                                 <input
                                     className="shadow appearence-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="email"
-                                    type="email"
-                                    placeholder="Email Usuario"
+                                    id="nombre"
+                                    type="nombre"
+                                    placeholder="Usuario..."
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    value={formik.values.email}
+                                    value={formik.values.nombre}
                                 />
                             </div>
 
-                            {formik.touched.email && formik.errors.email ? (
+                            {formik.touched.nombre && formik.errors.nombre ? (
                                 <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-                                    <p>{formik.errors.email} </p>
+                                    <p>{formik.errors.nombre} </p>
                                 </div>
                             ): null}
 
