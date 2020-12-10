@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTable, useSortBy } from "react-table";
 import columnas from './columns';
-import Producto from '../listados/stockproductos/Producto';
+import Producto from '../../listados/stockproductos/Producto';
 
 const Table = ({registros}) => {
 

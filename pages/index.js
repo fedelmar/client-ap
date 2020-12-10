@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import Layout from '../components/Layout';
-import Table from '../components/index/Table';
+import Table from '../components/pages/index/Table';
 
 const ULTIMOS_LOTES = gql `
   query obtenerUltimosModificados {
