@@ -33,7 +33,7 @@ const Index = () => {
   return (
     <Layout>
 
-      <div className="flex justify-center" >
+      <div className="flex justify-center mt-3" >
         <img src='/imagenAP.png' />    
       </div>
       
