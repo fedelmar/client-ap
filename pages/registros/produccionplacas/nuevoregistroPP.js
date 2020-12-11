@@ -144,7 +144,6 @@ const NuevoRegistro = () => {
                     }
                 }                
             });
-            console.log(data)
             setSesionActiva(data.nuevoRegistroPP)
             setRegistro({...registro, 
                 lote: lote, 

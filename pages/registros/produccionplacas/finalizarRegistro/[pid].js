@@ -201,8 +201,6 @@ const FinalizarRegistro = () => {
         })
     }
 
-    console.log(registro)
-
     return (
         <Layout>
              <div className="flex justify-center mt-5">
