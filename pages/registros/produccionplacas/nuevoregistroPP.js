@@ -32,6 +32,7 @@ const NUEVO_REGISTRO = gql `
             producto
             lTapon
             lPcm
+            lPcmID
             lPlaca
             cantProducida
             cantDescarte
@@ -46,16 +47,19 @@ const NuevoRegistro = () => {
 
     const router = useRouter();
     const { data: dataPlacas, loading: loadingPlacas } = useQuery(LISTA_STOCK_CATEGORIA, {
+        pollInterval: 500,
         variables: {
             input: "Placas"
         }
     });
     const { data: dataQuimico, loading: loadingQuimico } = useQuery(LISTA_STOCK_CATEGORIA, {
+        pollInterval: 500,
         variables: {
             input: "Quimico"
         }
     });
     const { data: data, loading: loading } = useQuery(LISTA_STOCK_CATEGORIA, {
+        pollInterval: 500,
         variables: {
             input: "Polietileno"
         }
@@ -135,7 +139,8 @@ const NuevoRegistro = () => {
                         producto: registro.producto,
                         lPlaca: registro.lPlaca,
                         lTapon: registro.lTapon,
-                        lPcm: registro.lPcm
+                        lPcm: registro.lPcm,
+                        lPcmID: registro.lPcmID,
                     }
                 }                
             });

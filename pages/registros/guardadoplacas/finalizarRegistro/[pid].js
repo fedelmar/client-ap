@@ -141,7 +141,7 @@ const FinalizarRegistro = () => {
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + registro.operario + "</br>" +
-                    "Esponjas guardadas: " + guardado + "</br>" +
+                    "Placas guardadas: " + guardado + "</br>" +
                     "Cantidad de descarte: " + descarte + "</br>" +
                     "Pallet: " + pallet + "</br>" +
                     "Auxiliar/es: " + auxiliar + "</br>" +

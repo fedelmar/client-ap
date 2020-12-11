@@ -18,6 +18,7 @@ const REGISTRO = gql `
             lTapon
             lPcm
             lPlaca
+            lPcmID
         }
     }
 `;
@@ -43,6 +44,7 @@ const NUEVO_REGISTRO = gql `
             producto
             lTapon
             lPcm
+            lPcmID
             lPlaca
             cantProducida
             cantDescarte
@@ -69,17 +71,19 @@ const FinalizarRegistro = () => {
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
             id
-        }
+        },
     });    
     const { data: dataTapon, loading: loadingTapon } = useQuery(LOTE_INSUMO, {
         variables: {
             input: registro.lTapon
-        }
+        },
+        pollInterval: 500
     });
     const { data: dataPlaca, loading: loadingPlaca } = useQuery(LOTE_INSUMO, {
         variables: {
             input: registro.lPlaca
-        }
+        },
+        pollInterval: 500
     });
     const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
     // Formato del formulario de cierre de sesion
@@ -117,7 +121,8 @@ const FinalizarRegistro = () => {
                 producto: obtenerRegistroPP.producto,
                 lPcm: obtenerRegistroPP.lPcm,
                 lPlaca: obtenerRegistroPP.lPlaca,
-                lTapon: obtenerRegistroPP.lTapon
+                lTapon: obtenerRegistroPP.lTapon,
+                lPcmID: obtenerRegistroPP.lPcmID
             })
         }
         if ((registro.lPlaca && registro.lTapon) !== '' && (dataPlaca && dataTapon)) {
@@ -174,6 +179,7 @@ const FinalizarRegistro = () => {
                                 productoID: producto.id,
                                 lTaponID: registro.lTaponID,
                                 lPlacaID: registro.lPlacaID,
+                                lPcmID: registro.lPcmID,
                                 cantProducida: cantProducida,
                                 cantDescarte: cantDescarte,
                                 pcmFinalizado: pcmFinalizado,
