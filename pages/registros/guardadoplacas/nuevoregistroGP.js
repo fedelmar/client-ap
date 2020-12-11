@@ -121,7 +121,7 @@ const NuevoRegistroGP = () => {
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + registro.operario + "</br>" +
-                    "Esponjas guardadas: " + cantGuardada + "</br>" +
+                    "Placas guardadas: " + cantGuardada + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Pallet: " + pallet + "</br>" +
                     "Auxiliar/es: " + auxiliar + "</br>" +
