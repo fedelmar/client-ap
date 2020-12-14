@@ -66,10 +66,15 @@ const Ingresos = () => {
                 />
             : null}
 
-            <Table 
-                registros={registros}
-                filtros={filtros}
-            />
+            {registros.length > 0 ?
+                <Table 
+                    registros={registros}
+                    filtros={filtros}
+                />
+            :           
+                <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+                    <p className="text-xl text-center">No hay registros para mostrar</p>
+                </div>}
         </Layout>
     );
 }
