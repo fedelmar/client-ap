@@ -36,10 +36,14 @@ const Index = () => {
         <img src='/imagenAP.png' />    
       </div>
       
-      <h1 className="text-2xl pl-2 text-gray-800 font-light">Ultimos lotes cargados</h1>
-      <Table 
-        registros={data.obtenerUltimosModificados}
-      />
+      {data.obtenerUltimosModificados.length > 0 ?
+        <>
+          <h1 className="text-2xl pl-2 text-gray-800 font-light">Ultimos lotes cargados</h1>
+          <Table 
+              registros={data.obtenerUltimosModificados}
+          />
+        </>
+      :  null}
     </Layout>
   )
   
