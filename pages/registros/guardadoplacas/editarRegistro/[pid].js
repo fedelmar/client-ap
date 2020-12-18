@@ -57,6 +57,8 @@ const EditarRegistro = () => {
         auxiliar: ''
     });
     const schemaValidacion = Yup.object({
+        lote: Yup.string(),
+        pallet: Yup.string(),
         guardado: Yup.number(),
         descarte: Yup.number()
     });
@@ -86,10 +88,11 @@ const EditarRegistro = () => {
     );
 
     const finalizar = valores => {
-        const { guardado, descarte, lote } = valores;
+        const { guardado, descarte, lote, pallet } = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + lote + "</br>" +
+                    "Pallet: " + pallet + "</br>" +
                     "Cantidad producida: " + guardado + "</br>" +
                     "Cantidad de descarte: " + descarte + "</br>", 
             icon: 'warning',
@@ -107,6 +110,7 @@ const EditarRegistro = () => {
                             input: {
                                 lote: lote,
                                 guardado: guardado,
+                                pallet: pallet,
                                 descarte: descarte
                             }
                         }
@@ -148,10 +152,6 @@ const EditarRegistro = () => {
                             <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
                             <p className="text-gray-700 font-light">{registro.producto}</p>
                         </div>
-                        <div className="flex">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Pallet: </p>
-                            <p className="text-gray-700 font-light ">{registro.pallet}</p>
-                        </div>
                         <div className="flex pb-2">
                             <p className="text-gray-700 text-mm font-bold mr-1">Auxiliares: </p>
                             <p className="text-gray-700 font-light ">{registro.auxiliar}</p>
@@ -185,6 +185,36 @@ const EditarRegistro = () => {
                                         value={props.values.lote}
                                     />
                                 </div>
+
+                                { props.touched.lote && props.errors.lote ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{props.errors.lote}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pallet">
+                                        Pallet
+                                    </label>
+
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="pallet"
+                                        type="string"
+                                        placeholder="Pallet"
+                                        onChange={props.handleChange}
+                                        onBlur={props.handleBlur}
+                                        value={props.values.pallet}
+                                    />
+                                </div>
+
+                                { props.touched.pallet && props.errors.pallet ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{props.errors.pallet}</p>
+                                    </div>
+                                ) : null  }
                             
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="guardado">
