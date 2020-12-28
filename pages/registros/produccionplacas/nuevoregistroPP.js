@@ -43,6 +43,12 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
+const ELIMINAR_REGISTRO = gql `
+    mutation eliminarRegistroPP($id: ID!){
+        eliminarRegistroPP(id: $id)
+    }
+`;
+
 const NuevoRegistro = () => {
 
     const router = useRouter();
@@ -65,6 +71,7 @@ const NuevoRegistro = () => {
         }
     });
     const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
+    const [ eliminarRegistroPP ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
@@ -210,10 +217,15 @@ const NuevoRegistro = () => {
             }
           })        
     };
-    const handleCierre = () => {
+    const handleCierre = async () => {
         // Volver a iniciar por si hubo algun error
         setRegistro({...registro})
-        setSession(false);        
+        setSession(false);
+        await eliminarRegistroPP({
+            variables: {
+                id: sesionActiva.id
+            }
+        })        
     }
 
     // Manejo de los campos select del formulario (On Change)
