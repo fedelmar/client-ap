@@ -49,6 +49,12 @@ const ACTUALIZAR_REGISTRO = gql`
     }
 `;
 
+const ELIMINAR_REGISTRO = gql `
+    mutation eliminarRegistroCE($id: ID!){
+        eliminarRegistroCE(id: $id)
+    }
+`;
+
 const IniciarProduccion = () => {
 
     const router = useRouter();
@@ -64,8 +70,9 @@ const IniciarProduccion = () => {
             input: "Polietileno"
         }
     })
-    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
+    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ eliminarRegistroCE ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
@@ -156,10 +163,15 @@ const IniciarProduccion = () => {
         setSession(true);
     }
 
-    const handleCierre = () => {
+    const handleCierre = async () => {
         // Volver a iniciar por si hubo algun error
         setRegistro({...registro})
         setSession(false);        
+        await eliminarRegistroCE({
+            variables: {
+                id: sesionActiva.id
+            }
+        })
     }
 
     const terminarProduccion = async valores => {

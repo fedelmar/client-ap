@@ -62,6 +62,12 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
+const ELIMINAR_REGISTRO = gql `
+    mutation eliminarRegistroGE($id: ID!){
+        eliminarRegistroGE(id: $id)
+    }
+`;
+
 const NuevoRegistroGE = () => {
 
     const router = useRouter();
@@ -82,6 +88,7 @@ const NuevoRegistroGE = () => {
             })
         }
     });
+    const [ eliminarRegistroGE ] = useMutation(ELIMINAR_REGISTRO);
     const [mensaje, guardarMensaje] = useState(null);
     const [session, setSession] = useState(false);
     const [registro, setRegistro] = useState({
@@ -209,10 +216,15 @@ const NuevoRegistroGE = () => {
         }
     }
 
-    const handleCierre = () => {
+    const handleCierre = async () => {
         // Volver a iniciar por si hubo algun error
         setRegistro({...registro})
-        setSession(false);        
+        setSession(false);
+        await eliminarRegistroGE({
+            variables: {
+                id: registro.id
+            }
+        });        
     }
 
     const seleccionarLEsponja = opcion => {

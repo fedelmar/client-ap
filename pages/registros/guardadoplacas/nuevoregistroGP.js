@@ -43,6 +43,12 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
+const ELIMINAR_REGISTRO = gql `
+    mutation eliminarRegistroGP($id: ID!){
+        eliminarRegistroGP(id: $id)
+    }
+`;
+
 const NuevoRegistroGP = () => {
 
     const router = useRouter();
@@ -61,6 +67,7 @@ const NuevoRegistroGP = () => {
         pollInterval: 500,
     });
     const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
+    const [ eliminarRegistroGP ] = useMutation(ELIMINAR_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
             cantGuardada: 0,
@@ -184,6 +191,17 @@ const NuevoRegistroGP = () => {
     const seleccionarLPlaca = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
         setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
+    }
+
+    const handleCierre = async () => {
+        // Volver a iniciar por si hubo algun error
+        setRegistro({...registro})
+        setSession(false);
+        await eliminarRegistroGP({
+            variables: {
+                id: registro.id
+            }
+        });        
     }
 
     // Mostrar mensaje de base de datos si hubo un error
