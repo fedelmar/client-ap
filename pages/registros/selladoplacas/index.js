@@ -3,7 +3,7 @@ import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
 import Link from 'next/link';
-import Table from '../../../components/registros/guardadoplacas/Table';
+import Table from '../../../components/registros/selladoplacas/Table';
 import ExportarRegistro from '../../../components/registros/guardadoplacas/ExportarRegistro';
 
 const LISTA_REGISTROS = gql `
@@ -87,7 +87,11 @@ const GuardadoPlacas = () => {
             ) : null }
 
             {activos && registrosAbiertos.length > 0 ? 
-                <p>tabla</p>
+                <Table 
+                    registros={registrosAbiertos}
+                    filtros={filtros}
+                    rol={rol}
+                />
                 : activos ?
                 <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
                     <p className="text-xl text-center">No hay registros activos para mostrar</p>
@@ -95,7 +99,11 @@ const GuardadoPlacas = () => {
             : null}
 
             {registrosCerrados.length > 0 ?
-                <p>tabla</p>
+                <Table 
+                    registros={registrosCerrados}
+                    filtros={filtros}
+                    rol={rol}
+                />
                 :           
                 <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
                     <p className="text-xl text-center">No hay registros para mostrar</p>
