@@ -4,7 +4,7 @@ import Layout from '../../../components/Layout';
 import {gql, useQuery} from '@apollo/client';
 import Link from 'next/link';
 import Table from '../../../components/registros/selladoplacas/Table';
-import ExportarRegistro from '../../../components/registros/guardadoplacas/ExportarRegistro';
+import ExportarRegistro from '../../../components/registros/selladoplacas/ExportarRegistro';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosSP{
