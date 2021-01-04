@@ -158,7 +158,7 @@ const NuevoRegistroGP = () => {
                     });
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
-                        data.nuevoRegistroGP,
+                        data.nuevoRegistroGP.sellado + " placas de lote " + data.nuevoRegistroGP.lote + " guardadas por " + data.nuevoRegistroGP.operario,
                         'success'
                     )
                     router.push('/registros/guardadoplacas');
@@ -166,7 +166,7 @@ const NuevoRegistroGP = () => {
                     guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
             }
-          })
+        })
     }
 
     const handleInicio = async () => {   
@@ -244,7 +244,7 @@ const NuevoRegistroGP = () => {
                             </div>
                         </div>
                     </div>
-                ) :(
+                ) : (
                     <div className="flex justify-center mt-5">
                         <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
                             <div className="mb-2 border-b-2 border-gray-600">
@@ -399,7 +399,7 @@ const NuevoRegistroGP = () => {
                                 <input
                                     type="submit"
                                     className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900"
-                                    value="Finalizar Producción"
+                                    value="Finalizar Registro"
                                 />
                                 <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
                             </form>                            
