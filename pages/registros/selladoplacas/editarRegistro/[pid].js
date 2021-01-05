@@ -51,13 +51,11 @@ const EditarRegistro = () => {
         sellado: 0,
         descarte: 0,
         operario: '',
-        pallet: '',
         observaciones: '',
         auxiliar: ''
     });
     const schemaValidacion = Yup.object({
         lote: Yup.string(),
-        pallet: Yup.string(),
         sellado: Yup.number(),
         descarte: Yup.number()
     });
@@ -86,11 +84,10 @@ const EditarRegistro = () => {
     );
 
     const finalizar = valores => {
-        const { sellado, descarte, lote, pallet } = valores;
+        const { sellado, descarte, lote } = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + lote + "</br>" +
-                    "Pallet: " + pallet + "</br>" +
                     "Cantidad producida: " + sellado + "</br>" +
                     "Cantidad de descarte: " + descarte + "</br>", 
             icon: 'warning',
