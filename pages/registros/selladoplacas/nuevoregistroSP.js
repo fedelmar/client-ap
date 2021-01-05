@@ -10,8 +10,8 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 
 const LOTES_PLACAS = gql `
-    query obtenerStockPlacas{
-        obtenerStockPlacas{
+    query obtenerStockPlacasEnProceso{
+        obtenerStockPlacasEnProceso{
             lote
             loteID
             estado
@@ -93,7 +93,7 @@ const NuevoRegistroSP = () => {
     });
     useEffect(() => {
         if (data) {
-            data.obtenerStockPlacas.map(i => 
+            data.obtenerStockPlacasEnProceso.map(i => 
                 i.loteID === registro.loteID ?
                     setRegistro({...registro, cantidad: i.cantidad})
                 : null
@@ -111,7 +111,7 @@ const NuevoRegistroSP = () => {
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-    const {obtenerStockPlacas} = data;
+    const {obtenerStockPlacasEnProceso} = data;
 
     const seleccionarLPlaca = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
@@ -222,7 +222,7 @@ const NuevoRegistroSP = () => {
                                 <p className="block text-gray-700 font-bold mb-2">Lote de Placa</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={obtenerStockPlacas}
+                                    options={obtenerStockPlacasEnProceso}
                                     onChange={opcion => seleccionarLPlaca(opcion)}
                                     getOptionValue={ opciones => opciones.loteId }
                                     getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad}`}
