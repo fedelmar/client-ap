@@ -9,8 +9,8 @@ import { format } from 'date-fns';
 import UsuarioContext from '../../../../context/usuarios/UsuarioContext';
 
 const REGISTRO = gql `
-    query obtenerRegistroGP($id: ID!){
-        obtenerRegistroGP(id: $id){
+    query obtenerRegistroSP($id: ID!){
+        obtenerRegistroSP(id: $id){
             creado
             operario
             lote
@@ -34,24 +34,23 @@ const LOTES_PLACAS = gql `
 `;
 
 const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGP($id: ID, $input: CGPInput){
-        nuevoRegistroGP(id: $id, input: $input){
+    mutation nuevoRegistroSP($id: ID, $input: CSPInput){
+        nuevoRegistroSP(id: $id, input: $input){
             id
             creado
-            modificado
-            operario
             lote
             producto
             loteID
-            guardado
+            sellado
             descarte
-            pallet
+            operario
             auxiliar
             observaciones
-            estado
+            modificado
         }
     }
 `;
+
 
 const FinalizarRegistro = () => {
 
@@ -71,24 +70,24 @@ const FinalizarRegistro = () => {
     const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS, {
         pollInterval: 500,
     });
-    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
-            guardado: '',
+            sellado: '',
             descarte: 0,
             pallet: '',
             auxiliar: '',
             observaciones: ''
         },
         validationSchema: Yup.object({
-            guardado: Yup.number()
+            sellado: Yup.number()
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
                                 .required('Ingrese la cantidad producida'),
             descarte: Yup.number()
                                 .required('Ingrese el descarte generado')
                                 .test('disponibilidad', 'No hay disponibilidad',
                                 function(descarte) {
-                                    return descarte <= registro.cantidad - guardado.value
+                                    return descarte <= registro.cantidad - sellado.value
                                 }),
             pallet: Yup.string(),
             auxiliar: Yup.string(),
@@ -113,12 +112,11 @@ const FinalizarRegistro = () => {
     }, [dataLote, registro.loteID]);
     useEffect(() => {
         if (data) {
-            const { obtenerRegistroGP } = data;
+            const { obtenerRegistroSP } = data;
             setRegistro({...registro,
-                pallet: obtenerRegistroGP.pallet,
-                creado: obtenerRegistroGP.creado,
-                lote: obtenerRegistroGP.lote,
-                loteID: obtenerRegistroGP.loteID
+                creado: obtenerRegistroSP.creado,
+                lote: obtenerRegistroSP.lote,
+                loteID: obtenerRegistroSP.loteID
             })
         };
     }, [data]);
@@ -137,13 +135,13 @@ const FinalizarRegistro = () => {
 
     const terminarProduccion = valores => {
         //Volver a planillas de produccion y modificar base de datos
-        const {descarte, guardado, pallet, observaciones, auxiliar} = valores;
+        const {descarte, sellado, pallet, observaciones, auxiliar} = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + registro.operario + "</br>" +
-                    "Placas guardadas: " + guardado + "</br>" +
+                    "Placas guardadas: " + sellado + "</br>" +
                     "Cantidad de descarte: " + descarte + "</br>" +
                     "Pallet: " + pallet + "</br>" +
                     "Auxiliar/es: " + auxiliar + "</br>" +
@@ -157,14 +155,14 @@ const FinalizarRegistro = () => {
         }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroGP({
+                    const { data } = await nuevoRegistroSP({
                         variables: {
                             id,
                             input: {
+                                operario: registro.operario,
                                 lote: registro.lote,
-                                guardado: guardado,
+                                sellado: sellado,
                                 descarte: descarte,
-                                pallet: pallet,
                                 auxiliar: auxiliar,
                                 observaciones: observaciones
                             }
@@ -172,10 +170,10 @@ const FinalizarRegistro = () => {
                     });
                     Swal.fire(
                         'Se guardo el registro y se creo actualizo el stock.',
-                        data.nuevoRegistroGP,
+                        data.nuevoRegistroSP.sellado + " placas de lote " + data.nuevoRegistroSP.lote + " selladas por " + data.nuevoRegistroSP.operario,
                         'success'
                     )
-                    router.push('/registros/guardadoplacas');
+                    router.push('/registros/selladoplacas');
                 } catch (error) {
                     console.log(error)
                 }
@@ -193,11 +191,11 @@ const FinalizarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light ">{format(new Date(data.obtenerRegistroGP.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light ">{format(new Date(data.obtenerRegistroSP.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGP.creado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroSP.creado), 'HH:mm')}</p>
                             </div>
                         </div>
                         
@@ -224,25 +222,25 @@ const FinalizarRegistro = () => {
                     >
 
                         <div className="mb-4 mt-1">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="guardado">
-                                Placas guardadas
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="sellado">
+                                Placas selladas
                             </label>
 
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="guardado"
+                                id="sellado"
                                 type="number"
                                 placeholder="Ingrese la cantidad producida..."
                                 onChange={formikCierre.handleChange}
                                 onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.guardado}
+                                value={formikCierre.values.sellado}
                             />
                         </div>
 
-                        { formikCierre.touched.guardado && formikCierre.errors.guardado ? (
+                        { formikCierre.touched.sellado && formikCierre.errors.sellado ? (
                             <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                 <p className="font-bold">Error</p>
-                                <p>{formikCierre.errors.guardado}</p>
+                                <p>{formikCierre.errors.sellado}</p>
                             </div>
                         ) : null  }
 
@@ -266,29 +264,6 @@ const FinalizarRegistro = () => {
                             <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                 <p className="font-bold">Error</p>
                                 <p>{formikCierre.errors.descarte}</p>
-                            </div>
-                        ) : null  }
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="pallet">
-                                Pallet
-                            </label>
-
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="pallet"
-                                type="text"
-                                placeholder="Ingrese el pallet..."
-                                onChange={formikCierre.handleChange}
-                                onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.pallet}
-                            />
-                        </div>
-
-                        { formikCierre.touched.pallet && formikCierre.errors.pallet ? (
-                            <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                <p className="font-bold">Error</p>
-                                <p>{formikCierre.errors.pallet}</p>
                             </div>
                         ) : null  }
 

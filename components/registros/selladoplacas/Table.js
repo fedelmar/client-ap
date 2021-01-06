@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, Fragment } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import Router from 'next/router';
@@ -27,8 +27,7 @@ const Table = ({registros, filtros, rol}) => {
         };
         if (registros.every(i => i.estado === true)) {
             toggleHideColumn('descarte');
-            toggleHideColumn('guardado');
-            toggleHideColumn('pallet');
+            toggleHideColumn('sellado');
         }                 
     },[rol])
 
@@ -62,14 +61,14 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/guardadoplacas/finalizarRegistro/[id]",
+            pathname: "/registros/selladoplacas/finalizarRegistro/[id]",
             query: { id }
         })
     }
     
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/guardadoplacas/editarRegistro/[id]",
+            pathname: "/registros/selladoplacas/editarRegistro/[id]",
             query: { id }
         })
     }
@@ -112,6 +111,7 @@ const Table = ({registros, filtros, rol}) => {
                                     null
                                 :  
                                     <th 
+                                        key={column.id}
                                         className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                         {...column.getHeaderProps()}
                                     >                              
@@ -120,14 +120,14 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                             
                         
                             :
-                                column.id === 'guardado' ||
-                                column.id === 'pallet' ||
+                                column.id === 'sellado' ||
                                 column.id === 'descarte'
                                 ?
                                     registros.every(i => i.estado === true) ?
                                         null
                                     :
                                         <th 
+                                            key={column.id}
                                             className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                         >                              
@@ -142,7 +142,8 @@ const Table = ({registros, filtros, rol}) => {
                                         </th>    
 
                                 :
-                                    <th
+                                    <th 
+                                        key={column.id}
                                         className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                         {...column.getHeaderProps(column.getSortByToggleProps())}
                                     >                              
@@ -165,10 +166,10 @@ const Table = ({registros, filtros, rol}) => {
                     {rows.map(row => {
                         prepareRow(row)
                         return (
-                            <tr  {...row.getRowProps()}>
-                                {row.cells.map(cell => { 
+                            <tr key={row.id} {...row.getRowProps()}>
+                                {row.cells.map(cell => {
                                     return (
-                                        <>
+                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' && rol === "Admin" ?
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             : 
@@ -231,7 +232,7 @@ const Table = ({registros, filtros, rol}) => {
                                                     >
                                                         {cell.render('Cell')}
                                                     </th>}     
-                                        </>                                        
+                                        </Fragment>                                        
                                     )
                                 })}
                             </tr>

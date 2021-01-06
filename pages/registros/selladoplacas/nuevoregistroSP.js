@@ -10,8 +10,8 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 
 const LOTES_PLACAS = gql `
-    query obtenerStockPlacas{
-        obtenerStockPlacas{
+    query obtenerStockPlacasEnProceso{
+        obtenerStockPlacasEnProceso{
             lote
             loteID
             estado
@@ -24,32 +24,30 @@ const LOTES_PLACAS = gql `
 `;
 
 const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGP($id: ID, $input: CGPInput){
-        nuevoRegistroGP(id: $id, input: $input){
+    mutation nuevoRegistroSP($id: ID, $input: CSPInput){
+        nuevoRegistroSP(id: $id, input: $input){
             id
             creado
-            modificado
-            operario
             lote
             producto
             loteID
-            guardado
+            sellado
             descarte
-            pallet
+            operario
             auxiliar
             observaciones
-            estado
+            modificado
         }
     }
 `;
 
 const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroGP($id: ID!){
-        eliminarRegistroGP(id: $id)
+    mutation eliminarRegistroSP($id: ID!){
+        eliminarRegistroSP(id: $id)
     }
-`;
+`;  
 
-const NuevoRegistroGP = () => {
+const NuevoRegistroSP = () => {
 
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
@@ -66,28 +64,26 @@ const NuevoRegistroGP = () => {
     const { data, loading } = useQuery(LOTES_PLACAS, {
         pollInterval: 500,
     });
-    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
-    const [ eliminarRegistroGP ] = useMutation(ELIMINAR_REGISTRO);
+    const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO);
+    const [ eliminarRegistroSP ] = useMutation(ELIMINAR_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
-            cantGuardada: 0,
-            cantDescarte: 0,
-            pallet: '',
+            sellado: 0,
+            descarte: 0,
             auxiliar: '',
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantGuardada: Yup.number()
+            sellado: Yup.number()
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
                                 .required('Ingrese la cantidad producida'),
 
-            cantDescarte: Yup.number()
+            descarte: Yup.number()
                                 .required('Ingrese el descarte generado')
                                 .test('disponibilidad', 'No hay disponibilidad',
-                                function(cantDescarte) {
-                                    return cantDescarte <= registro.cantidad - cantGuardada.value
+                                function(descarte) {
+                                    return descarte <= registro.cantidad - sellado.value
                                 }),
-            pallet: Yup.string().required('Ingrese el pallet'),
             auxiliar: Yup.string(),
             observaciones: Yup.string()               
         }),
@@ -97,7 +93,7 @@ const NuevoRegistroGP = () => {
     });
     useEffect(() => {
         if (data) {
-            data.obtenerStockPlacas.map(i => 
+            data.obtenerStockPlacasEnProceso.map(i => 
                 i.loteID === registro.loteID ?
                     setRegistro({...registro, cantidad: i.cantidad})
                 : null
@@ -115,21 +111,26 @@ const NuevoRegistroGP = () => {
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-    const {obtenerStockPlacas} = data;
+    const {obtenerStockPlacasEnProceso} = data;
+
+    const seleccionarLPlaca = opcion => {
+        const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
+        setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
+    }
 
     const terminarProduccion = async valores => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos
 
         //Volver a planillas de produccion y modificar base de datos
-        const {cantDescarte, cantGuardada, observaciones, auxiliar, pallet} = valores;
+        const {descarte, sellado, observaciones, auxiliar, pallet} = valores;
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
                     "Producto: " + registro.producto + "</br>" +
                     "Operario: " + registro.operario + "</br>" +
-                    "Placas guardadas: " + cantGuardada + "</br>" +
-                    "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Placas guardadas: " + sellado + "</br>" +
+                    "Cantidad de descarte: " + descarte + "</br>" +
                     "Pallet: " + pallet + "</br>" +
                     "Auxiliar/es: " + auxiliar + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
@@ -142,26 +143,25 @@ const NuevoRegistroGP = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroGP({
+                    const { data } = await nuevoRegistroSP({
                         variables: {
                             id: registro.id,
                             input: {
                                 operario: registro.operario,
                                 lote: registro.lote,
-                                guardado: cantGuardada,
-                                descarte: cantDescarte,
+                                sellado: sellado,
+                                descarte: descarte,
                                 auxiliar: auxiliar,
-                                observaciones: observaciones,
-                                pallet: pallet
+                                observaciones: observaciones
                             }
                         }                
                     });
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
-                        data.nuevoRegistroGP.sellado + " placas de lote " + data.nuevoRegistroGP.lote + " guardadas por " + data.nuevoRegistroGP.operario,
+                        data.nuevoRegistroSP.sellado + " placas de lote " + data.nuevoRegistroSP.lote + " selladas por " + data.nuevoRegistroSP.operario,
                         'success'
                     )
-                    router.push('/registros/guardadoplacas');
+                    router.push('/registros/selladoplacas');
                 } catch (error) {
                     guardarMensaje(error.message.replace('GraphQL error: ', ''));
                 }
@@ -171,7 +171,7 @@ const NuevoRegistroGP = () => {
 
     const handleInicio = async () => {   
         try {
-            const { data } = await nuevoRegistroGP({
+            const { data } = await nuevoRegistroSP({
                 variables: {
                     input: {
                         operario: registro.operario,
@@ -181,23 +181,18 @@ const NuevoRegistroGP = () => {
                     }
                 }                
             });
-            setRegistro({...registro, creado: data.nuevoRegistroGP.creado, id: data.nuevoRegistroGP.id})
+            setRegistro({...registro, creado: data.nuevoRegistroSP.creado, id: data.nuevoRegistroSP.id})
             setSession(true);
         } catch (error) {
             console.log(error)
         }
     }
 
-    const seleccionarLPlaca = opcion => {
-        const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;
-        setRegistro({...registro, lote, loteID, producto, caja, cantCaja, estado, cantidad})
-    }
-
     const handleCierre = async () => {
         // Volver a iniciar por si hubo algun error
         setRegistro({...registro})
         setSession(false);
-        await eliminarRegistroGP({
+        await eliminarRegistroSP({
             variables: {
                 id: registro.id
             }
@@ -215,7 +210,7 @@ const NuevoRegistroGP = () => {
 
     return (
         <Layout>
-            <h1 className="text-2xl text-gray-800 font-light" >Nuevo Registro de Guardado de Placas</h1>
+            <h1 className="text-2xl text-gray-800 font-light" >Nuevo Registro de Sellado de Placas</h1>
 
             {mensaje && mostrarMensaje()}
 
@@ -227,7 +222,7 @@ const NuevoRegistroGP = () => {
                                 <p className="block text-gray-700 font-bold mb-2">Lote de Placa</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={obtenerStockPlacas}
+                                    options={obtenerStockPlacasEnProceso}
                                     onChange={opcion => seleccionarLPlaca(opcion)}
                                     getOptionValue={ opciones => opciones.loteId }
                                     getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad}`}
@@ -239,7 +234,7 @@ const NuevoRegistroGP = () => {
                                     onClick={() => handleInicio()}
                                     className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
                                 >
-                                    Iniciar Guardado
+                                    Iniciar Sellado
                                 </button>
                             </div>
                         </div>
@@ -282,71 +277,48 @@ const NuevoRegistroGP = () => {
                             >
 
                                 <div className="mb-4 mt-1">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantGuardada">
-                                        Placas guardadas
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="sellado">
+                                        Placas selladas
                                     </label>
     
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantGuardada"
+                                        id="sellado"
                                         type="number"
                                         placeholder="Ingrese la cantidad guardada..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.cantGuardada}
+                                        value={formikCierre.values.sellado}
                                     />
                                 </div>
 
-                                { formikCierre.touched.cantGuardada && formikCierre.errors.cantGuardada ? (
+                                { formikCierre.touched.sellado && formikCierre.errors.sellado ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.cantGuardada}</p>
+                                        <p>{formikCierre.errors.sellado}</p>
                                     </div>
                                 ) : null  }
 
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarte">
                                         Cantidad de descarte
                                     </label>
     
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantDescarte"
+                                        id="descarte"
                                         type="number"
                                         placeholder="Ingrese la cantidad de descarte..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.cantDescarte}
+                                        value={formikCierre.values.descarte}
                                     />
                                 </div>
 
-                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                { formikCierre.touched.descarte && formikCierre.errors.descarte ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.cantDescarte}</p>
-                                    </div>
-                                ) : null  }
-
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="pallet">
-                                        Pallet
-                                    </label>
-    
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="pallet"
-                                        type="text"
-                                        placeholder="pallet..."
-                                        onChange={formikCierre.handleChange}
-                                        onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.pallet}
-                                    />
-                                </div>
-    
-                                { formikCierre.touched.pallet && formikCierre.errors.pallet ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.pallet}</p>
+                                        <p>{formikCierre.errors.descarte}</p>
                                     </div>
                                 ) : null  }
 
@@ -407,8 +379,9 @@ const NuevoRegistroGP = () => {
                     </div> 
                 )}
             </div>
+
         </Layout>
-    );
+    ); 
 }
 
-export default NuevoRegistroGP;
+export default NuevoRegistroSP;
