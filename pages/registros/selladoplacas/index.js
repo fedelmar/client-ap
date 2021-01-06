@@ -57,7 +57,7 @@ const GuardadoPlacas = () => {
 
     return (
         <Layout>
-            <h1 className="text-2xl text-gray-800 font-light" >Guardado de Placas</h1>
+            <h1 className="text-2xl text-gray-800 font-light" >Sellado de Placas</h1>
 
             <div className="flex justify-between">
                 <div>
