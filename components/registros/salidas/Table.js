@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState }  from 'react';
+import React, { useEffect, useMemo, useState, Fragment }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import EliminarRegistro from './EliminarRegistro';
@@ -72,6 +72,7 @@ const Table = ({registros, filtros, rol}) => {
                                     null
                                 :  
                                     <th 
+                                        key={column.id}
                                         className={column.id === 'lotes' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                         {...column.getHeaderProps()}
                                     >                              
@@ -79,7 +80,8 @@ const Table = ({registros, filtros, rol}) => {
                                                 
                                     </th>
                             :
-                                <th 
+                                <th
+                                    key={column.id} 
                                     className={column.id === 'lotes' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                     {...column.getHeaderProps(column.getSortByToggleProps())}
                                 >                              
@@ -102,10 +104,10 @@ const Table = ({registros, filtros, rol}) => {
                     {rows.map(row => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     return (
-                                        <>
+                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' ?
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             :
@@ -132,7 +134,7 @@ const Table = ({registros, filtros, rol}) => {
                                                 >
                                                     {cell.render('Cell')}
                                                 </th>}   
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </tr>  
