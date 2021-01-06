@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, Fragment } from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import Router from 'next/router';
@@ -111,6 +111,7 @@ const Table = ({registros, filtros, rol}) => {
                                     null
                                 :  
                                     <th 
+                                        key={column.id}
                                         className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                         {...column.getHeaderProps()}
                                     >                              
@@ -126,6 +127,7 @@ const Table = ({registros, filtros, rol}) => {
                                         null
                                     :
                                         <th 
+                                            key={column.id}
                                             className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                         >                              
@@ -141,6 +143,7 @@ const Table = ({registros, filtros, rol}) => {
 
                                 :
                                     <th 
+                                        key={column.id}
                                         className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                         {...column.getHeaderProps(column.getSortByToggleProps())}
                                     >                              
@@ -163,10 +166,10 @@ const Table = ({registros, filtros, rol}) => {
                     {rows.map(row => {
                         prepareRow(row)
                         return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => { 
+                            <tr key={row.id} {...row.getRowProps()}>
+                                {row.cells.map(cell => {
                                     return (
-                                        <>
+                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' && rol === "Admin" ?
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             : 
@@ -229,7 +232,7 @@ const Table = ({registros, filtros, rol}) => {
                                                     >
                                                         {cell.render('Cell')}
                                                     </th>}     
-                                        </>                                        
+                                        </Fragment>                                        
                                     )
                                 })}
                             </tr>
