@@ -1,4 +1,4 @@
-import React, { useMemo, useState }  from 'react';
+import React, { useMemo, useState, Fragment }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import columnas from './columns';
@@ -92,6 +92,7 @@ const Table = ({registros, filtros}) => {
                             column.id === 'eliminar'
                             ?
                                 <th 
+                                    key={column.id}
                                     className={"w-1/8 py-2"} 
                                     {...column.getHeaderProps()}
                                 >                              
@@ -100,6 +101,7 @@ const Table = ({registros, filtros}) => {
                                 </th>
                             :
                                 <th 
+                                    key={column.id}
                                     className={"w-1/8 py-2"} 
                                     {...column.getHeaderProps(column.getSortByToggleProps())}
                                 >                              
@@ -122,10 +124,10 @@ const Table = ({registros, filtros}) => {
                     {rows.map(row => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     return (
-                                        <>
+                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' ?
                                                 <EliminarRegistro props={cell.row.original.id} />
                                             :
@@ -143,7 +145,7 @@ const Table = ({registros, filtros}) => {
                                                 >
                                                     {cell.render('Cell')}
                                                 </th>}   
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </tr>  
