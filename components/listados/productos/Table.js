@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState }  from 'react';
+import React, { useEffect, useMemo, useState, Fragment }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import Router from 'next/router';
 import columnas from './columns';
@@ -69,6 +69,7 @@ const Table = ({registros, rol, filtros}) => {
                                     null
                                 :  
                                     <th 
+                                        key={column.id}
                                         className="w-1/12 py-2"
                                         {...column.getHeaderProps()}
                                     >                              
@@ -77,6 +78,7 @@ const Table = ({registros, rol, filtros}) => {
                                     </th>
                             :
                                 <th 
+                                    key={column.id}
                                     className="w-1/12 py-2" 
                                     {...column.getHeaderProps(column.getSortByToggleProps())}
                                 >                              
@@ -99,10 +101,10 @@ const Table = ({registros, rol, filtros}) => {
                     {rows.map(row => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     return (
-                                        <>
+                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' ?
                                                 <EliminarProducto props={cell.row.original.id} />
                                             : cell.column.id === 'editar' ?
@@ -116,7 +118,7 @@ const Table = ({registros, rol, filtros}) => {
                                                     </button>
                                                 </td>
                                             : cell.column.id === 'insumos' ?                                                
-                                                <Insumos insumos={cell.row.original.insumos}/>
+                                                <Insumos key={cell.row.original.id} insumos={cell.row.original.insumos}/>
                                             :
                                                 <th 
                                                     className="border px-4 py-2"
@@ -124,7 +126,7 @@ const Table = ({registros, rol, filtros}) => {
                                                 >
                                                     {cell.render('Cell')}
                                                 </th>}   
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </tr>
