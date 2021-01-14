@@ -17,6 +17,7 @@ const REGISTRO = gql `
             lote
             lTapon
             lPcm
+            tipoPCM
             lPlaca
             lPcmID
         }
@@ -44,6 +45,7 @@ const NUEVO_REGISTRO = gql `
             producto
             lTapon
             lPcm
+            tipoPCM
             lPcmID
             lPlaca
             cantProducida
@@ -68,6 +70,7 @@ const FinalizarRegistro = () => {
         lPlaca: '',
         lTapon: ''
     });
+    const [pcmEnTacho, setPcmEnTacho] = useState(false);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
             id
@@ -122,9 +125,16 @@ const FinalizarRegistro = () => {
                 lPcm: obtenerRegistroPP.lPcm,
                 lPlaca: obtenerRegistroPP.lPlaca,
                 lTapon: obtenerRegistroPP.lTapon,
-                lPcmID: obtenerRegistroPP.lPcmID
+                lPcmID: obtenerRegistroPP.lPcmID,
+                tipoPCM: obtenerRegistroPP.tipoPCM
             })
+            if (data.obtenerRegistroPP.lPcmID){
+                setPcmEnTacho(true)
+            } else {
+                setPcmEnTacho(false)
+            }
         }
+ 
         if ((registro.lPlaca && registro.lTapon) !== '' && (dataPlaca && dataTapon)) {
             setRegistro({...registro,
                 lTaponID: dataTapon.obtenerInsumoPorLote.id,
@@ -225,6 +235,10 @@ const FinalizarRegistro = () => {
                             <p className="text-gray-700 font-light">{registro.producto}</p>
                         </div>
                         <div className="flex">
+                            <p className="text-gray-700 text-mm font-bold mr-1">Tipo de PCM: </p>
+                            <p className="text-gray-700 font-light">{registro.tipoPCM}</p>
+                        </div>
+                        <div className="flex">
                             <p className="text-gray-700 text-mm font-bold mr-1">Lote de PCM: </p>
                             <p className="text-gray-700 font-light">{registro.lPcm}</p>
                         </div>
@@ -300,21 +314,23 @@ const FinalizarRegistro = () => {
                             </div>
                         ) : null  }
 
-                        <div className="flex mb-3">
-                            <label className="block text-gray-700 font-bold " htmlFor="pcmFinalizado">
-                                Lote de PCM finalizado:
-                            </label>
+                        {pcmEnTacho ?
+                            <div className="flex mb-3">
+                                <label className="block text-gray-700 font-bold " htmlFor="pcmFinalizado">
+                                    Lote de PCM finalizado:
+                                </label>
 
-                            <input
-                                className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
-                                id="pcmFinalizado"
-                                type="checkbox"
-                                placeholder="Ingrese la cantidad de pcmFinalizado..."
-                                onChange={formikCierre.handleChange}
-                                onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.pcmFinalizado}
-                            />
-                        </div>
+                                <input
+                                    className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                    id="pcmFinalizado"
+                                    type="checkbox"
+                                    placeholder="Ingrese la cantidad de pcmFinalizado..."
+                                    onChange={formikCierre.handleChange}
+                                    onBlur={formikCierre.handleBlur}
+                                    value={formikCierre.values.pcmFinalizado}
+                                />
+                            </div>
+                        : null}
 
                         <div className="mb-4">
                             <label className="block text-gray-700 font-bold mb-2" htmlFor="auxiliar">
