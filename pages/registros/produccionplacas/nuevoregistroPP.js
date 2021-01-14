@@ -33,6 +33,7 @@ const NUEVO_REGISTRO = gql `
             lTapon
             lPcm
             lPcmID
+            tipoPCM
             lPlaca
             cantProducida
             cantDescarte
