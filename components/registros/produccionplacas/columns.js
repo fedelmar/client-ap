@@ -20,8 +20,8 @@ const columnas = [
       accessor: 'producto',
     },
     {
-      Header: 'Lote PCM',
-      accessor: 'lPcm',
+      Header: 'Llenado',
+      accessor: 'llenado',
     },
     {
       Header: 'Placa',

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Fragment } from 'react';
 import { useTable, useSortBy } from "react-table";
 import columnas from './columns';
 import Producto from '../../listados/stockproductos/Producto';
@@ -28,6 +28,7 @@ const Table = ({registros}) => {
                     <tr className="text-white">
                         {headers.map(column => (
                             <th 
+                                key={column.id}
                                 className="w-1/3 py-2" 
                                 {...column.getHeaderProps()}
                             >                              
@@ -44,18 +45,21 @@ const Table = ({registros}) => {
                     {rows.map(row => {
                          prepareRow(row)
                          return (
-                            <tr {...row.getRowProps()}>
+                            <tr key={row.id}{...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     return (
-                                        cell.column.id === 'producto' ?
-                                            <Producto id={cell.value} />
-                                        :
-                                            <th 
-                                                className="border px-4 py-2"
-                                                {...cell.getCellProps()}
-                                            >
-                                                {cell.render('Cell')}
-                                            </th>
+                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
+                                            {cell.column.id === 'producto' ?
+                                                <Producto id={cell.value} />
+                                            :
+                                                <th 
+                                                    className="border px-4 py-2"
+                                                    {...cell.getCellProps()}
+                                                >
+                                                    {cell.render('Cell')}
+                                                </th>
+                                            }
+                                        </Fragment>
                                     )
                                 })}
                             </tr>

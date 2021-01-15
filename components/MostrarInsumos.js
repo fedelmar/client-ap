@@ -29,7 +29,7 @@ const MostrarInsumos = ({arrInsumos, insumos}) => {
     }
 
     const a = arrInsumos.filter(({id}) => insumos.includes(id))
-                .map(({nombre, categoria})=> (<p key={arrInsumos.id} className="px-2 py-2" >{`${nombre} Material: ${categoria}`} </p>))
+                .map(({nombre, categoria})=> (<p key={nombre + categoria} className="px-2 py-2" >{`${nombre} Material: ${categoria}`} </p>))
 
     return(
         <th className="border px-4 py-2" >

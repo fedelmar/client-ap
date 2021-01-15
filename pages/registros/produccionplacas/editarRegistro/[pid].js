@@ -17,6 +17,7 @@ const REGISTRO = gql `
             lote
             lTapon
             lPcm
+            tipoPCM
             lPlaca
             cantDescarte
             cantProducida
@@ -67,6 +68,7 @@ const EditarRegistro = () => {
                 creado: obtenerRegistroPP.creado,
                 operario: obtenerRegistroPP.operario,
                 lPcm: obtenerRegistroPP.lPcm,
+                tipoPCM: obtenerRegistroPP.tipoPCM,
                 lPlaca: obtenerRegistroPP.lPlaca,
                 lTapon: obtenerRegistroPP.lTapon,
                 observaciones: obtenerRegistroPP.observaciones
@@ -153,8 +155,8 @@ const EditarRegistro = () => {
                             <p className="text-gray-700 font-light ">{registro.lPlaca}</p>
                         </div>      
                         <div className="flex pb-2">
-                            <p className="text-gray-700 text-mm font-bold mr-1">Lote de PCM: </p>
-                            <p className="text-gray-700 font-light ">{registro.lPcm}</p>
+                            <p className="text-gray-700 text-mm font-bold mr-1">Llenado con: </p>
+                            <p className="text-gray-700 font-light ">{registro.tipoPCM + ' L: ' + registro.lPcm}</p>
                         </div>
                     </div>
 

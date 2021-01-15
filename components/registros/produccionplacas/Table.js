@@ -112,7 +112,7 @@ const Table = ({registros, filtros, rol}) => {
                                 :  
                                     <th 
                                         key={column.id}
-                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        className={column.id === 'horario'  || 'llenado' ? "w-2/13 py-2" : "w-1/13 py-2"} 
                                         {...column.getHeaderProps()}
                                     >                              
                                         {column.render('Header')}
@@ -126,7 +126,7 @@ const Table = ({registros, filtros, rol}) => {
                                     :    
                                         <th
                                             key={column.id} 
-                                            className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                            className={column.id === 'horario' || 'llenado' ? "w-2/13 py-2" : "w-1/13 py-2"} 
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                         >                              
                                             {column.render('Header')}
@@ -141,7 +141,7 @@ const Table = ({registros, filtros, rol}) => {
                                 :
                                     <th 
                                         key={column.id}
-                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        className={column.id === 'horario' || 'llenado' ? "w-2/13 py-2" : "w-1/13 py-2"} 
                                         {...column.getHeaderProps(column.getSortByToggleProps())}
                                     >                              
                                         {column.render('Header')}
@@ -221,6 +221,14 @@ const Table = ({registros, filtros, rol}) => {
                                                         >
                                                             <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                                         </button>                                                 
+                                                    </th>
+                                            :
+                                                cell.column.id === 'llenado' ?
+                                                    <th 
+                                                        className="border px-4 py-2"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        {cell.row.original.tipoPCM + ' L: ' + cell.row.original.lPcm}
                                                     </th>
                                                 :
                                                     <th 

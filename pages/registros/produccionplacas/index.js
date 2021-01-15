@@ -17,6 +17,7 @@ const LISTA_REGISTROS = gql `
             lote
             lTapon
             lPcm
+            tipoPCM
             lPlaca
             cantDescarte
             cantProducida
