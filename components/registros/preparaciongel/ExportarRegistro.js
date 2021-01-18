@@ -25,25 +25,31 @@ const ExportarRegistro = ({registros}) => {
             styles: { fontSize: 8 },
             head: [
                 ['Fecha',
-                'Insumo',
+                'Lote',
+                "Hora",
+                "Llenado",
                 "Cantidad",
-                "Remito",
-                "Proveedor",
-                "Lote"]
+                "Lote Insumo",
+                "Tanque Nº",
+                "Operario",
+                "Observaciones"]
             ],
             body: registrosExportados.map (i => [
                 format(new Date(i.creado), 'dd/MM/yy'),
-                i.insumo,
+                i.lote,
+                format(new Date(i.creado), 'HH:mm'),
+                i.llenado === true ? "SI" : "NO",
                 i.cantidad,
-                i.remito,
-                i.proveedor,
-                i.lote
+                i.loteInsumo,
+                i.tanque,
+                i.operario,
+                i.observaciones
             ]),
             didDrawPage: function (data) {
                 // Header
                 doc.setFontSize(17)
                 doc.setTextColor(40)
-                doc.text('REGISTRO DE INGREO DE INSUMOS', data.settings.margin.left + 35, 10)
+                doc.text('REGISTRO DE PREPARACION DE GEL', data.settings.margin.left + 35, 10)
           
                 // Footer
                 doc.setFontSize(10)
