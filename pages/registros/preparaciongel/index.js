@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import { gql, useQuery } from '@apollo/client';
 import Layout from '../../../components/Layout';
+import Table from '../../../components/registros/preparaciongel/Table';
 
 const LISTA_REGISTROS = gql `
     query obtenerRegistrosPG{
@@ -44,12 +45,28 @@ const PreparacionGel = () => {
     }
 
     let registros = data.obtenerRegistrosPG.map(i => i);
-
-    console.log(registros)
-
+    
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Preparacion de Gel Regrigerante</h1>
+            
+            {pdfOpen ?
+                <ExportarRegistro 
+                    registros={registrosCerrados}
+                />
+            : null }
+
+            {registros.length > 0 ? 
+                <Table 
+                    registros={registros}
+                    filtros={filtros}
+                    rol={rol}
+                />
+            : 
+                <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
+                    <p className="text-xl text-center">No hay registros activos para mostrar</p>
+                </div>}
+
         </Layout>
     );
 }
