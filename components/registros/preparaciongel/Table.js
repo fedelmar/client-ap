@@ -115,21 +115,7 @@ const Table = ({registros, filtros, rol}) => {
                                                         {...cell.getCellProps()}
                                                     >
                                                         {cell.row.original.llenado ? '✔' : '✘'}
-                                                    </th>
-                                            :
-                                                cell.column.id === 'editar' ?
-                                                    <th 
-                                                        className="border px-5"
-                                                        {...cell.getCellProps()}
-                                                    >
-                                                        <button
-                                                            type="button"
-                                                            className="flex justify-center items-center bg-green-600  py-2 px-1 w-full text-white rounded text-xs uppercase font-bold"
-                                                            onClick={() => editarRegistro(cell.row.original.id)}
-                                                        >
-                                                            <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                                        </button>                                                 
-                                                    </th>
+                                                    </th>            
                                             :                                                
                                                 cell.column.id === 'observaciones' ?
                                                     <MostrarObser observaciones={cell.row.original.observaciones} />
