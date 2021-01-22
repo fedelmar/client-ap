@@ -120,11 +120,11 @@ const NuevoRegistro = () => {
                         const { data } = await nuevoRegistroPG({
                             variables: {
                                 input: {
-                                    lote: lote,
-                                    llenado: llenado,
-                                    cantidad: cantidad,
+                                    lote,
+                                    llenado,
+                                    cantidad,
                                     tanque: parseInt(tanque),
-                                    observaciones: observaciones,
+                                    observaciones,
                                     loteInsumo: insumo.loteInsumo,
                                     loteInsumoID: insumo.loteInsumoID,
                                     operario: nombre
