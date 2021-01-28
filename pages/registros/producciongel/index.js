@@ -3,6 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
+import Table from '../../../components/registros/producciongel/Table';
 
 const REGISTROS = gql`
     query obtenerRegistrosCPG{
@@ -43,11 +44,11 @@ const index = () => {
 
     let registrosCerrados = data.obtenerRegistrosCPG.filter(i => i.estado === false);
     let registrosAbiertos = data.obtenerRegistrosCPG.filter(i => i.estado === true);
-    
+
     const handleOpenCloseActivos = () => {
         setActivos(!activos);
     };
-
+    console.log(registrosAbiertos)
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Produccion de Gel</h1>
@@ -74,7 +75,10 @@ const index = () => {
             </div>
 
             {activos && registrosAbiertos.length > 0 ? 
-                <p>hay registros activos</p>
+                <Table 
+                    registros={registrosAbiertos}
+                    rol={rol}
+                />
             :   activos ?
                     <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
                         <p className="text-xl text-center">No hay registros activos para mostrar</p>
@@ -82,7 +86,10 @@ const index = () => {
                 : null}
 
             {registrosCerrados.length > 0 ?
-                <p>Hay registros cerrados</p>
+                <Table 
+                    registros={registrosCerrados}
+                    rol={rol}
+                />
             :           
                 <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
                     <p className="text-xl text-center">No hay registros para mostrar</p>
