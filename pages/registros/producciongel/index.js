@@ -12,6 +12,7 @@ const REGISTROS = gql`
             creado
             modificado
             operario
+            producto
             lote
             cliente
             loteBolsa
@@ -48,7 +49,6 @@ const index = () => {
     const handleOpenCloseActivos = () => {
         setActivos(!activos);
     };
-    console.log(registrosAbiertos)
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Produccion de Gel</h1>
