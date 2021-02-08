@@ -183,12 +183,14 @@ const Table = ({registros, rol, filtros }) => {
                                                     : ' finalizar'}
                                                 </th>
                                             : cell.column.id === 'dobleBolsa' || cell.column.id === 'manta' ?
-                                                <th 
-                                                    className="border px-4 py-2"
-                                                    {...cell.getCellProps()}
-                                                >
-                                                    {cell.row.original.llenado ? '✔' : '✘'}
-                                                </th>  
+                                                    <th 
+                                                        className="border px-4 py-2"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        {cell.column.id === 'dobleBolsa' ?
+                                                            cell.row.original.dobleBolsa ? '✔' : '✘'
+                                                        : cell.row.original.manta ? '✔' : '✘'}
+                                                    </th>  
                                             : cell.column.id === 'observaciones' ?
                                                 cell.row.original.estado === false ?
                                                     cell.row.original.auxiliar ?              
