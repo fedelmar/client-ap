@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Table from '../../../components/registros/producciongel/Table';
+import ExportarRegistro from '../../../components/registros/producciongel/ExportarRegistro';
 
 const REGISTROS = gql`
     query obtenerRegistrosCPG{
@@ -35,8 +36,9 @@ const index = () => {
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
     const { data, loading } = useQuery(REGISTROS);
-    const [activos, setActivos] = useState(false);
+    const [ activos, setActivos ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
+    const [ pdfOpen, setPdfOpen ] = useState(false);
 
     if(loading) return (
         <Layout>
@@ -55,6 +57,10 @@ const index = () => {
         setFiltros(!filtros);
     };
 
+    const handleOpenClosePDF = () => {
+        setPdfOpen(!pdfOpen);
+    };
+  
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Produccion de Gel</h1>
@@ -79,6 +85,12 @@ const index = () => {
                     : null}
                 </div>
             </div>
+
+            {pdfOpen ?
+                <ExportarRegistro 
+                    registros={registrosCerrados}
+                />
+            : null }
 
             {activos && registrosAbiertos.length > 0 ? 
                 <Table 
