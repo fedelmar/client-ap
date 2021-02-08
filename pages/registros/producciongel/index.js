@@ -36,6 +36,7 @@ const index = () => {
     const { rol } = usuarioContext.usuario;
     const { data, loading } = useQuery(REGISTROS);
     const [activos, setActivos] = useState(false);
+    const [ filtros, setFiltros ] = useState(false);
 
     if(loading) return (
         <Layout>
@@ -49,6 +50,11 @@ const index = () => {
     const handleOpenCloseActivos = () => {
         setActivos(!activos);
     };
+
+    const handleOpenCloseFiltros = () => {
+        setFiltros(!filtros);
+    };
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Produccion de Gel</h1>
@@ -78,6 +84,7 @@ const index = () => {
                 <Table 
                     registros={registrosAbiertos}
                     rol={rol}
+                    filtros={filtros}
                 />
             :   activos ?
                     <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
@@ -89,6 +96,7 @@ const index = () => {
                 <Table 
                     registros={registrosCerrados}
                     rol={rol}
+                    filtros={filtros}
                 />
             :           
                 <div className="bg-white border rounded shadow py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">  
