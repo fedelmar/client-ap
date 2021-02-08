@@ -65,7 +65,7 @@ const NuevoRegistro = () => {
             input: "Quimico"
         }
     });
-    const { data: data, loading: loading } = useQuery(LISTA_STOCK_CATEGORIA, {
+    const { data, loading} = useQuery(LISTA_STOCK_CATEGORIA, {
         pollInterval: 500,
         variables: {
             input: "Polietileno"
