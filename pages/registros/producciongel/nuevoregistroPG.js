@@ -18,11 +18,34 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
+const NUEVO_REGISTRO = gql `
+    mutation nuevoRegistroCPG($id: ID, $input: CPGInput){
+        nuevoRegistroCPG(id:$id, input: $input){
+            id
+            creado
+            modificado
+            operario
+            lote
+            cliente
+            loteBolsa
+            loteBolsaID
+            loteGel
+            dobleBolsa
+            manta
+            cantDescarte
+            cantProducida
+            observaciones
+            estado
+        }
+    }
+`;
+
 const NuevoRegistroPG = () => {
 
     const usuarioContext = useContext(UsuarioContext);
     const productos = usuarioContext.productos;
     const { nombre: operario } = usuarioContext.usuario;
+    const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
     const {data, loading} = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Polietileno"
@@ -34,27 +57,31 @@ const NuevoRegistroPG = () => {
         }
     });
     const [session, setSession] = useState(false);
+    const [sesionActiva, setSesionActiva] = useState();
     const [registro, setRegistro] = useState({
         producto: '',
         productoID: '',
         loteBolsa: '',
         loteBolsaID: '',
         loteGel: '',
-        loteGelID: '',
         dobleBolsa: false,
         manta: false
     });
     const formikInicio = useFormik({
         initialValues: {
             lote: '',
-            cliente: ''
+            cliente: '',
+            loteGel: '',
+            dobleBolsa: false,
+            manta: false
         },
         validationSchema: Yup.object({
             lote: Yup.string().required('Ingrese el Lote'),
-            cliente: Yup.string().required('Ingrese el Cliente')                     
+            cliente: Yup.string().required('Ingrese el Cliente'),
+            loteGel: Yup.string().required('Ingrese el lote de gel')
         }),
         onSubmit: valores => {     
-            console.log(valores);         
+            iniciarRegistro(valores);        
         }
     });
 
@@ -75,7 +102,31 @@ const NuevoRegistroPG = () => {
         setRegistro({...registro, loteBolsa: value.lote, loteBolsaID: value.id})
     }
 
-    console.log(registro)
+    const iniciarRegistro = async valores => {
+        const { lote, cliente, loteGel, dobleBolsa, manta } = valores
+        try {
+            const { data } = await nuevoRegistroCPG({
+                variables: {
+                    input: {
+                        lote,
+                        cliente,
+                        loteGel,
+                        operario,
+                        dobleBolsa,
+                        manta,
+                        producto: registro.producto,
+                        productoID: registro.productoID,
+                        loteBolsa: registro.loteBolsa,
+                        loteBolsaID: registro.loteBolsaID
+                    }
+                }
+            })
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+        setSession(true);
+    };
     
     return (
         <Layout>
@@ -162,6 +213,59 @@ const NuevoRegistroPG = () => {
                                     isMulti={false}
                                 />
 
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="loteGel">
+                                        Lote de Gel
+                                    </label>
+    
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="loteGel"
+                                        type="text"
+                                        placeholder="Ingrese el lote de gel..."
+                                        onChange={formikInicio.handleChange}
+                                        onBlur={formikInicio.handleBlur}
+                                        value={formikInicio.values.loteGel}
+                                    />
+                                </div>
+    
+                                { formikInicio.touched.loteGel && formikInicio.errors.loteGel ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikInicio.errors.loteGel}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="flex mb-3">
+                                    <label className="block text-gray-700 font-bold " htmlFor="dobleBolsa">
+                                        Doble Bolsa:
+                                    </label>
+
+                                    <input
+                                        className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                        id="dobleBolsa"
+                                        type="checkbox"
+                                        onChange={formikInicio.handleChange}
+                                        onBlur={formikInicio.handleBlur}
+                                        value={formikInicio.values.dobleBolsa}
+                                    />
+                                </div>
+
+                                <div className="flex mb-3">
+                                    <label className="block text-gray-700 font-bold " htmlFor="manta">
+                                        Manta:
+                                    </label>
+
+                                    <input
+                                        className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                        id="manta"
+                                        type="checkbox"
+                                        onChange={formikInicio.handleChange}
+                                        onBlur={formikInicio.handleBlur}
+                                        value={formikInicio.values.manta}
+                                    />
+                                </div>  
+
                                 <input
                                     type="submit"
                                     className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
@@ -171,7 +275,7 @@ const NuevoRegistroPG = () => {
                             </form>
                         </div>
                     </div>
-                ) : null}
+                ) : <p>registro Iniciado</p>}
             </div>
         </Layout>
     );
