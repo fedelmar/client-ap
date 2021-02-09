@@ -1,10 +1,11 @@
 import React, {useContext, useState} from 'react';
 import Select from 'react-select';
-import Layout from '../../../components/Layout';
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { format } from 'date-fns';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { gql, useQuery, useMutation } from '@apollo/client';
+import Layout from '../../../components/Layout';
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 
 const LISTA_STOCK_CATEGORIA = gql `
     query obtneterStockInsumosPorCategoria($input: String!){
@@ -40,12 +41,19 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
+const ELIMINAR_REGISTRO = gql `
+    mutation eliminarRegistroCPG($id: ID!){
+        eliminarRegistroCPG(id: $id)
+    }
+`
+
 const NuevoRegistroPG = () => {
 
     const usuarioContext = useContext(UsuarioContext);
     const productos = usuarioContext.productos;
     const { nombre: operario } = usuarioContext.usuario;
     const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
+    const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
     const {data, loading} = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Polietileno"
@@ -121,17 +129,28 @@ const NuevoRegistroPG = () => {
                     }
                 }
             })
-            console.log(data)
+            setRegistro({...registro, lote, cliente, loteGel, dobleBolsa, manta})
+            setSesionActiva(data.nuevoRegistroCPG);
+            setSession(true);
         } catch (error) {
             console.log(error)
         }
-        setSession(true);
+    };
+
+    // Funcion para volver a iniciar en caso de algun Error
+    const volver = async () => {
+        setRegistro({...registro});
+        setSession(false);
+        await eliminarRegistroCPG({
+            variables: {
+                id: sesionActiva.id
+            }
+        });        
     };
     
     return (
         <Layout>
             <h1 className='text-2xl text-gray-800 font-light'>Nuevo Registro de Producción de Gel</h1>
-
 
             <div>
                 {!session ? (
@@ -275,7 +294,58 @@ const NuevoRegistroPG = () => {
                             </form>
                         </div>
                     </div>
-                ) : <p>registro Iniciado</p>}
+                ) : 
+                <div className="flex justify-center mt-5">
+                    <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
+                        <div className="mb-2 border-b-2 border-gray-600">
+                            <div className="flex justify-between pb-2">
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
+                                    <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'dd/MM/yy')}</p>
+                                </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
+                                    <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'HH:mm')}</p>
+                                </div>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
+                                <p className="text-gray-700 font-light">{registro.lote}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
+                                <p className="text-gray-700 font-light">{registro.producto}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Cliente: </p>
+                                <p className="text-gray-700 font-light">{registro.cliente}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
+                                <p className="text-gray-700 font-light">{registro.loteBolsa}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Lote de Gel: </p>
+                                <p className="text-gray-700 font-light">{registro.loteGel}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Doble Bolsa: </p>
+                                <p>{registro.dobleBolsa ? '✔' : '✘'}</p>
+                            </div>
+                            <div className="flex mb-2">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Manta: </p>
+                                <p>{registro.manta ? '✔' : '✘'}</p>
+                            </div>
+                        </div>
+                        <button
+                            className="bg-gray-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-gray-900" 
+                            onClick={() => volver()}
+                        >
+                            Volver
+                        </button>
+                    </div>
+                </div>
+                }
             </div>
         </Layout>
     );
