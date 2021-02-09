@@ -37,6 +37,8 @@ const NUEVO_REGISTRO = gql `
             cantProducida
             observaciones
             estado
+            puesto1
+            puesto2
         }
     }
 `;
@@ -59,11 +61,6 @@ const NuevoRegistroPG = () => {
             input: "Polietileno"
         }
     });
-    const {data: dataQuimico, loading: loadingQuimico} = useQuery(LISTA_STOCK_CATEGORIA, {
-        variables: {
-            input: "Quimico"
-        }
-    });
     const [session, setSession] = useState(false);
     const [sesionActiva, setSesionActiva] = useState();
     const [registro, setRegistro] = useState({
@@ -75,6 +72,7 @@ const NuevoRegistroPG = () => {
         dobleBolsa: false,
         manta: false
     });
+    // Definicion de formulario de inicio de registro
     const formikInicio = useFormik({
         initialValues: {
             lote: '',
@@ -92,24 +90,43 @@ const NuevoRegistroPG = () => {
             iniciarRegistro(valores);        
         }
     });
+    // Definicion de formulario de finalizacion de registro
+    const formikCierre = useFormik({
+        initialValues: {
+            cantProducida: 0,
+            cantDescarte: 0,
+            puesto1: '',
+            puesto2: '',
+            observaciones: ''
+        },
+        validationSchema: Yup.object({
+            cantProducida: Yup.number().required('Ingrese la cantidad producida'),
+            cantDescarte: Yup.number().required('Ingrese el descarte'),
+            observaciones: Yup.string(),
+            puesto1: Yup.string().required('Ingrese los operarios en el Puesto 1'),
+            puesto2: Yup.string().required('Ingrese los operarios en el Puesto 2')
+        }),
+        onSubmit: valores => {
+            console.log(valores)
+        }
+    });
 
-    if(loading || loadingQuimico) return (
+    if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-    
     const polietileno = data.obtneterStockInsumosPorCategoria;
-    const quimico = dataQuimico.obtneterStockInsumosPorCategoria;
 
+    // Funciones de seleccion de Lote de bolsa y Producto
     const seleccionarProducto = value => {
         setRegistro({...registro, producto: value.nombre, productoID: value.id})
     };
-
     const seleccionarLoteBolsa = value => {
         setRegistro({...registro, loteBolsa: value.lote, loteBolsaID: value.id})
-    }
+    };
 
+    // Iniciar el registro cargando los primeros datos en la BD
     const iniciarRegistro = async valores => {
         const { lote, cliente, loteGel, dobleBolsa, manta } = valores
         try {
@@ -337,12 +354,91 @@ const NuevoRegistroPG = () => {
                                 <p>{registro.manta ? '✔' : '✘'}</p>
                             </div>
                         </div>
-                        <button
-                            className="bg-gray-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-gray-900" 
-                            onClick={() => volver()}
+                        <form
+                            className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
+                            onSubmit={formikCierre.handleSubmit}
                         >
-                            Volver
-                        </button>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 font-bold mb-2" htmlFor="cantProducida">
+                                    Cantidad Producida
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="cantProducida"
+                                    type="number"
+                                    placeholder="Ingrese la cantidad de cantProducida..."
+                                    onChange={formikCierre.handleChange}
+                                    onBlur={formikCierre.handleBlur}
+                                    value={formikCierre.values.cantProducida}
+                                />
+                            </div>
+
+                            { formikCierre.touched.cantProducida && formikCierre.errors.cantProducida ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formikCierre.errors.cantProducida}</p>
+                                </div>
+                            ) : null  }
+                            
+                            <div className="mb-4">
+                                <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
+                                    Descarte
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full mb-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="cantDescarte"
+                                    type="number"
+                                    placeholder="Ingrese la cantidad de cantDescarte..."
+                                    onChange={formikCierre.handleChange}
+                                    onBlur={formikCierre.handleBlur}
+                                    value={formikCierre.values.cantDescarte}
+                                />
+                            </div>
+
+                            { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formikCierre.errors.cantDescarte}</p>
+                                </div>
+                            ) : null  }
+
+                            <div className="mb-2">
+                                <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
+                                    Observaciones
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="observaciones"
+                                    type="text"
+                                    placeholder="Observaciones..."
+                                    onChange={formikCierre.handleChange}
+                                    onBlur={formikCierre.handleBlur}
+                                    value={formikCierre.values.observaciones}
+                                />
+                            </div>
+
+                            { formikCierre.touched.observaciones && formikCierre.errors.observaciones ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formikCierre.errors.observaciones}</p>
+                                </div>
+                            ) : null  }
+
+                            <input
+                                type="submit"
+                                className="bg-red-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-red-900"
+                                value="Finalizar Registro"
+                            />
+                            <button
+                                className="bg-gray-800 w-full mt-2 p-2 text-white uppercase font-bold hover:bg-gray-900" 
+                                onClick={() => volver()}
+                            >
+                                Volver
+                            </button>
+                        </form>
                     </div>
                 </div>
                 }
