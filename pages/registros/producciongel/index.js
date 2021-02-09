@@ -35,7 +35,9 @@ const index = () => {
 
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
-    const { data, loading } = useQuery(REGISTROS);
+    const { data, loading } = useQuery(REGISTROS, {
+        pollInterval: 500,
+    });
     const [ activos, setActivos ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
     const [ pdfOpen, setPdfOpen ] = useState(false);

@@ -1,8 +1,10 @@
 import React, {useContext, useState} from 'react';
 import Select from 'react-select';
 import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
@@ -51,6 +53,7 @@ const ELIMINAR_REGISTRO = gql `
 
 const NuevoRegistroPG = () => {
 
+    const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const productos = usuarioContext.productos;
     const { nombre: operario } = usuarioContext.usuario;
@@ -107,7 +110,7 @@ const NuevoRegistroPG = () => {
             puesto2: Yup.string().required('Ingrese los operarios en el Puesto 2')
         }),
         onSubmit: valores => {
-            console.log(valores)
+            finalizarRegistro(valores);
         }
     });
 
@@ -153,6 +156,70 @@ const NuevoRegistroPG = () => {
             console.log(error)
         }
     };
+
+    // Finalizar el registro actualizando los datos en la BD
+    const finalizarRegistro = async valores => {
+        const { cantProducida, cantDescarte, puesto1, puesto2, observaciones } = valores;
+        let msjDobleBolsa;
+        let msjManta;
+        registro.dobleBolsa ? msjDobleBolsa = "Si" : msjDobleBolsa = "No";
+        registro.manta ? msjManta = "Si" : msjManta = "No";
+
+        Swal.fire({
+            title: 'Verifique los datos antes de confirmar',
+            html:   "Lote: " + registro.lote + "</br>" + 
+                    "Producto: " + registro.producto + "</br>" +
+                    "Operario: " + operario + "</br>" +
+                    "Cliente: " + registro.cliente + "</br>" +
+                    "Lote de Bolsa: " + registro.loteBolsa + "</br>" +
+                    "Lote de Gel: " + registro.loteGel + "</br>" +
+                    "Doble Bolsa: " + msjDobleBolsa + "</br>" +
+                    "Manta: " + msjManta + "</br>" +
+                    "Cantidad producida: " + cantProducida + "</br>" +
+                    "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Puesto 1: " + puesto1 + "</br>" +
+                    "Puesto 2: " + puesto2 + "</br>" +
+                    "Observaciones: " + observaciones + "</br>",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then( async (result) => {
+            if (result.value) {
+                try {
+                    const { data } = await nuevoRegistroCPG({
+                        variables: {
+                            id: sesionActiva.id,
+                            input: {      
+                                operario,     
+                                lote: registro.lote, 
+                                cantProducida: cantProducida,
+                                cantDescarte: cantDescarte,
+                                puesto1: puesto1,
+                                puesto2: puesto2,
+                                observaciones: observaciones,
+                                producto: registro.producto,
+                                productoID: registro.productoID,
+                                loteBolsa: registro.loteBolsa,
+                                loteBolsaID: registro.loteBolsaID
+                            }   
+                        }                
+                    });
+                    Swal.fire(
+                        'Se guardo el registro y se actualizo el stock de productos',
+                        data.nuevoRegistroCPG.cantProducida - data.nuevoRegistroCPG.cantDescarte + ' bolsas de gel producidas',
+                        'success'
+                    )
+                    router.push('/registros/producciongel');
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+          })
+   
+    }
 
     // Funcion para volver a iniciar en caso de algun Error
     const volver = async () => {
@@ -401,6 +468,52 @@ const NuevoRegistroPG = () => {
                                 <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                     <p className="font-bold">Error</p>
                                     <p>{formikCierre.errors.cantDescarte}</p>
+                                </div>
+                            ) : null  }
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 font-bold mb-2" htmlFor="puesto1">
+                                    Puesto 1
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="puesto1"
+                                    type="text"
+                                    placeholder="Ingrese integrantes del Puesto 1"
+                                    onChange={formikCierre.handleChange}
+                                    onBlur={formikCierre.handleBlur}
+                                    value={formikCierre.values.puesto1}
+                                />
+                            </div>
+
+                            { formikCierre.touched.puesto1 && formikCierre.errors.puesto1 ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formikCierre.errors.puesto1}</p>
+                                </div>
+                            ) : null  }
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 font-bold mb-2" htmlFor="puesto2">
+                                    Puesto 2
+                                </label>
+
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="puesto2"
+                                    type="text"
+                                    placeholder="Ingrese integrantes del Puesto 2"
+                                    onChange={formikCierre.handleChange}
+                                    onBlur={formikCierre.handleBlur}
+                                    value={formikCierre.values.puesto2}
+                                />
+                            </div>
+
+                            { formikCierre.touched.puesto2 && formikCierre.errors.puesto2 ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formikCierre.errors.puesto2}</p>
                                 </div>
                             ) : null  }
 
