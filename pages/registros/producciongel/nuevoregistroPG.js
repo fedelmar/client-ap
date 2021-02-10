@@ -103,12 +103,19 @@ const NuevoRegistroPG = () => {
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantProducida: Yup.number().required('Ingrese la cantidad producida'),
-            cantDescarte: Yup.number().required('Ingrese el descarte'),
-            observaciones: Yup.string(),
+            cantProducida: Yup.number()
+                                    .max(registro.bolsasDisponibles, `Debe ser menor o igual a ${registro.bolsasDisponibles}`)
+                                    .required('Ingrese la cantidad producida'),
+            cantDescarte: Yup.number()
+                                    .required('Ingrese el descarte')
+                                    .test('disponibilidad', 'No hay disponibilidad',
+                                    function(cantDescarte) {
+                                        return cantDescarte <= registro.bolsasDisponibles - cantProducida.value
+                                    }),
             puesto1: Yup.string().required('Ingrese los operarios en el Puesto 1'),
-            puesto2: Yup.string().required('Ingrese los operarios en el Puesto 2')
-        }),
+            puesto2: Yup.string().required('Ingrese los operarios en el Puesto 2'),
+            observaciones: Yup.string(),
+        }), 
         onSubmit: valores => {
             finalizarRegistro(valores);
         }
@@ -126,7 +133,7 @@ const NuevoRegistroPG = () => {
         setRegistro({...registro, producto: value.nombre, productoID: value.id})
     };
     const seleccionarLoteBolsa = value => {
-        setRegistro({...registro, loteBolsa: value.lote, loteBolsaID: value.id})
+        setRegistro({...registro, loteBolsa: value.lote, loteBolsaID: value.id, bolsasDisponibles: value.cantidad })
     };
 
     // Iniciar el registro cargando los primeros datos en la BD
@@ -194,12 +201,12 @@ const NuevoRegistroPG = () => {
                             id: sesionActiva.id,
                             input: {      
                                 operario,     
+                                cantProducida,
+                                cantDescarte,
+                                puesto1,
+                                puesto2,
+                                observaciones,
                                 lote: registro.lote, 
-                                cantProducida: cantProducida,
-                                cantDescarte: cantDescarte,
-                                puesto1: puesto1,
-                                puesto2: puesto2,
-                                observaciones: observaciones,
                                 producto: registro.producto,
                                 productoID: registro.productoID,
                                 loteBolsa: registro.loteBolsa,
@@ -405,21 +412,27 @@ const NuevoRegistroPG = () => {
                                 <p className="text-gray-700 font-light">{registro.cliente}</p>
                             </div>
                             <div className="flex">
-                                <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-                                <p className="text-gray-700 font-light">{registro.loteBolsa}</p>
+                                <p className="text-gray-700 text-mm font-bold mr-1">Doble Bolsa: </p>
+                                <p>{registro.dobleBolsa ? '✔' : '✘'}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Manta: </p>
+                                <p>{registro.manta ? '✔' : '✘'}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Lote de Gel: </p>
                                 <p className="text-gray-700 font-light">{registro.loteGel}</p>
                             </div>
-                            <div className="flex">
-                                <p className="text-gray-700 text-mm font-bold mr-1">Doble Bolsa: </p>
-                                <p>{registro.dobleBolsa ? '✔' : '✘'}</p>
-                            </div>
-                            <div className="flex mb-2">
-                                <p className="text-gray-700 text-mm font-bold mr-1">Manta: </p>
-                                <p>{registro.manta ? '✔' : '✘'}</p>
-                            </div>
+                            <div className="flex justify-between pb-2">
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
+                                        <p className="text-gray-700 font-light">{registro.loteBolsa}</p>
+                                    </div>
+                                    <div className="flex">
+                                        <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
+                                        <p className="text-gray-700 font-light">{registro.bolsasDisponibles}</p>
+                                    </div>
+                                </div>
                         </div>
                         <form
                             className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
