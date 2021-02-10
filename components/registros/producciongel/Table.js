@@ -61,7 +61,10 @@ const Table = ({registros, rol, filtros }) => {
     };
 
     const editarRegistro = id => {
-        console.log(id)
+        Router.push({
+            pathname: "/registros/producciongel/editarRegistro/[id]",
+            query: { id }
+        })
     };
 
     const retomarRegistro = id => {
