@@ -68,7 +68,10 @@ const Table = ({registros, rol, filtros }) => {
     };
 
     const retomarRegistro = id => {
-        console.log(id)
+        Router.push({
+            pathname: "/registros/producciongel/finalizarRegistro/[id]",
+            query: { id }
+        })
     };
 
     return (
@@ -198,8 +201,8 @@ const Table = ({registros, rol, filtros }) => {
                                                 cell.row.original.estado === false ?
                                                     <MostrarObser 
                                                         observaciones={cell.row.original.observaciones +
-                                                                    " | Puesto 1: " + cell.row.original.puesto1 + 
-                                                                    " | Puesto 2: " + cell.row.original.puesto2} 
+                                                            " | Puesto 1: " + cell.row.original.puesto1 + 
+                                                            " | Puesto 2: " + cell.row.original.puesto2} 
                                                     />
                                                 :   <th 
                                                         className="border px-4 py-2"
