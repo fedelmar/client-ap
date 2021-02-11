@@ -196,10 +196,11 @@ const Table = ({registros, rol, filtros }) => {
                                                     </th>  
                                             : cell.column.id === 'observaciones' ?
                                                 cell.row.original.estado === false ?
-                                                    cell.row.original.auxiliar ?              
-                                                            <MostrarObser observaciones={cell.row.original.observaciones + " | Auxiliares: " + cell.row.original.auxiliar} />
-                                                        :
-                                                            <MostrarObser observaciones={cell.row.original.observaciones} />
+                                                    <MostrarObser 
+                                                        observaciones={cell.row.original.observaciones +
+                                                                    " | Puesto 1: " + cell.row.original.puesto1 + 
+                                                                    " | Puesto 2: " + cell.row.original.puesto2} 
+                                                    />
                                                 :   <th 
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
