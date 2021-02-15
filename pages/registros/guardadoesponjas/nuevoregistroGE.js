@@ -111,8 +111,11 @@ const NuevoRegistroGE = () => {
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
                                 .required('Ingrese la cantidad producida'),
             cantDescarte: Yup.number()
-                                .max(Yup.ref('cantGuardada'), `Debe ser menor a las esponjas guardadas`)
-                                .required('Ingrese el descarte generado'),
+                                .required('Ingrese el descarte generado')
+                                .test('disponibilidad', 'No hay disponibilidad',
+                                function(cantDescarte) {
+                                    return cantDescarte <= registro.cantidad - cantGuardada.value
+                                }),
             descCajas: Yup.number(),
             auxiliar: Yup.string(),
             observaciones: Yup.string()               
