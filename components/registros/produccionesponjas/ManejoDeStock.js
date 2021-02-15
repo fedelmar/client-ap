@@ -11,6 +11,7 @@ const CREAR_LOTE = gql`
             producto        
             estado
             cantidad
+            responsable
         }
     }
 `;
@@ -40,7 +41,6 @@ const OBTENER_STOCK = gql`
 
 const ManejoDeStock = ({registro, cantidades}) => {
     //console.log('Registro en Manejo de Stock : ',registro)
-
     useQuery(OBTENER_STOCK);
     const [ actualizarInsumoStock ] = useMutation(ACTUALIZAR_INSUMO);
     const [ nuevoProductoStock ] = useMutation(CREAR_LOTE, {
@@ -103,7 +103,7 @@ const ManejoDeStock = ({registro, cantidades}) => {
                         producto: registro.productoID,
                         estado: "Proceso",
                         cantidad: valores.esponjas,
-                        operario: registro.nombre,
+                        responsable: registro.operario,
                         modificado: Date.now()
                     }
                 }
