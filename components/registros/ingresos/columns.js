@@ -24,12 +24,12 @@ const columnas = [
       accessor: 'lote',
     },
     {
-      Header: 'Eliminar',
-      accessor: 'eliminar',
-    },
-    {
       Header: 'Editar',
       accessor: 'editar',
+    },
+    {
+      Header: 'Eliminar',
+      accessor: 'eliminar',
     },
   ]
 export default columnas;
