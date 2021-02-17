@@ -27,5 +27,9 @@ const columnas = [
       Header: 'Eliminar',
       accessor: 'eliminar',
     },
+    {
+      Header: 'Editar',
+      accessor: 'editar',
+    },
   ]
 export default columnas;
