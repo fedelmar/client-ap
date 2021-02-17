@@ -24,6 +24,10 @@ const columnas = [
       accessor: 'lote',
     },
     {
+      Header: 'Editar',
+      accessor: 'editar',
+    },
+    {
       Header: 'Eliminar',
       accessor: 'eliminar',
     },
