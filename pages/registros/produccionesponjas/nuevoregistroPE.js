@@ -102,7 +102,8 @@ const IniciarProduccion = () => {
             lEsponja: ''
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('Ingrese un numero'),
+            lote: Yup.number().max(99, 'El Nº de lote debe ser menor o igual a 99')
+                        .required('Ingrese el Nº de lote'),
             producto: Yup.string(),
             lBolsa: Yup.string(),
             lEsponja: Yup.string()                        
