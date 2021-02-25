@@ -127,6 +127,21 @@ const Table = ({registros, rol, filtros}) => {
                                                 >
                                                    {format(new Date(cell.row.original.creado), 'dd/MM/yy')} 
                                                 </th>
+                                            : cell.column.id ==='cantidad' ?
+                                                cell.row.original.cantidad <= 0 ?
+                                                    <th 
+                                                        className="border px-4 py-2 text-red-600"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        {cell.render('Cell')}
+                                                    </th>
+                                                :
+                                                    <th 
+                                                        className="border px-4 py-2"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        {cell.render('Cell')}
+                                                    </th>
                                             :
                                                 <th 
                                                     className="border px-4 py-2"
