@@ -67,7 +67,6 @@ const ManejoDeStock = ({registro, cantidades}) => {
         },
         validationSchema: Yup.object({
             esponjas: Yup.number()
-                                .max(menor, `Debe ser menor o igual a ${menor}`)
                                 .required('Ingrese la cantidad producida')
         }),
         onSubmit: valores => {       

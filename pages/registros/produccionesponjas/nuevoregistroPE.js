@@ -439,6 +439,9 @@ const IniciarProduccion = () => {
                                         <p className="text-gray-700 font-light">{registro.bolsaDisp}</p>
                                     </div>
                                 </div>
+                                {registro.esponjaDisp < 0 || registro.bolsaDisp < 0 ?
+                                    <p className="text-red-700 text-mm font-bold mr-1">Disponibilidad en negativo - Revise el Stock de Insumos</p>
+                                : null}
                               
                                 <div className="flex py-2">
                                     <p className="text-gray-700 text-lg font-bold mr-1">Cantidad Producida: </p>
