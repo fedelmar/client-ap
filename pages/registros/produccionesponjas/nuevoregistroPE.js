@@ -41,6 +41,19 @@ const NUEVO_REGISTRO = gql`
     }
 `;
 
+const PRODUCTOS = gql`
+    query obtenerProductosPorCategoria($input: String!) {
+        obtenerProductosPorCategoria(input: $input){
+            id
+            nombre
+            categoria
+            caja
+            cantCaja
+            insumos
+        }
+    }
+`
+
 const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
             actualizarRegistroCE(id: $id, input: $input){
@@ -69,12 +82,16 @@ const IniciarProduccion = () => {
         variables: {
             input: "Polietileno"
         }
-    })
+    });
+    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+        variables: {
+            input: "Esponjas"
+        }
+    });
     const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
     const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
     const [ eliminarRegistroCE ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
-    const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
     const [session, setSession] = useState(false);
@@ -134,7 +151,7 @@ const IniciarProduccion = () => {
         }
     },[nombre])
 
-    if(loadingEsponjas || loadingBolsas) return (
+    if(loadingEsponjas || loadingBolsas || loadingProductos) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -259,6 +276,7 @@ const IniciarProduccion = () => {
     // Definir lotes de esponjas y bolsas, segun el stock de insumos y la info en context de insumos
     const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
     const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
+    const listaProductos = dataProductos.obtenerProductosPorCategoria;
 
     // Funcion para exportar en complemento ManejoDeStock
     const cantidades = async valores => {
@@ -343,7 +361,7 @@ const IniciarProduccion = () => {
                                 <p className="block text-gray-700 font-bold mb-2">Seleccione el producto</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={productos}
+                                    options={listaProductos}
                                     onChange={opcion => seleccionarProducto(opcion) }
                                     getOptionValue={ opciones => opciones.id }
                                     getOptionLabel={ opciones => opciones.nombre}
