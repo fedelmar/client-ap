@@ -21,6 +21,19 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
+const PRODUCTOS = gql`
+    query obtenerProductosPorCategoria($input: String!) {
+        obtenerProductosPorCategoria(input: $input){
+            id
+            nombre
+            categoria
+            caja
+            cantCaja
+            insumos
+        }
+    }
+`;
+
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroCPG($id: ID, $input: CPGInput){
         nuevoRegistroCPG(id:$id, input: $input){
@@ -55,13 +68,17 @@ const NuevoRegistroPG = () => {
 
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
-    const productos = usuarioContext.productos;
     const { nombre: operario } = usuarioContext.usuario;
     const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
     const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
     const {data, loading} = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Polietileno"
+        }
+    });
+    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+        variables: {
+            input: "Geles"
         }
     });
     const [session, setSession] = useState(false);
@@ -121,7 +138,7 @@ const NuevoRegistroPG = () => {
         }
     });
 
-    if(loading) return (
+    if(loading || loadingProductos) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -239,6 +256,8 @@ const NuevoRegistroPG = () => {
         });        
     };
     
+    const listaProductos = dataProductos.obtenerProductosPorCategoria;
+
     return (
         <Layout>
             <h1 className='text-2xl text-gray-800 font-light'>Nuevo Registro de Producción de Gel</h1>
@@ -300,7 +319,7 @@ const NuevoRegistroPG = () => {
                                 <p className="block text-gray-700 font-bold mb-2">Seleccione el producto</p>
                                 <Select
                                     className="mt-3 mb-4"
-                                    options={productos}
+                                    options={listaProductos}
                                     onChange={opcion => seleccionarProducto(opcion) }
                                     getOptionValue={ opciones => opciones.id }
                                     getOptionLabel={ opciones => opciones.nombre}

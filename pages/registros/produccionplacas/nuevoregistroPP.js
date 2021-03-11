@@ -92,7 +92,6 @@ const NuevoRegistro = () => {
     const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
     const [ eliminarRegistroPP ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
-    const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [pcmSelecionado, setPcmSeleccionado] = useState(false);
     const [session, setSession] = useState(false);
