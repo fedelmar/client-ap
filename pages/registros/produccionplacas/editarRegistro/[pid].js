@@ -48,12 +48,12 @@ const EditarRegistro = () => {
         }
     });
     const [registro, setRegistro] = useState({
-        cantProducida: '',
-        cantDescarte: ''
+        cantProducida: 0,
+        cantDescarte: 0,
     });
     const schemaValidacion = Yup.object({
         cantProducida: Yup.number(),
-        cantDescarte: Yup.string(),
+        cantDescarte: Yup.number(),
         observaciones: Yup.string()                    
     });
     useEffect(() => {
@@ -102,15 +102,14 @@ const EditarRegistro = () => {
                         variables: {
                             id: id,
                             input: {
-                                lote: lote,
-                                cantProducida: cantProducida,
-                                cantDescarte: cantDescarte
+                                lote,
+                                cantProducida,
+                                cantDescarte
                             }
                         }
                     });
-                    console.log(data)
                     Swal.fire(
-                        'Registro actualizado, esta acción no actualiza el Stock',
+                        'Registro actualizado, esta acción no modifica el Stock',
                         ' ',
                         'success'
                     )
