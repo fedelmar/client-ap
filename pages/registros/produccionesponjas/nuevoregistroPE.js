@@ -52,7 +52,7 @@ const PRODUCTOS = gql`
             insumos
         }
     }
-`
+`;
 
 const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
