@@ -21,6 +21,19 @@ const LISTA_STOCK_CATEGORIA = gql `
     }
 `;
 
+const PRODUCTOS = gql`
+    query obtenerProductosPorCategoria($input: String!) {
+        obtenerProductosPorCategoria(input: $input){
+            id
+            nombre
+            categoria
+            caja
+            cantCaja
+            insumos
+        }
+    }
+`;
+
 const NUEVO_REGISTRO = gql `
     mutation nuevoRegistroPP($id: ID, $input: CPPInput){
         nuevoRegistroPP(id: $id, input: $input){
@@ -71,10 +84,14 @@ const NuevoRegistro = () => {
             input: "Polietileno"
         }
     });
+    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+        variables: {
+            input: "Placas"
+        }
+    });
     const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
     const [ eliminarRegistroPP ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
-    const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [pcmSelecionado, setPcmSeleccionado] = useState(false);
     const [session, setSession] = useState(false);
@@ -127,7 +144,7 @@ const NuevoRegistro = () => {
         }
     },[nombre]);
 
-    if(loadingQuimico || loadingPlacas || loading) return (
+    if(loadingQuimico || loadingPlacas || loading || loadingProductos) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -137,6 +154,7 @@ const NuevoRegistro = () => {
     const listaPlacas = dataPlacas.obtneterStockInsumosPorCategoria;
     const listaTapon = data.obtneterStockInsumosPorCategoria;
     const listaQuimico = dataQuimico.obtneterStockInsumosPorCategoria;
+    const listaProductos = dataProductos.obtenerProductosPorCategoria;
 
     const handleInicio =  async valores => {
         const { lote, pcm } = valores;
@@ -348,7 +366,7 @@ const NuevoRegistro = () => {
                                     <p className="block text-gray-700 font-bold mb-2">Seleccione el producto</p>
                                     <Select
                                         className="mt-3 mb-4"
-                                        options={productos}
+                                        options={listaProductos}
                                         onChange={opcion => seleccionarProducto(opcion) }
                                         getOptionValue={ opciones => opciones.id }
                                         getOptionLabel={ opciones => opciones.nombre}
