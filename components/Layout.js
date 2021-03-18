@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import { useRouter } from 'next/router';
 import { gql, useQuery } from '@apollo/client';
 import UsuarioContext from '../context/usuarios/UsuarioContext';
+import Spinner from './Spinner';
 
 const OBTENER_USUARIO = gql `
     query obtenerUsuario {
@@ -46,7 +47,7 @@ const Layout = ({children}) => {
 
     // Routing de next
     const router = useRouter();
-    const [usuario, setUsuario] = useState({});
+    const [usuario, setUsuario] = useState();
     const {data: dataUsuario, loading: loadingUsuario, error } = useQuery(OBTENER_USUARIO);
     const {data: dataInsumos, loading: loadingInsumos} = useQuery(OBTENER_INSUMOS);
     const {data: dataProductos, loading: loadingProductos} = useQuery(OBTENER_PRODUCTOS);
@@ -99,7 +100,6 @@ const Layout = ({children}) => {
         error,
         loadingProductos,
         dataProductos])
-
     return (
       <>  
         <Head>
@@ -108,7 +108,6 @@ const Layout = ({children}) => {
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
             <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
         </Head>
-
         {router.pathname === "/login" || router.pathname === "/registro" ? (
             <div className="bg-gray-800 min-h-screen flex flex-col justify-center">
                 <div>
@@ -117,14 +116,18 @@ const Layout = ({children}) => {
             </div>
         ) : (
             <div className="flex flex-col justify-between h-auto pb-10">
-                {!usuario ? (null) : (<Header usuario={usuario} />)}
-                
-                <div className="bg-gray-200 p-1 mb-auto min-h-screen" > 
-                  {children}
-                </div>   
-                
-                <Footer />
-               
+                {!usuario ? 
+                  <Spinner type={"spin"} color={"#4A90E2"} />
+                : 
+                  <>
+                    <Header usuario={usuario} />
+
+                    <div className="bg-gray-200 p-1 mb-auto min-h-screen" > 
+                      {children}
+                    </div>   
+                  
+                    <Footer />               
+                  </>}
             </div>
         )}
                
