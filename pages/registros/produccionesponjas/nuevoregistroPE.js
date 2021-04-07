@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import ManejoDeStock from '../../../components/registros/produccionesponjas/ManejoDeStock';
+import SelectInsumo from '../../../components/registros/produccionesponjas/SelectInsumos';
 
 const LISTA_STOCK_CATEGORIA = gql `
     query obtneterStockInsumosPorCategoria($input: String!){
@@ -264,6 +265,10 @@ const IniciarProduccion = () => {
         })
     }
 
+    const seleccionarInsumo = value => {
+        console.log(value)
+    }
+
     // Mostrar mensaje de base de datos si hubo un error
     const mostrarMensaje = () => {
         return(
@@ -358,6 +363,7 @@ const IniciarProduccion = () => {
                                     </div>
                                 ) : null  }
 
+
                                 <p className="block text-gray-700 font-bold mb-2">Seleccione el producto</p>
                                 <Select
                                     className="mt-3 mb-4"
@@ -371,7 +377,14 @@ const IniciarProduccion = () => {
                                     isMulti={false}
                                 />
 
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
+                                {registro.productoID ? 
+                                    <>
+                                        <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
+                                        <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Esponjas"}/>
+                                    </>
+                                : null}
+
+                                {/*<p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
                                 <Select
                                     className="mt-3 mb-4"
                                     options={listaEsponjas}
@@ -382,7 +395,7 @@ const IniciarProduccion = () => {
                                     noOptionsMessage={() => "No hay resultados"}
                                     onBlur={formikInicio.handleBlur}
                                     isMulti={false}
-                                />
+                                />*/}
 
                                 <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
                                 <Select
