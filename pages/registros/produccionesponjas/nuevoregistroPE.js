@@ -265,8 +265,18 @@ const IniciarProduccion = () => {
         })
     }
 
-    const seleccionarInsumo = value => {
-        console.log(value)
+    const seleccionarInsumo = lote => {
+        lote.categoria === 'Esponjas' ?
+            setRegistro({...registro, 
+                lEsponja: lote.lote, 
+                lEsponjaID: lote.id, 
+                esponjaDisp: lote.cantidad
+            })
+        :   setRegistro({...registro, 
+                lBolsa: lote.lote, 
+                lBolsaID: lote.id, 
+                bolsaDisp: lote.cantidad
+            })
     }
 
     // Mostrar mensaje de base de datos si hubo un error
@@ -381,35 +391,10 @@ const IniciarProduccion = () => {
                                     <>
                                         <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
                                         <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Esponjas"}/>
+                                        <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
+                                        <SelectInsumo productoID={registro.productoID } funcion={seleccionarInsumo} categoria={"Polietileno"} />
                                     </>
                                 : null}
-
-                                {/*<p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
-                                <Select
-                                    className="mt-3 mb-4"
-                                    options={listaEsponjas}
-                                    onChange={opcion => seleccionarLEsponja(opcion) }
-                                    getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
-                                    placeholder="Lote..."
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    onBlur={formikInicio.handleBlur}
-                                    isMulti={false}
-                                />*/}
-
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
-                                <Select
-                                    className="mt-3 mb-4"
-                                    options={listaBolsas}
-                                    onChange={opcion => seleccionarLBolsa(opcion) }
-                                    getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
-                                    placeholder="Lote..."
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    onBlur={formikInicio.handleBlur}
-                                    isMulti={false}
-                                />                          
-
     
                                 { formikInicio.touched.lBolsa && formikInicio.errors.lBolsa ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
