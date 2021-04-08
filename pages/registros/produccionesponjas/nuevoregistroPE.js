@@ -9,19 +9,7 @@ import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import ManejoDeStock from '../../../components/registros/produccionesponjas/ManejoDeStock';
-import SelectInsumo from '../../../components/registros/produccionesponjas/SelectInsumos';
-
-const LISTA_STOCK_CATEGORIA = gql `
-    query obtneterStockInsumosPorCategoria($input: String!){
-        obtneterStockInsumosPorCategoria(input: $input) {
-            id
-            insumo
-            insumoID
-            cantidad
-            lote
-        }
-    }
-`;
+import SelectInsumo from '../../../components/registros/SelectInsumos';
 
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroCE($id: ID, $input: CPEInput){
@@ -72,18 +60,6 @@ const ELIMINAR_REGISTRO = gql `
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Esponjas" 
-        }
-    });
-    const { data: dataBolsas, loading: loadingBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Polietileno"
-        }
-    });
     const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
         variables: {
             input: "Esponjas"

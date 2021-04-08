@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
+import SelectInsumo from '../../../components/registros/SelectInsumos';
 
 const LISTA_STOCK_CATEGORIA = gql `
     query obtneterStockInsumosPorCategoria($input: String!){
@@ -293,6 +294,10 @@ const NuevoRegistro = () => {
         }
     }
 
+    const seleccionarInsumo = value => {
+        console.log(value)
+    }
+
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
@@ -375,60 +380,33 @@ const NuevoRegistro = () => {
                                         onBlur={formikInicio.handleBlur}
                                         isMulti={false}
                                     />
-    
-                                    <p className="block text-gray-700 font-bold mb-2">Lote de Placas</p>
-                                    <Select
-                                        className="mt-3 mb-4"
-                                        options={listaPlacas}
-                                        onChange={opcion => seleccionarLPlacas(opcion) }
-                                        getOptionValue={ opciones => opciones.id }
-                                        getOptionLabel={ opciones => `${opciones.lote} - ${opciones.insumo} - Disp: ${opciones.cantidad}`}
-                                        placeholder="Lote..."
-                                        noOptionsMessage={() => "No hay resultados"}
-                                        onBlur={formikInicio.handleBlur}
-                                        isMulti={false}
-                                    />
-    
-                                    <p className="block text-gray-700 font-bold mb-2">Lote de Tapón</p>
-                                    <Select
-                                        className="mt-3 mb-4"
-                                        options={listaTapon}
-                                        onChange={opcion => seleccionarLTapon(opcion) }
-                                        getOptionValue={ opciones => opciones.id }
-                                        getOptionLabel={ opciones => `${opciones.lote} - ${opciones.insumo} - Disp: ${opciones.cantidad}`}
-                                        placeholder="Lote..."
-                                        noOptionsMessage={() => "No hay resultados"}
-                                        onBlur={formikInicio.handleBlur}
-                                        isMulti={false}
-                                    />
-    
-                                    <p className="block text-gray-700 font-bold mb-2">Lote de PCM</p>
-                                    {registro.pcmEnTacho ? (
-                                        <Select
-                                            className="mt-3 mb-4"
-                                            options={listaQuimico}
-                                            onChange={opcion => seleccionarlPcm(opcion) }
-                                            getOptionValue={ opciones => opciones.id }
-                                            getOptionLabel={ opciones => `${opciones.lote}`}
-                                            placeholder="Lote..."
-                                            noOptionsMessage={() => "No hay resultados"}
-                                            onBlur={formikInicio.handleBlur}
-                                            isMulti={false}
-                                        /> 
-                                    ) : (
-                                        <div className="mb-4">            
-                                            <input
-                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="pcm"
-                                                type="text"
-                                                placeholder="Ingrese el lote..."
-                                                onChange={formikInicio.handleChange}
-                                                onBlur={formikInicio.handleBlur}
-                                                value={formikInicio.values.pcm}
-                                            />
-                                        </div>
-                                        )
-                                    }
+
+                                    {registro.productoID ? 
+                                        <>
+                                            <p className="block text-gray-700 font-bold mb-2">Lote de Placas</p>
+                                            <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Placas"}/>
+                                            <p className="block text-gray-700 font-bold mb-2">Lote de Tapón</p>
+                                            <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Polietileno"}/>
+                                            <p className="block text-gray-700 font-bold mb-2">Lote de PCM</p>
+                                            {registro.pcmEnTacho ? (
+                                                <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Quimico"}/>
+                                            ) : (
+                                                <div className="mb-4">            
+                                                    <input
+                                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="pcm"
+                                                        type="text"
+                                                        placeholder="Ingrese el lote..."
+                                                        onChange={formikInicio.handleChange}
+                                                        onBlur={formikInicio.handleBlur}
+                                                        value={formikInicio.values.pcm}
+                                                    />
+                                                </div>
+                                                )
+                                            }
+                                        </>
+                                    : null}
+                                    
                                     <input
                                         type="submit"
                                         className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"

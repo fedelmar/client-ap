@@ -26,7 +26,7 @@ const SelectInsumo = ({productoID, funcion, categoria}) => {
     });
 
     if(loading) return <p className="text-gray-800 font-light pb-2" >Cargando...</p>;
-
+    
     const listaInsumo = data.obtenerStockInsumosPorProducto.filter(i => i.categoria === categoria);
     return (
         <>
