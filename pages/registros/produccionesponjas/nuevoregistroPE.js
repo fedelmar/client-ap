@@ -60,7 +60,7 @@ const ELIMINAR_REGISTRO = gql `
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+    const {data, loading } = useQuery(PRODUCTOS, {
         variables: {
             input: "Esponjas"
         }
@@ -128,7 +128,7 @@ const IniciarProduccion = () => {
         }
     },[nombre])
 
-    if(loadingEsponjas || loadingBolsas || loadingProductos) return (
+    if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -250,7 +250,7 @@ const IniciarProduccion = () => {
         )
     }
 
-    const listaProductos = dataProductos.obtenerProductosPorCategoria;
+    const listaProductos = data.obtenerProductosPorCategoria;
 
     // Funcion para exportar en complemento ManejoDeStock
     const cantidades = async valores => {
