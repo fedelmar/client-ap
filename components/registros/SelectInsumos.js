@@ -26,7 +26,7 @@ const SelectInsumo = ({productoID, funcion, categoria}) => {
     });
 
     if(loading) return <p className="text-gray-800 font-light pb-2" >Cargando...</p>;
-    
+
     const listaInsumo = data.obtenerStockInsumosPorProducto.filter(i => i.categoria === categoria);
     return (
         <>
@@ -35,7 +35,7 @@ const SelectInsumo = ({productoID, funcion, categoria}) => {
                 options={listaInsumo}
                 onChange={opcion => funcion(opcion) }
                 getOptionValue={ opciones => opciones.id }
-                getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
+                getOptionLabel={ opciones => `L: ${opciones.lote} - ${opciones.insumo} - Disp: ${opciones.cantidad}`}
                 placeholder="Lote..."
                 noOptionsMessage={() => "No hay insumos disponibles para ese producto"}
                 isMulti={false}
