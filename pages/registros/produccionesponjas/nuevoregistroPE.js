@@ -226,20 +226,6 @@ const IniciarProduccion = () => {
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     }
-    const seleccionarLEsponja = lote => {
-        setRegistro({...registro, 
-            lEsponja: lote.lote, 
-            lEsponjaID: lote.id, 
-            esponjaDisp: lote.cantidad
-        })
-    }
-    const seleccionarLBolsa = lote => {
-        setRegistro({...registro, 
-            lBolsa: lote.lote, 
-            lBolsaID: lote.id, 
-            bolsaDisp: lote.cantidad
-        })
-    }
 
     const seleccionarInsumo = lote => {
         lote.categoria === 'Esponjas' ?
@@ -264,9 +250,6 @@ const IniciarProduccion = () => {
         )
     }
 
-    // Definir lotes de esponjas y bolsas, segun el stock de insumos y la info en context de insumos
-    const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
-    const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
     const listaProductos = dataProductos.obtenerProductosPorCategoria;
 
     // Funcion para exportar en complemento ManejoDeStock

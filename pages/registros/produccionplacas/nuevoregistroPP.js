@@ -10,18 +10,6 @@ import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import SelectInsumo from '../../../components/registros/SelectInsumos';
 
-const LISTA_STOCK_CATEGORIA = gql `
-    query obtneterStockInsumosPorCategoria($input: String!){
-        obtneterStockInsumosPorCategoria(input: $input) {
-            id
-            insumo
-            insumoID
-            cantidad
-            lote
-        }
-    }
-`;
-
 const PRODUCTOS = gql`
     query obtenerProductosPorCategoria($input: String!) {
         obtenerProductosPorCategoria(input: $input){
@@ -67,25 +55,7 @@ const ELIMINAR_REGISTRO = gql `
 const NuevoRegistro = () => {
 
     const router = useRouter();
-    const { data: dataPlacas, loading: loadingPlacas } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Placas"
-        }
-    });
-    const { data: dataQuimico, loading: loadingQuimico } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Quimico"
-        }
-    });
-    const { data, loading} = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Polietileno"
-        }
-    });
-    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+    const {data, loading} = useQuery(PRODUCTOS, {
         variables: {
             input: "Placas"
         }
@@ -145,17 +115,13 @@ const NuevoRegistro = () => {
         }
     },[nombre]);
 
-    if(loadingQuimico || loadingPlacas || loading || loadingProductos) return (
+    if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
 
-    // Definir lotes segun el stock de insumos
-    const listaPlacas = dataPlacas.obtneterStockInsumosPorCategoria;
-    const listaTapon = data.obtneterStockInsumosPorCategoria;
-    const listaQuimico = dataQuimico.obtneterStockInsumosPorCategoria;
-    const listaProductos = dataProductos.obtenerProductosPorCategoria;
+    const listaProductos = data.obtenerProductosPorCategoria;
 
     const handleInicio =  async valores => {
         const { lote, pcm } = valores;
@@ -256,27 +222,26 @@ const NuevoRegistro = () => {
     // Manejo de los campos select del formulario (On Change)
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
-    };
-    const seleccionarLPlacas = lote => {
-        setRegistro({...registro, 
-            lPlaca: lote.lote, 
-            lPlacaID: lote.id, 
-            placaDisp: lote.cantidad
-        })
-    };
-    const seleccionarLTapon = lote => {
-        setRegistro({...registro, 
-            lTapon: lote.lote, 
-            lTaponID: lote.id, 
-            taponDisp: lote.cantidad
-        })
-    };
-    const seleccionarlPcm = lote => {
-        setRegistro({...registro, 
-            lPcm: lote.lote, 
-            lPcmID: lote.id
-        })
-    };
+    };    
+    const seleccionarInsumo = lote => {
+        lote.categoria === 'Placas' ?
+            setRegistro({...registro, 
+                lPlaca: lote.lote, 
+                lPlacaID: lote.id, 
+                placaDisp: lote.cantidad
+            })
+        : lote.categoria === 'Polietileno' ?
+            setRegistro({...registro, 
+                lTapon: lote.lote, 
+                lTaponID: lote.id, 
+                taponDisp: lote.cantidad
+            })
+        :
+            setRegistro({...registro, 
+                lPcm: lote.lote, 
+                lPcmID: lote.id
+            })            
+    }
 
     const seleccionarPCM = value => {
         if (value === "PCM +4º" || value === "PCM +20º") {
@@ -292,10 +257,6 @@ const NuevoRegistro = () => {
             })
             setPcmSeleccionado(true)
         }
-    }
-
-    const seleccionarInsumo = value => {
-        console.log(value)
     }
 
     return (
@@ -406,7 +367,7 @@ const NuevoRegistro = () => {
                                             }
                                         </>
                                     : null}
-                                    
+
                                     <input
                                         type="submit"
                                         className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
