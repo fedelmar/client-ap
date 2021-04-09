@@ -36,7 +36,7 @@ const SelectInsumo = ({productoID, funcion, categoria}) => {
                 onChange={opcion => funcion(opcion) }
                 getOptionValue={ opciones => opciones.id }
                 getOptionLabel={ opciones => `L: ${opciones.lote} - ${opciones.insumo} - Disp: ${opciones.cantidad}`}
-                placeholder="Lote..."
+                placeholder="Lote de insumo"
                 noOptionsMessage={() => "No hay insumos disponibles para ese producto"}
                 isMulti={false}
             />

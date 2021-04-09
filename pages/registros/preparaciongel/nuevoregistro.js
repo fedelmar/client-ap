@@ -7,18 +7,7 @@ import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-
-const LISTA_STOCK_CATEGORIA = gql `
-    query obtneterStockInsumosPorCategoria($input: String!){
-        obtneterStockInsumosPorCategoria(input: $input) {
-            id
-            insumo
-            insumoID
-            cantidad
-            lote
-        }
-    }
-`;
+import SelectInsumo from '../../../components/registros/SelectInsumos';
 
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroPG($input: PGInput){
@@ -64,12 +53,6 @@ const NuevoRegistro = () => {
         loteInsumo: '',
         loteInsumoID: '',
         cantidad: 0
-    });
-    const { data: dataQuimico, loading: loadingQuimico } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Quimico"
-        }
     });
     const [ nuevoRegistroPG ] = useMutation(NUEVO_REGISTRO, {
         update(cache, {data: { nuevoRegistroPG }}) {
@@ -147,14 +130,8 @@ const NuevoRegistro = () => {
         }
     })
 
-    if(loadingQuimico) return (
-        <Layout>
-          <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
-        </Layout>
-    );
-
-    const seleccionarInsumo = value => {
-        setInsumo({...insumo, loteInsumoID: value.id, loteInsumo: value.lote, cantidad: value.cantidad})
+    const seleccionarInsumo = lote => {
+        setInsumo({...insumo, loteInsumoID: lote.id, loteInsumo: lote.lote, cantidad: lote.cantidad})
     }
 
     const mostrarMensaje = () => {
@@ -200,24 +177,8 @@ const NuevoRegistro = () => {
                                 </div>
                             ) : null  }
 
-                            <p className="block text-gray-700 text-sm font-bold mb-1">Seleccione o busque el insumo</p>
-                            <Select
-                                className="mt-3 mb-4"
-                                options={dataQuimico.obtneterStockInsumosPorCategoria}
-                                onChange={opcion => seleccionarInsumo(opcion) }
-                                getOptionValue={ opciones => opciones.id }
-                                getOptionLabel={ opciones => opciones.insumo +  ' Lote: ' + opciones.lote}
-                                placeholder="Insumo..."
-                                noOptionsMessage={() => "No hay resultados"}
-                                onBlur={formik.handleBlur}
-                                isMulti={false}
-                            />
-                            {insumo.cantidad > 0 ?
-                                <div className="flex mb-2">
-                                    <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-                                    <p className="text-gray-700 font-light">{insumo.cantidad}</p>
-                                </div> 
-                            : null}
+                            <p className="block text-gray-700 text-sm font-bold mb-1">Seleccione o busque el lote de gel</p>
+                            <SelectInsumo productoID={'606fb1303b7ca90fa520ba00'} funcion={seleccionarInsumo} categoria={"Quimico"}/>
 
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantidad">
