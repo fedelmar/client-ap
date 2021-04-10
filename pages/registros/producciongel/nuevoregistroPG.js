@@ -86,7 +86,8 @@ const NuevoRegistroPG = () => {
             manta: false
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('Ingrese el Lote'),
+            lote: Yup.number().max(99, 'El Nº de lote debe ser menor o igual a 99')
+            .required('Ingrese el Nº de lote'),
             cliente: Yup.string().required('Ingrese el Cliente'),
             loteGel: Yup.string().required('Ingrese el lote de gel')
         }),
@@ -132,11 +133,12 @@ const NuevoRegistroPG = () => {
     // Iniciar el registro cargando los primeros datos en la BD
     const iniciarRegistro = async valores => {
         const { lote, cliente, loteGel, dobleBolsa, manta } = valores
+        const date = Date.now();
         try {
             const { data } = await nuevoRegistroCPG({
                 variables: {
                     input: {
-                        lote,
+                        lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
                         cliente,
                         loteGel,
                         operario,
@@ -149,8 +151,13 @@ const NuevoRegistroPG = () => {
                     }
                 }
             })
-            setRegistro({...registro, lote, cliente, loteGel, dobleBolsa, manta})
             setSesionActiva(data.nuevoRegistroCPG);
+            setRegistro({...registro, 
+                lote: `L${lote}-${format(new Date(data.nuevoRegistroCPG.creado), 'ddMMyy')}`,
+                cliente, 
+                loteGel,
+                dobleBolsa,
+                manta})
             setSession(true);
         } catch (error) {
             console.log(error)
@@ -260,7 +267,7 @@ const NuevoRegistroPG = () => {
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="lote"
-                                        type="text"
+                                        type="number"
                                         placeholder="Ingrese el lote..."
                                         onChange={formikInicio.handleChange}
                                         onBlur={formikInicio.handleBlur}

@@ -74,11 +74,12 @@ const NuevoRegistro = () => {
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
-            lote: '',
+            lote: '' ,
             pcm: ''
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('Ingrese el Lote')                      
+            lote: Yup.number().max(99, 'El Nº de lote debe ser menor o igual a 99')
+            .required('Ingrese el Nº de lote')                    
         }),
         onSubmit: valores => {     
             handleInicio(valores);            
@@ -125,12 +126,13 @@ const NuevoRegistro = () => {
 
     const handleInicio =  async valores => {
         const { lote, pcm } = valores;
+        const date = Date.now();
         try {
             const { data } = await nuevoRegistroPP({
                 variables: {
                     input: {
                         operario: nombre,
-                        lote: lote,
+                        lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
                         producto: registro.producto,
                         lPlaca: registro.lPlaca,
                         lTapon: registro.lTapon,
@@ -142,7 +144,7 @@ const NuevoRegistro = () => {
             });
             setSesionActiva(data.nuevoRegistroPP)
             setRegistro({...registro, 
-                lote: lote,
+                lote: `L${lote}-${format(new Date(data.nuevoRegistroPP.creado), 'ddMMyy')}`,
                 lPcm: pcm !== '' ? pcm : registro.lPcm 
             })
             setSession(true);
@@ -314,7 +316,7 @@ const NuevoRegistro = () => {
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             id="lote"
-                                            type="text"
+                                            type="number"
                                             placeholder="Ingrese el lote..."
                                             onChange={formikInicio.handleChange}
                                             onBlur={formikInicio.handleBlur}
@@ -371,7 +373,7 @@ const NuevoRegistro = () => {
                                     <input
                                         type="submit"
                                         className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
-                                        value="Iniciar Producción"
+                                        value="Iniciar Producción"                                        
                                     />
                                     <button
                                         type="button" 
