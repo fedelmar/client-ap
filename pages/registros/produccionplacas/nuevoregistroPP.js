@@ -74,12 +74,11 @@ const NuevoRegistro = () => {
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
-            lote: '' ,
+            lote: '',
             pcm: ''
         },
         validationSchema: Yup.object({
-            lote: Yup.number().max(99, 'El Nº de lote debe ser menor o igual a 99')
-            .required('Ingrese el Nº de lote')                    
+            lote: Yup.string().required('Ingrese el Lote'),                  
         }),
         onSubmit: valores => {     
             handleInicio(valores);            
@@ -126,13 +125,12 @@ const NuevoRegistro = () => {
 
     const handleInicio =  async valores => {
         const { lote, pcm } = valores;
-        const date = Date.now();
         try {
             const { data } = await nuevoRegistroPP({
                 variables: {
                     input: {
                         operario: nombre,
-                        lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
+                        lote: lote,
                         producto: registro.producto,
                         lPlaca: registro.lPlaca,
                         lTapon: registro.lTapon,
@@ -144,7 +142,7 @@ const NuevoRegistro = () => {
             });
             setSesionActiva(data.nuevoRegistroPP)
             setRegistro({...registro, 
-                lote: `L${lote}-${format(new Date(data.nuevoRegistroPP.creado), 'ddMMyy')}`,
+                lote: lote,
                 lPcm: pcm !== '' ? pcm : registro.lPcm 
             })
             setSession(true);
@@ -316,7 +314,7 @@ const NuevoRegistro = () => {
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             id="lote"
-                                            type="number"
+                                            type="text"
                                             placeholder="Ingrese el lote..."
                                             onChange={formikInicio.handleChange}
                                             onBlur={formikInicio.handleBlur}

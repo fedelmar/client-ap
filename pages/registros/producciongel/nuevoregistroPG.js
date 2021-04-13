@@ -86,8 +86,7 @@ const NuevoRegistroPG = () => {
             manta: false
         },
         validationSchema: Yup.object({
-            lote: Yup.number().max(99, 'El Nº de lote debe ser menor o igual a 99')
-            .required('Ingrese el Nº de lote'),
+            lote: Yup.string().required('Ingrese el Lote'),
             cliente: Yup.string().required('Ingrese el Cliente'),
             loteGel: Yup.string().required('Ingrese el lote de gel')
         }),
@@ -133,12 +132,11 @@ const NuevoRegistroPG = () => {
     // Iniciar el registro cargando los primeros datos en la BD
     const iniciarRegistro = async valores => {
         const { lote, cliente, loteGel, dobleBolsa, manta } = valores
-        const date = Date.now();
         try {
             const { data } = await nuevoRegistroCPG({
                 variables: {
                     input: {
-                        lote: `L${lote}-${format(new Date(date), 'ddMMyy')}`,
+                        lote: lote,
                         cliente,
                         loteGel,
                         operario,
@@ -153,7 +151,7 @@ const NuevoRegistroPG = () => {
             })
             setSesionActiva(data.nuevoRegistroCPG);
             setRegistro({...registro, 
-                lote: `L${lote}-${format(new Date(data.nuevoRegistroCPG.creado), 'ddMMyy')}`,
+                lote: lote,
                 cliente, 
                 loteGel,
                 dobleBolsa,
@@ -267,7 +265,7 @@ const NuevoRegistroPG = () => {
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="lote"
-                                        type="number"
+                                        type="text"
                                         placeholder="Ingrese el lote..."
                                         onChange={formikInicio.handleChange}
                                         onBlur={formikInicio.handleBlur}
