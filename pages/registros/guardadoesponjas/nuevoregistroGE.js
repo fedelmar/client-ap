@@ -109,9 +109,9 @@ const NuevoRegistroGE = () => {
         validationSchema: Yup.object({
             cantGuardada: Yup.number()
                                 .max(registro.cantidad, `Debe ser menor o igual a ${registro.cantidad}`)
-                                .required('Ingrese la cantidad producida'),
+                                .required('Campo obligatorio'),
             cantDescarte: Yup.number()
-                                .required('Ingrese el descarte generado')
+                                .required('Campo obligatorio')
                                 .test('disponibilidad', 'No hay disponibilidad',
                                 function(cantDescarte) {
                                     return cantDescarte <= registro.cantidad - cantGuardada.value
@@ -330,7 +330,7 @@ const NuevoRegistroGE = () => {
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="cantGuardada"
                                         type="number"
-                                        placeholder="Ingrese la cantidad producida..."
+                                        placeholder="Cantidad de esponjas probadas y guardadas..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
                                         value={formikCierre.values.cantGuardada}
@@ -439,7 +439,7 @@ const NuevoRegistroGE = () => {
                                 <input
                                     type="submit"
                                     className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900"
-                                    value="Finalizar Producción"
+                                    value="Finalizar registro"
                                 />
                                 <button className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900" onClick={() => handleCierre()}>Volver</button>
                             </form>

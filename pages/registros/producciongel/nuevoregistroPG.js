@@ -8,18 +8,7 @@ import Swal from 'sweetalert2';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-
-const LISTA_STOCK_CATEGORIA = gql `
-    query obtneterStockInsumosPorCategoria($input: String!){
-        obtneterStockInsumosPorCategoria(input: $input) {
-            id
-            insumo
-            insumoID
-            cantidad
-            lote
-        }
-    }
-`;
+import SelectInsumo from '../../../components/registros/SelectInsumos';
 
 const PRODUCTOS = gql`
     query obtenerProductosPorCategoria($input: String!) {
@@ -71,12 +60,7 @@ const NuevoRegistroPG = () => {
     const { nombre: operario } = usuarioContext.usuario;
     const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
     const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
-    const {data, loading} = useQuery(LISTA_STOCK_CATEGORIA, {
-        variables: {
-            input: "Polietileno"
-        }
-    });
-    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+    const { data, loading } = useQuery(PRODUCTOS, {
         variables: {
             input: "Geles"
         }
@@ -138,20 +122,12 @@ const NuevoRegistroPG = () => {
         }
     });
 
-    if(loading || loadingProductos) return (
+    if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-    const polietileno = data.obtneterStockInsumosPorCategoria;
-
-    // Funciones de seleccion de Lote de bolsa y Producto
-    const seleccionarProducto = value => {
-        setRegistro({...registro, producto: value.nombre, productoID: value.id})
-    };
-    const seleccionarLoteBolsa = value => {
-        setRegistro({...registro, loteBolsa: value.lote, loteBolsaID: value.id, bolsasDisponibles: value.cantidad })
-    };
+    const listaProductos = data.obtenerProductosPorCategoria;
 
     // Iniciar el registro cargando los primeros datos en la BD
     const iniciarRegistro = async valores => {
@@ -160,7 +136,7 @@ const NuevoRegistroPG = () => {
             const { data } = await nuevoRegistroCPG({
                 variables: {
                     input: {
-                        lote,
+                        lote: lote,
                         cliente,
                         loteGel,
                         operario,
@@ -173,8 +149,13 @@ const NuevoRegistroPG = () => {
                     }
                 }
             })
-            setRegistro({...registro, lote, cliente, loteGel, dobleBolsa, manta})
             setSesionActiva(data.nuevoRegistroCPG);
+            setRegistro({...registro, 
+                lote: lote,
+                cliente, 
+                loteGel,
+                dobleBolsa,
+                manta})
             setSession(true);
         } catch (error) {
             console.log(error)
@@ -255,8 +236,14 @@ const NuevoRegistroPG = () => {
             }
         });        
     };
-    
-    const listaProductos = dataProductos.obtenerProductosPorCategoria;
+
+    // Funciones de seleccion de Lote de bolsa y Producto
+    const seleccionarProducto = lote => {
+        setRegistro({...registro, producto: lote.nombre, productoID: lote.id})
+    };
+    const seleccionarInsumo = lote => {
+        setRegistro({...registro, loteBolsa: lote.lote, loteBolsaID: lote.id, bolsasDisponibles: lote.cantidad })
+    };
 
     return (
         <Layout>
@@ -329,18 +316,12 @@ const NuevoRegistroPG = () => {
                                     isMulti={false}
                                 />
 
-                                <p className="block text-gray-700 font-bold mb-2">Seleccione el Lote de Bolsa</p>
-                                <Select
-                                    className="mt-3 mb-4"
-                                    options={polietileno}
-                                    onChange={opcion => seleccionarLoteBolsa(opcion) }
-                                    getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => 'Lote: ' + opciones.lote + ' - Insumo: ' + opciones.insumo}
-                                    placeholder="Lote Bolsa..."
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    onBlur={formikInicio.handleBlur}
-                                    isMulti={false}
-                                />
+                                {registro.productoID ? 
+                                    <>
+                                        <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
+                                        <SelectInsumo productoID={registro.productoID } funcion={seleccionarInsumo} categoria={"Polietileno"} />
+                                    </>
+                                : null}
 
                                 <div className="mb-4">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="loteGel">

@@ -1,6 +1,4 @@
 import React, {useState, useContext, useEffect} from 'react';
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import Layout from '../../../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
@@ -8,6 +6,8 @@ import {gql, useQuery, useMutation} from '@apollo/client';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
+import Layout from '../../../components/Layout';
 
 const LOTES_PLACAS = gql `
     query obtenerStockPlacas{
@@ -230,7 +230,7 @@ const NuevoRegistroGP = () => {
                                     options={obtenerStockPlacas}
                                     onChange={opcion => seleccionarLPlaca(opcion)}
                                     getOptionValue={ opciones => opciones.loteId }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad}`}
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad} ${opciones.estado === 'Reproceso' ? '- Placas en repreceso' : ''}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     isMulti={false}

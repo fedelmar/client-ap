@@ -62,10 +62,10 @@ const NuevoLoteProducto = () => {
             cantidad: 0
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('El lote del producto es obligatorio'),
+            lote: Yup.string().required('EIngrese el lote del producto'),
             producto: Yup.string(),
-            estado: Yup.string(),
-            cantidad: Yup.number()                        
+            estado: Yup.string().required('Elija un estado'),
+            cantidad: Yup.number().min(1, 'La cantidad debe ser mayor o igual a 1').required('Ingrese una cantidad')                        
         }),
         onSubmit: async valores => {
             

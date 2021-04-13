@@ -9,18 +9,7 @@ import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import ManejoDeStock from '../../../components/registros/produccionesponjas/ManejoDeStock';
-
-const LISTA_STOCK_CATEGORIA = gql `
-    query obtneterStockInsumosPorCategoria($input: String!){
-        obtneterStockInsumosPorCategoria(input: $input) {
-            id
-            insumo
-            insumoID
-            cantidad
-            lote
-        }
-    }
-`;
+import SelectInsumo from '../../../components/registros/SelectInsumos';
 
 const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroCE($id: ID, $input: CPEInput){
@@ -71,19 +60,7 @@ const ELIMINAR_REGISTRO = gql `
 const IniciarProduccion = () => {
 
     const router = useRouter();
-    const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Esponjas" 
-        }
-    });
-    const { data: dataBolsas, loading: loadingBolsas } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 500,
-        variables: {
-            input: "Polietileno"
-        }
-    });
-    const { data: dataProductos, loading: loadingProductos } = useQuery(PRODUCTOS, {
+    const {data, loading } = useQuery(PRODUCTOS, {
         variables: {
             input: "Esponjas"
         }
@@ -151,7 +128,7 @@ const IniciarProduccion = () => {
         }
     },[nombre])
 
-    if(loadingEsponjas || loadingBolsas || loadingProductos) return (
+    if(loading) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -249,19 +226,19 @@ const IniciarProduccion = () => {
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     }
-    const seleccionarLEsponja = lote => {
-        setRegistro({...registro, 
-            lEsponja: lote.lote, 
-            lEsponjaID: lote.id, 
-            esponjaDisp: lote.cantidad
-        })
-    }
-    const seleccionarLBolsa = lote => {
-        setRegistro({...registro, 
-            lBolsa: lote.lote, 
-            lBolsaID: lote.id, 
-            bolsaDisp: lote.cantidad
-        })
+
+    const seleccionarInsumo = lote => {
+        lote.categoria === 'Esponjas' ?
+            setRegistro({...registro, 
+                lEsponja: lote.lote, 
+                lEsponjaID: lote.id, 
+                esponjaDisp: lote.cantidad
+            })
+        :   setRegistro({...registro, 
+                lBolsa: lote.lote, 
+                lBolsaID: lote.id, 
+                bolsaDisp: lote.cantidad
+            })
     }
 
     // Mostrar mensaje de base de datos si hubo un error
@@ -273,10 +250,7 @@ const IniciarProduccion = () => {
         )
     }
 
-    // Definir lotes de esponjas y bolsas, segun el stock de insumos y la info en context de insumos
-    const listaEsponjas = dataEsponjas.obtneterStockInsumosPorCategoria;
-    const listaBolsas = dataBolsas.obtneterStockInsumosPorCategoria;
-    const listaProductos = dataProductos.obtenerProductosPorCategoria;
+    const listaProductos = data.obtenerProductosPorCategoria;
 
     // Funcion para exportar en complemento ManejoDeStock
     const cantidades = async valores => {
@@ -358,6 +332,7 @@ const IniciarProduccion = () => {
                                     </div>
                                 ) : null  }
 
+
                                 <p className="block text-gray-700 font-bold mb-2">Seleccione el producto</p>
                                 <Select
                                     className="mt-3 mb-4"
@@ -371,32 +346,14 @@ const IniciarProduccion = () => {
                                     isMulti={false}
                                 />
 
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
-                                <Select
-                                    className="mt-3 mb-4"
-                                    options={listaEsponjas}
-                                    onChange={opcion => seleccionarLEsponja(opcion) }
-                                    getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
-                                    placeholder="Lote..."
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    onBlur={formikInicio.handleBlur}
-                                    isMulti={false}
-                                />
-
-                                <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
-                                <Select
-                                    className="mt-3 mb-4"
-                                    options={listaBolsas}
-                                    onChange={opcion => seleccionarLBolsa(opcion) }
-                                    getOptionValue={ opciones => opciones.id }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.insumo} Disp: ${opciones.cantidad}`}
-                                    placeholder="Lote..."
-                                    noOptionsMessage={() => "No hay resultados"}
-                                    onBlur={formikInicio.handleBlur}
-                                    isMulti={false}
-                                />                          
-
+                                {registro.productoID ? 
+                                    <>
+                                        <p className="block text-gray-700 font-bold mb-2">Lote de Esponja</p>
+                                        <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Esponjas"}/>
+                                        <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
+                                        <SelectInsumo productoID={registro.productoID } funcion={seleccionarInsumo} categoria={"Polietileno"} />
+                                    </>
+                                : null}
     
                                 { formikInicio.touched.lBolsa && formikInicio.errors.lBolsa ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
