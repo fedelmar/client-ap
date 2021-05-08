@@ -12,8 +12,8 @@ import ManejoDeStock from '../../../components/registros/produccionesponjas/Mane
 import SelectInsumo from '../../../components/registros/SelectInsumos';
 
 const NUEVO_REGISTRO = gql`
-    mutation nuevoRegistroCE($id: ID, $input: CPEInput){
-        nuevoRegistroCE(id: $id, input: $input){
+    mutation nuevoRegistroPE($id: ID, $input: CPEInput){
+        nuevoRegistroPE(id: $id, input: $input){
             id
             creado
             modificado
@@ -23,7 +23,8 @@ const NUEVO_REGISTRO = gql`
             lBolsa
             lEsponja
             cantProducida
-            cantDescarte
+            descarteBolsa
+            descarteEsponja
             observaciones
             estado
         }
@@ -65,7 +66,7 @@ const IniciarProduccion = () => {
             input: "Esponjas"
         }
     });
-    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroPE ] = useMutation(NUEVO_REGISTRO);
     const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
     const [ eliminarRegistroCE ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
@@ -85,7 +86,8 @@ const IniciarProduccion = () => {
         lEsponjaID: '',
         esponjaDisp: 0,
         cantProducida: 0,
-        cantDescarte: 0
+        descarteBolsa: 0,
+        descarteEsponja: 0
     });
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
@@ -109,13 +111,17 @@ const IniciarProduccion = () => {
     // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
-            cantDescarte: 0,
+            descarteBolsa: 0,
+            descarteEsponja: 0,
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantDescarte: Yup.number()
+            descarteBolsa: Yup.number()
                             .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
                             .required('Ingrese el descarte generado'),
+            descarteEsponja: Yup.number()
+                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
+                            .required('Ingrese el descarte generado'),                
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
@@ -138,7 +144,7 @@ const IniciarProduccion = () => {
         const { lote } = valores;
         const date = Date.now();
         try {
-            const { data } = await nuevoRegistroCE({
+            const { data } = await nuevoRegistroPE({
                 variables: {
                     input: {
                         operario: nombre,
@@ -150,8 +156,8 @@ const IniciarProduccion = () => {
                     }
                 }                
             });
-            setSesionActiva(data.nuevoRegistroCE);
-            setRegistro({...registro, lote: `L${lote}-${format(new Date(data.nuevoRegistroCE.creado), 'ddMMyy')}`});   
+            setSesionActiva(data.nuevoRegistroPE);
+            setRegistro({...registro, lote: `L${lote}-${format(new Date(data.nuevoRegistroPE.creado), 'ddMMyy')}`});   
         } catch (error) {
             guardarMensaje(error.message.replace('GraphQL error: ', ''));
         }
@@ -173,9 +179,9 @@ const IniciarProduccion = () => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos e insumos
 
         //Volver a planillas de produccion y modificar base de datos
-        const {observaciones, cantDescarte} = valores;
+        const {observaciones, descarteBolsa, descarteEsponja} = valores;
     
-        setRegistro({...registro, cantDescarte, observaciones})
+        setRegistro({...registro, descarteBolsa, descarteEsponja, observaciones})
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -185,7 +191,8 @@ const IniciarProduccion = () => {
                     "Lote de Esponja: " + registro.lEsponja + "</br>" +
                     "Lote de Bolsa: " + registro.lBolsa + "</br>" +
                     "Cantidad producida: " + registro.cantProducida + "</br>" +
-                    "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Bolsas descartadas: " + descarteBolsa + "</br>" +
+                    "Esponjas descartadas: " + descarteEsponja + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -196,7 +203,7 @@ const IniciarProduccion = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroCE({
+                    const { data } = await nuevoRegistroPE({
                         variables: {
                             id: sesionActiva.id,
                             input: {
@@ -204,14 +211,17 @@ const IniciarProduccion = () => {
                                 lote: registro.lote,
                                 producto: registro.producto,
                                 cantProducida: registro.cantProducida,
-                                cantDescarte: cantDescarte,
-                                observaciones: observaciones
+                                lBolsa: registro.lBolsa,
+                                lEsponja: registro.lEsponja,
+                                descarteBolsa,
+                                descarteEsponja,
+                                observaciones
                             }
                         }                
                     });
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        data.nuevoRegistroCE,
+                        `Producidas: ${data.nuevoRegistroPE.cantProducida} esponjas ${data.nuevoRegistroPE.producto} `,
                         'success'
                     )
                     router.push('/registros/produccionesponjas');
@@ -431,25 +441,48 @@ const IniciarProduccion = () => {
                                 onSubmit={formikCierre.handleSubmit}
                             >
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
-                                        Descarte
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarteBolsa">
+                                        Bolsas descartadas
                                     </label>
 
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantDescarte"
+                                        id="descarteBolsa"
                                         type="number"
-                                        placeholder="Ingrese la cantidad de cantDescarte..."
+                                        placeholder="Ingrese la cantidad bolsas descartadas..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.cantDescarte}
+                                        value={formikCierre.values.descarteBolsa}
                                     />
                                 </div>
 
-                                { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
+                                { formikCierre.touched.descarteBolsa && formikCierre.errors.descarteBolsa ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.cantDescarte}</p>
+                                        <p>{formikCierre.errors.descarteBolsa}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarteEsponja">
+                                        Esponjas descartadas
+                                    </label>
+
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="descarteEsponja"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad de esponjas descartadas..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.descarteEsponja}
+                                    />
+                                </div>
+
+                                { formikCierre.touched.descarteEsponja && formikCierre.errors.descarteEsponja ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.descarteEsponja}</p>
                                     </div>
                                 ) : null  }
 

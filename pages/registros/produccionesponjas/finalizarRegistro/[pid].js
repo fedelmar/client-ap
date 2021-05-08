@@ -36,8 +36,8 @@ const LISTA_STOCK_CATEGORIA = gql `
 `;
 
 const NUEVO_REGISTRO = gql`
-    mutation nuevoRegistroCE($id: ID, $input: CPEInput){
-        nuevoRegistroCE(id: $id, input: $input){
+    mutation nuevoRegistroPE($id: ID, $input: CPEInput){
+        nuevoRegistroPE(id: $id, input: $input){
             id
             creado
             modificado
@@ -47,7 +47,8 @@ const NUEVO_REGISTRO = gql`
             lBolsa
             lEsponja
             cantProducida
-            cantDescarte
+            descarteBolsa
+            descarteEsponja
             observaciones
             estado
         }
@@ -57,7 +58,8 @@ const NUEVO_REGISTRO = gql`
 const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
             actualizarRegistroCE(id: $id, input: $input){
-            cantProducida            
+            producto
+            cantProducida           
         }
     }
 `;
@@ -70,7 +72,7 @@ const FinalizarRegistro = () => {
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
-    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroPE ] = useMutation(NUEVO_REGISTRO);
     const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Esponjas"
@@ -94,15 +96,20 @@ const FinalizarRegistro = () => {
         lEsponja: '',
         lEsponjaID: '',
         esponjaDisp: 0,
-        cantDescarte: 0
+        descarteBolsa: 0,
+        descarteEsponja: 0
     });
     const formikCierre = useFormik({
         initialValues: {
-            cantDescarte: 0,
+            descarteBolsa: 0,
+            descarteEsponja: 0,
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantDescarte: Yup.number()
+            descarteBolsa: Yup.number()
+                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
+                            .required('Ingrese el descarte generado'),
+            descarteEsponja: Yup.number()
                             .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
                             .required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
@@ -146,7 +153,7 @@ const FinalizarRegistro = () => {
     const { obtenerRegistroCE } = data;
 
     const terminarProduccion = valores => {
-        const { cantDescarte, observaciones } = valores;
+        const { descarteEsponja, descarteBolsa, observaciones } = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + registro.lote + "</br>" + 
@@ -155,7 +162,8 @@ const FinalizarRegistro = () => {
                     "Lote de Esponja: " + registro.lEsponja + "</br>" +
                     "Lote de Bolsa: " + registro.lBolsa + "</br>" +
                     "Cantidad producida: " + registro.cantProducida + "</br>" +
-                    "Cantidad de descarte: " + cantDescarte + "</br>" +
+                    "Bolsas descartadas: " + descarteBolsa + "</br>" +
+                    "Esponjas desccartadas: " + descarteEsponja + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -166,22 +174,26 @@ const FinalizarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroCE({
+                    const { data } = await nuevoRegistroPE({
                         variables: {
-                            id: id,
+                            id,
                             input: {
                                 operario: nombre,
                                 lote: registro.lote,
                                 producto: registro.producto,
                                 cantProducida: registro.cantProducida,
-                                cantDescarte: cantDescarte,
-                                observaciones: observaciones
+                                lBolsa: registro.lBolsa,
+                                lEsponja: registro.lEsponja,
+                                descarteBolsa,
+                                descarteEsponja,
+                                observaciones
                             }
                         }                
                     });
+                    console.log(data)
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        data.nuevoRegistroCE,
+                        `Producidas: ${data.nuevoRegistroPE.cantProducida} esponjas ${data.nuevoRegistroPE.producto}`,
                         'success'
                     )
                     router.push('/registros/produccionesponjas');
@@ -294,28 +306,52 @@ const FinalizarRegistro = () => {
                         className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
                         onSubmit={formikCierre.handleSubmit}
                     >
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
-                                Descarte
-                            </label>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarteBolsa">
+                                        Bolsas descartadas
+                                    </label>
 
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="cantDescarte"
-                                type="number"
-                                placeholder="Ingrese la cantidad de cantDescarte..."
-                                onChange={formikCierre.handleChange}
-                                onBlur={formikCierre.handleBlur}
-                                value={formikCierre.values.cantDescarte}
-                            />
-                        </div>
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="descarteBolsa"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad bolsas descartadas..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.descarteBolsa}
+                                    />
+                                </div>
 
-                        { formikCierre.touched.cantDescarte && formikCierre.errors.cantDescarte ? (
-                            <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                <p className="font-bold">Error</p>
-                                <p>{formikCierre.errors.cantDescarte}</p>
-                            </div>
-                        ) : null  }
+                                { formikCierre.touched.descarteBolsa && formikCierre.errors.descarteBolsa ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.descarteBolsa}</p>
+                                    </div>
+                                ) : null  }
+
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarteEsponja">
+                                        Esponjas descartadas
+                                    </label>
+
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="descarteEsponja"
+                                        type="number"
+                                        placeholder="Ingrese la cantidad de esponjas descartadas..."
+                                        onChange={formikCierre.handleChange}
+                                        onBlur={formikCierre.handleBlur}
+                                        value={formikCierre.values.descarteEsponja}
+                                    />
+                                </div>
+
+                                { formikCierre.touched.descarteEsponja && formikCierre.errors.descarteEsponja ? (
+                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                        <p className="font-bold">Error</p>
+                                        <p>{formikCierre.errors.descarteEsponja}</p>
+                                    </div>
+                                ) : null  }
+
 
                         <div className="mb-2">
                             <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">

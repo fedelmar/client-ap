@@ -7,7 +7,6 @@ import EliminarRegistro from './EliminarRegistro';
 import columnas from './columns';
 
 const Table = ({registros, filtros, rol}) => {
-
     const [filtroLote, setFiltroLote] = useState("");
     const [filtroOperario, setFiltroOperario] = useState("");
     const [filtroProducto, setFiltroProducto] = useState("");
@@ -22,12 +21,14 @@ const Table = ({registros, filtros, rol}) => {
     );
 
     useEffect(() => {
+        toggleHideColumn('cantDescarte');
         if (rol && rol !== 'Admin') {
             toggleHideColumn('eliminar');
-            toggleHideColumn('editar');    
+            toggleHideColumn('editar');
         }
         if (registros.every(i => i.estado === true)) {
-            toggleHideColumn('cantDescarte');
+            toggleHideColumn('descarteBolsa');
+            toggleHideColumn('descarteEsponja');
         }             
     },[rol])
 
@@ -119,10 +120,13 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                column.id === 'cantDescarte' ?
-                                    registros.every(i => i.estado === true) ? 
+                                column.id === 'cantDescarte' ? null 
+                                
+                            : 
+                                column.id === 'descarteBolsa' || column.id === 'descarteEsponja' ?
+                                    registros.every(i => i.estado === true) ?
                                         null
-                                    :    
+                                    :
                                         <th 
                                             key={column.id}
                                             className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
@@ -135,14 +139,15 @@ const Table = ({registros, filtros, rol}) => {
                                                     ? ' ▽'
                                                     : ' △'
                                                 : ''}
-                                            </span>                        
+                                            </span>
                                         </th>
                                 :
                                     <th
                                         key={column.id}
                                         className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
                                         {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    >                              
+                                    >    
+                            
                                         {column.render('Header')}
                                         <span>
                                             {column.isSorted
@@ -161,6 +166,7 @@ const Table = ({registros, filtros, rol}) => {
                 >
                     {rows.map(row => {
                         prepareRow(row)
+                        
                         return (
                             <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
@@ -203,7 +209,22 @@ const Table = ({registros, filtros, rol}) => {
                                                             format(new Date(cell.row.original.modificado), ' HH:mm')
                                                         : ' finalizar'}
                                                     </th>
-                                            :
+                                            :   
+                                                cell.column.id === 'descarteBolsa' || cell.column.id === 'descarteEsponja' ?
+                                                    <th 
+                                                        className="border px-4 py-2"
+                                                        {...cell.getCellProps()}
+                                                    >
+                                                        {row.values.descarteBolsa != null  ?
+                                                            cell.render('Cell')
+                                                        :
+                                                            registros.every(i => i.estado === true) ?
+                                                                null
+                                                            : row.values.cantDescarte
+                                                        }
+                                                    </th>
+                                                :
+                                                            
                                                 cell.column.id === 'editar' ?
                                                    <th 
                                                         className="border px-5"
