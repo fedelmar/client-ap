@@ -58,7 +58,8 @@ const NUEVO_REGISTRO = gql`
 const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
             actualizarRegistroCE(id: $id, input: $input){
-            cantProducida            
+            producto
+            cantProducida           
         }
     }
 `;
@@ -175,21 +176,24 @@ const FinalizarRegistro = () => {
                 try {
                     const { data } = await nuevoRegistroPE({
                         variables: {
-                            id: id,
+                            id,
                             input: {
                                 operario: nombre,
                                 lote: registro.lote,
                                 producto: registro.producto,
                                 cantProducida: registro.cantProducida,
+                                lBolsa: registro.lBolsa,
+                                lEsponja: registro.lEsponja,
                                 descarteBolsa,
                                 descarteEsponja,
                                 observaciones
                             }
                         }                
                     });
+                    console.log(data)
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        data.nuevoRegistroPE,
+                        `Producidas: ${data.nuevoRegistroPE.cantProducida} esponjas ${data.nuevoRegistroPE.producto}`,
                         'success'
                     )
                     router.push('/registros/produccionesponjas');

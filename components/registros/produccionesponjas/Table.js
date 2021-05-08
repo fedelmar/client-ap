@@ -218,9 +218,9 @@ const Table = ({registros, filtros, rol}) => {
                                                         {row.values.descarteBolsa != null  ?
                                                             cell.render('Cell')
                                                         :
-                                                            row.values.cantDescarte ?
-                                                                cell.render(row.values.cantDescarte)
-                                                            : null
+                                                            registros.every(i => i.estado === true) ?
+                                                                null
+                                                            : row.values.cantDescarte
                                                         }
                                                     </th>
                                                 :
