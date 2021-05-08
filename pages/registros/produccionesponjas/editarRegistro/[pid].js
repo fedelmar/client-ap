@@ -19,6 +19,8 @@ const REGISTRO = gql `
             lEsponja
             cantProducida
             cantDescarte
+            descarteEsponja
+            descarteBolsa
             observaciones
         }
     }
@@ -29,6 +31,8 @@ const ACTUALIZAR_REGISTRO = gql`
             actualizarRegistroCE(id: $id, input: $input){
                 lote
                 cantDescarte
+                descarteBolsa
+                descarteEsponja
                 cantProducida         
         }
     }
@@ -46,28 +50,44 @@ const EditarRegistro = () => {
     });
     const [registro, setRegistro] = useState({
         cantProducida: '',
-        cantDescarte: ''
     });
     const schemaValidacion = Yup.object({
         cantProducida: Yup.number(),
         cantDescarte: Yup.string(),
+        descarteBolsa: Yup.number(),
+        descarteEsponja: Yup.number(),
         observaciones: Yup.string()                    
     });
     useEffect(() => {
         if (data) {
             const { obtenerRegistroCE } = data;
-            setRegistro({...registro,
-                id: id,
-                lote: obtenerRegistroCE.lote,
-                producto: obtenerRegistroCE.producto,
-                cantProducida: obtenerRegistroCE.cantProducida,
-                cantDescarte: obtenerRegistroCE.cantDescarte,
-                creado: obtenerRegistroCE.creado,
-                operario: obtenerRegistroCE.operario,
-                lBolsa: obtenerRegistroCE.lBolsa,
-                lEsponja: obtenerRegistroCE.lEsponja,
-                observaciones: obtenerRegistroCE.observaciones
-            })
+            obtenerRegistroCE.cantDescarte ?
+                setRegistro({...registro,
+                    id: id,
+                    lote: obtenerRegistroCE.lote,
+                    producto: obtenerRegistroCE.producto,
+                    cantProducida: obtenerRegistroCE.cantProducida,
+                    cantDescarte: obtenerRegistroCE.cantDescarte,
+                    creado: obtenerRegistroCE.creado,
+                    operario: obtenerRegistroCE.operario,
+                    lBolsa: obtenerRegistroCE.lBolsa,
+                    lEsponja: obtenerRegistroCE.lEsponja,
+                    observaciones: obtenerRegistroCE.observaciones
+                })
+            : 
+                setRegistro({...registro,
+                    id: id,
+                    lote: obtenerRegistroCE.lote,
+                    producto: obtenerRegistroCE.producto,
+                    cantProducida: obtenerRegistroCE.cantProducida,
+                    descarteEsponja: obtenerRegistroCE.descarteEsponja,
+                    descarteBolsa: obtenerRegistroCE.descarteBolsa,
+                    creado: obtenerRegistroCE.creado,
+                    operario: obtenerRegistroCE.operario,
+                    lBolsa: obtenerRegistroCE.lBolsa,
+                    lEsponja: obtenerRegistroCE.lEsponja,
+                    observaciones: obtenerRegistroCE.observaciones
+                })
         }
     }, [data])
 
@@ -78,12 +98,11 @@ const EditarRegistro = () => {
     );
 
     const finalizar = async valores => {
-        const {cantProducida, cantDescarte, lote} = valores;
+        const {cantProducida, cantDescarte, lote, descarteEsponja, descarteBolsa} = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + lote + "</br>" +
-                    "Cantidad producida: " + cantProducida + "</br>" +
-                    "Cantidad de descarte: " + cantDescarte + "</br>", 
+                    "Cantidad producida: " + cantProducida + "</br>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -93,16 +112,30 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = actualizarRegistroCE({
-                        variables: {
-                            id: id,
-                            input: {
-                                lote: lote,
-                                cantProducida: cantProducida,
-                                cantDescarte: cantDescarte
+                    if (registro.cantDescarte) {
+                        const { data } = actualizarRegistroCE({
+                            variables: {
+                                id: id,
+                                input: {
+                                    lote,
+                                    cantProducida,
+                                    cantDescarte
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        const { data } = actualizarRegistroCE({
+                            variables: {
+                                id: id,
+                                input: {
+                                    lote,
+                                    cantProducida,
+                                    descarteBolsa,
+                                    descarteEsponja
+                                }
+                            }
+                        });
+                    }
                     Swal.fire(
                         'Registro actualizado, esta acción no actualiza el Stock',
                         ' ',
@@ -202,28 +235,81 @@ const EditarRegistro = () => {
                                 </div>
                             ) : null  }
                             
-                            <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
-                                    Cantidad de descarte
-                                </label>
+                            {registro.cantDescarte ?
+                                <>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
+                                            Cantidad de descarte
+                                        </label>
 
-                                <input
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="cantDescarte"
-                                    type="number"
-                                    placeholder="Cantidad de descarte"
-                                    onChange={props.handleChange}
-                                    onBlur={props.handleBlur}
-                                    value={props.values.cantDescarte}
-                                />
-                            </div>
+                                        <input
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="cantDescarte"
+                                            type="number"
+                                            placeholder="Cantidad de descarte"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.cantDescarte}
+                                        />
+                                    </div>
 
-                            { props.touched.cantDescarte && props.errors.cantDescarte ? (
-                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                    <p className="font-bold">Error</p>
-                                    <p>{props.errors.cantDescarte}</p>
-                                </div>
-                            ) : null  }          
+                                    { props.touched.cantDescarte && props.errors.cantDescarte ? (
+                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                            <p className="font-bold">Error</p>
+                                            <p>{props.errors.cantDescarte}</p>
+                                        </div>
+                                    ) : null  }          
+                                </>
+                            : 
+                                <>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descarteBolsa">
+                                            Bolsas descartadas
+                                        </label>
+
+                                        <input
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="descarteBolsa"
+                                            type="number"
+                                            placeholder="Cantidad de descarte"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.descarteBolsa}
+                                        />
+                                    </div>
+
+                                    { props.touched.descarteBolsa && props.errors.descarteBolsa ? (
+                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                            <p className="font-bold">Error</p>
+                                            <p>{props.errors.descarteBolsa}</p>
+                                        </div>
+                                    ) : null  }
+
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descarteEsponja">
+                                            Esponjas descartadas
+                                        </label>
+
+                                        <input
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="descarteEsponja"
+                                            type="number"
+                                            placeholder="Cantidad de descarte"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.descarteEsponja}
+                                        />
+                                    </div>
+
+                                    { props.touched.descarteEsponja && props.errors.descarteEsponja ? (
+                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                            <p className="font-bold">Error</p>
+                                            <p>{props.errors.descarteEsponja}</p>
+                                        </div>
+                                    ) : null  }
+
+                                </>
+                            }
 
                             <input
                                 type="submit"

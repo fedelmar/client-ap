@@ -120,23 +120,43 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                column.id === 'cantDescarte' ? null : 
+                                column.id === 'cantDescarte' ? null 
                                 
-                                <th
-                                    key={column.id}
-                                    className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                >    
-                        
-                                    {column.render('Header')}
-                                    <span>
-                                        {column.isSorted
-                                        ? column.isSortedDesc
-                                            ? ' ▽'
-                                            : ' △'
-                                        : ''}
-                                    </span>                        
-                                </th>
+                            : 
+                                column.id === 'descarteBolsa' || column.id === 'descarteEsponja' ?
+                                    registros.every(i => i.estado === true) ?
+                                        null
+                                    :
+                                        <th 
+                                            key={column.id}
+                                            className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                            {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        >                              
+                                            {column.render('Header')}
+                                            <span>
+                                                {column.isSorted
+                                                ? column.isSortedDesc
+                                                    ? ' ▽'
+                                                    : ' △'
+                                                : ''}
+                                            </span>
+                                        </th>
+                                :
+                                    <th
+                                        key={column.id}
+                                        className={column.id === 'horario' ? "w-2/12 py-2" : "w-1/12 py-2"} 
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    >    
+                            
+                                        {column.render('Header')}
+                                        <span>
+                                            {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? ' ▽'
+                                                : ' △'
+                                            : ''}
+                                        </span>                        
+                                    </th>
                         ))}
                     </tr>
                 </thead>
@@ -195,10 +215,12 @@ const Table = ({registros, filtros, rol}) => {
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
                                                     >
-                                                        {row.values.descarteBolsa != null ?
+                                                        {row.values.descarteBolsa != null  ?
                                                             cell.render('Cell')
                                                         :
-                                                            cell.render(row.values.cantDescarte)
+                                                            row.values.cantDescarte ?
+                                                                cell.render(row.values.cantDescarte)
+                                                            : null
                                                         }
                                                     </th>
                                                 :
