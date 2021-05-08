@@ -77,24 +77,6 @@ const ManejoDeStock = ({registro, cantidades}) => {
     const actualizarStock = async valores => {
         cantidades(valores);
         try {
-            const { data: dataBolsa } = await actualizarInsumoStock({
-                variables: {
-                    id: registro.lBolsaID,
-                    input: {
-                        lote: registro.lbolsa,
-                        cantidad: registro.bolsaDisp - valores.esponjas
-                    }
-                }
-            })
-            const { data: dataEsponja } = await actualizarInsumoStock({
-                variables: {
-                    id: registro.lEsponjaID,
-                    input: {
-                        lote: registro.lEsponja,
-                        cantidad: registro.esponjaDisp - valores.esponjas
-                    }
-                }
-            })
             const { data: dataLote } = await nuevoProductoStock({
                 variables: {
                     input: {

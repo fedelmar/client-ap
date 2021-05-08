@@ -20,6 +20,8 @@ const LISTA_REGISTROS = gql `
             lEsponja
             cantProducida
             cantDescarte
+            descarteBolsa
+            descarteEsponja
             observaciones
             estado
         }
@@ -42,7 +44,6 @@ const ProduccionEsponjas = () => {
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-
     const handleOpenClosePDF = () => {
       setPdfOpen(!pdfOpen);
     }

@@ -35,7 +35,8 @@ const ExportarRegistro = ({registros}) => {
                 "Bolsa", 
                 "Esponja",
                 "Produccion",
-                "Descarte",
+                "D. Bolsa",
+                "D. Esponja",
                 "Observaciones"]
             ],
             body: registrosExportados.map (i => [
@@ -48,7 +49,8 @@ const ExportarRegistro = ({registros}) => {
                 i.lBolsa,
                 i.lEsponja,
                 i.cantProducida,
-                i.cantDescarte,
+                i.descarteBolsa,
+                i.descarteEsponja,
                 i.observaciones
             ]),
             didDrawPage: function (data) {

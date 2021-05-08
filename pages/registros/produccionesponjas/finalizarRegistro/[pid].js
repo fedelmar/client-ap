@@ -36,8 +36,8 @@ const LISTA_STOCK_CATEGORIA = gql `
 `;
 
 const NUEVO_REGISTRO = gql`
-    mutation nuevoRegistroCE($id: ID, $input: CPEInput){
-        nuevoRegistroCE(id: $id, input: $input){
+    mutation nuevoRegistroPE($id: ID, $input: CPEInput){
+        nuevoRegistroPE(id: $id, input: $input){
             id
             creado
             modificado
@@ -70,7 +70,7 @@ const FinalizarRegistro = () => {
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;
     const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
-    const [ nuevoRegistroCE ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroPE ] = useMutation(NUEVO_REGISTRO);
     const { data: dataEsponjas, loading: loadingEsponjas } = useQuery(LISTA_STOCK_CATEGORIA, {
         variables: {
             input: "Esponjas"
@@ -166,7 +166,7 @@ const FinalizarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroCE({
+                    const { data } = await nuevoRegistroPE({
                         variables: {
                             id: id,
                             input: {
@@ -181,7 +181,7 @@ const FinalizarRegistro = () => {
                     });
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        data.nuevoRegistroCE,
+                        data.nuevoRegistroPE,
                         'success'
                     )
                     router.push('/registros/produccionesponjas');
