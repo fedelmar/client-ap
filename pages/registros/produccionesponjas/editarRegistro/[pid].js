@@ -137,7 +137,7 @@ const EditarRegistro = () => {
                         });
                     }
                     Swal.fire(
-                        'Registro actualizado, esta acción no actualiza el Stock',
+                        'Registro y Stock actualizados',
                         ' ',
                         'success'
                     )
