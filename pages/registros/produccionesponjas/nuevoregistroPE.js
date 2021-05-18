@@ -45,8 +45,8 @@ const PRODUCTOS = gql`
 `;
 
 const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
-            actualizarRegistroCE(id: $id, input: $input){
+    mutation actualizarRegistroPE($id: ID!, $input: CPEInput){
+            actualizarRegistroPE(id: $id, input: $input){
             cantProducida            
         }
     }
@@ -67,7 +67,7 @@ const IniciarProduccion = () => {
         }
     });
     const [ nuevoRegistroPE ] = useMutation(NUEVO_REGISTRO);
-    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroPE ] = useMutation(ACTUALIZAR_REGISTRO);
     const [ eliminarRegistroCE ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
@@ -271,7 +271,7 @@ const IniciarProduccion = () => {
             bolsaDisp: registro.bolsaDisp - esponjas
         });
         try {
-            const { data } = await actualizarRegistroCE({
+            const { data } = await actualizarRegistroPE({
                 variables: {
                     id: sesionActiva.id,
                     input: {
