@@ -27,8 +27,8 @@ const REGISTRO = gql `
 `;
 
 const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroCE($id: ID!, $input: CPEInput){
-            actualizarRegistroCE(id: $id, input: $input){
+    mutation actualizarRegistroStockPE($id: ID!, $input: CPEInput){
+            actualizarRegistroStockPE(id: $id, input: $input){
                 lote
                 cantDescarte
                 descarteBolsa
@@ -42,7 +42,7 @@ const EditarRegistro = () => {
 
     const router = useRouter();
     const { query: { id } } = router;
-    const [ actualizarRegistroCE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroStockPE ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
             id
@@ -113,7 +113,7 @@ const EditarRegistro = () => {
             if (result.value) {
                 try {
                     if (registro.cantDescarte) {
-                        const { data } = actualizarRegistroCE({
+                        const { data } = actualizarRegistroStockPE({
                             variables: {
                                 id: id,
                                 input: {
@@ -124,7 +124,7 @@ const EditarRegistro = () => {
                             }
                         });
                     } else {
-                        const { data } = actualizarRegistroCE({
+                        const { data } = actualizarRegistroStockPE({
                             variables: {
                                 id: id,
                                 input: {
