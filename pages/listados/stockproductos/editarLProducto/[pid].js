@@ -83,17 +83,16 @@ const EditarLoteProducto = () => {
                         estado,
                         modificado: fecha,
                         responsable: nombre,
+                        producto: idProducto,
                     }
                 }
             })
-
             // Mostrar Alerta
             Swal.fire(
                 'Actualizado',
                 'El lote se actualizó correctamente',
                 'success'
             )
-
             // Redireccionar
             router.push('/listados/stockproductos');
         } catch (error) {
