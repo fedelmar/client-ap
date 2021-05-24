@@ -2,55 +2,17 @@ import React, {useState, useContext, useEffect} from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
-import {gql, useQuery, useMutation} from '@apollo/client';
+import { useQuery, useMutation} from '@apollo/client';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
+
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
-
-const LOTES_PLACAS = gql `
-    query obtenerStockPlacas{
-        obtenerStockPlacas{
-            lote
-            loteID
-            estado
-            caja
-            producto
-            cantCaja
-            cantidad
-        }
-    }
-`;
-
-const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGP($id: ID, $input: CGPInput){
-        nuevoRegistroGP(id: $id, input: $input){
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            loteID
-            guardado
-            descarte
-            pallet
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
-
-const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroGP($id: ID!){
-        eliminarRegistroGP(id: $id)
-    }
-`;
+import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/guardadoDePlacas';
+import { LOTES_PLACAS } from '../../../servicios/stockProductos';
 
 const NuevoRegistroGP = () => {
-
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
