@@ -4,44 +4,16 @@ import { useRouter } from 'next/router';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
+import {  useQuery, useMutation } from '@apollo/client';
+
 import Layout from '../../../../components/Layout';
-import { gql, useQuery, useMutation } from '@apollo/client';
-
-const REGISTRO = gql `
-    query obtenerRegistroGP($id: ID!){
-        obtenerRegistroGP(id: $id){
-            creado
-            modificado
-            operario
-            lote
-            producto
-            loteID
-            guardado
-            descarte
-            pallet
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql `
-    mutation actualizarRegistroGP($id: ID!, $input: CGPInput){
-        actualizarRegistroGP(id: $id, input: $input){
-            lote
-            guardado
-            descarte
-        }
-    }
-`;
+import { ACTUALIZAR_REGISTRO, OBTENER_REGISTRO } from '../../../../servicios/guardadoDePlacas';
 
 const EditarRegistro = () => {
-
     const router = useRouter();
     const { query: { id } } = router;
     const [ actualizarRegistroGP ] = useMutation(ACTUALIZAR_REGISTRO);
-    const { data, loading } = useQuery(REGISTRO, {
+    const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id
         }
@@ -108,15 +80,15 @@ const EditarRegistro = () => {
                         variables: {
                             id: id,
                             input: {
-                                lote: lote,
-                                guardado: guardado,
-                                pallet: pallet,
-                                descarte: descarte
+                                lote,
+                                guardado,
+                                pallet,
+                                descarte
                             }
                         }
                     });
                     Swal.fire(
-                        'Registro actualizado, esta acción no actualiza el Stock',
+                        'Se actualizo el registro y el stock de producto',
                         ' ',
                         'success'
                     )

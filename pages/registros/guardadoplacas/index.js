@@ -1,30 +1,11 @@
 import React, { useContext, useState } from 'react'
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
-import {gql, useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import Table from '../../../components/registros/guardadoplacas/Table';
 import ExportarRegistro from '../../../components/registros/guardadoplacas/ExportarRegistro';
-
-const LISTA_REGISTROS = gql `
-    query obtnerRegistrosGP{
-        obtenerRegistrosGP{
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            loteID
-            guardado
-            descarte
-            pallet
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
+import  { LISTA_REGISTROS } from '../../../servicios/guardadoDePlacas';
 
 const GuardadoPlacas = () => {
 

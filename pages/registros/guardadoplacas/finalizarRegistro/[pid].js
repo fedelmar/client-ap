@@ -7,54 +7,10 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 import UsuarioContext from '../../../../context/usuarios/UsuarioContext';
-
-const REGISTRO = gql `
-    query obtenerRegistroGP($id: ID!){
-        obtenerRegistroGP(id: $id){
-            creado
-            operario
-            lote
-            loteID
-        }
-    }
-`;
-
-const LOTES_PLACAS = gql `
-    query obtenerStockPlacas{
-        obtenerStockPlacas{
-            lote
-            loteID
-            estado
-            caja
-            producto
-            cantCaja
-            cantidad
-        }
-    }
-`;
-
-const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroGP($id: ID, $input: CGPInput){
-        nuevoRegistroGP(id: $id, input: $input){
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            loteID
-            guardado
-            descarte
-            pallet
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
+import { NUEVO_REGISTRO, OBTENER_REGISTRO } from '../../../../servicios/guardadoDePlacas';
+import { LOTES_PLACAS } from '../../../../servicios/stockProductos';
 
 const FinalizarRegistro = () => {
-
     const router = useRouter();
     const { query: { id } } = router;
     const usuarioContext = useContext(UsuarioContext);
@@ -63,7 +19,7 @@ const FinalizarRegistro = () => {
         operario: nombre,
         loteID: ''
     });
-    const { data, loading } = useQuery(REGISTRO, {
+    const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id
         }
