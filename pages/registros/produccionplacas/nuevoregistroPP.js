@@ -1,56 +1,17 @@
 import React, {useState, useContext, useEffect} from 'react';
 import Select from 'react-select';
 import { useRouter } from 'next/router';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, from } from '@apollo/client';
 import { format } from 'date-fns';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
+
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import SelectInsumo from '../../../components/registros/SelectInsumos';
-
-const PRODUCTOS = gql`
-    query obtenerProductosPorCategoria($input: String!) {
-        obtenerProductosPorCategoria(input: $input){
-            id
-            nombre
-            categoria
-            caja
-            cantCaja
-            insumos
-        }
-    }
-`;
-
-const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroPP($id: ID, $input: CPPInput){
-        nuevoRegistroPP(id: $id, input: $input){
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            lTapon
-            lPcm
-            lPcmID
-            tipoPCM
-            lPlaca
-            cantProducida
-            cantDescarte
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
-
-const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroPP($id: ID!){
-        eliminarRegistroPP(id: $id)
-    }
-`;
+import { ELIMINAR_REGISTRO, NUEVO_REGISTRO } from '../../../servicios/produccionDePlacas';
+import { PRODUCTOS } from '../../../servicios/productos';
 
 const NuevoRegistro = () => {
 

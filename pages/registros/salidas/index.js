@@ -1,28 +1,12 @@
 import React, { useContext, useState } from 'react';
-import Layout from '../../../components/Layout';
 import Link from 'next/link';
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import {gql, useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
+import Layout from '../../../components/Layout';
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import ExportarRegistro from '../../../components/registros/salidas/ExportarRegistroS';
 import Table from '../../../components/registros/salidas/Table';
-
-
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosSalidas{
-        obtenerRegistrosSalidas{
-            id
-            fecha
-            cliente
-            remito
-            lotes {
-                producto
-                lote
-                cantidad
-            }
-        }
-    }
-`;
+import { LISTA_REGISTROS } from '../../../servicios/salidas';
 
 const Salidas = () => {
 
