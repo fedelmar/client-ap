@@ -1,32 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Link from 'next/link';
+
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Table from '../../../components/registros/produccionplacas/Table';
 import ExportarRegistro from '../../../components/registros/produccionplacas/ExportarRegistroPP';
-
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosPP{
-        obtenerRegistrosPP{
-            id
-            creado
-            modificado
-            producto
-            operario
-            lote
-            lTapon
-            lPcm
-            tipoPCM
-            lPlaca
-            cantDescarte
-            cantProducida
-            auxiliar
-            observaciones
-            estado
-        }
-    }
-`;
+import { LISTA_REGISTROS } from '../../../servicios/produccionDePlacas';
 
 const ProduccionPlacas = () => {
 

@@ -4,41 +4,12 @@ import { useRouter } from 'next/router';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
+import { useQuery, useMutation } from '@apollo/client';
+
 import Layout from '../../../../components/Layout';
-import { gql, useQuery, useMutation } from '@apollo/client';
-
-const REGISTRO = gql `
-    query obtenerRegistroPP($id: ID!){
-        obtenerRegistroPP(id: $id){
-            creado
-            modificado
-            producto
-            operario
-            lote
-            lTapon
-            lPcm
-            tipoPCM
-            lPlaca
-            cantDescarte
-            cantProducida
-            observaciones
-            estado
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroPP($id: ID!, $input: CPPInput){
-            actualizarRegistroPP(id: $id, input: $input){
-                lote
-                cantDescarte
-                cantProducida         
-        }
-    }
-`;
+import { ACTUALIZAR_REGISTRO, REGISTRO } from '../../../../servicios/produccionDePlacas';
 
 const EditarRegistro = () => {
-
     const router = useRouter();
     const { query: { id } } = router;
     const [ actualizarRegistroPP ] = useMutation(ACTUALIZAR_REGISTRO);
@@ -100,16 +71,18 @@ const EditarRegistro = () => {
                 try {
                     const { data } = actualizarRegistroPP({
                         variables: {
-                            id: id,
+                            id,
                             input: {
                                 lote,
                                 cantProducida,
-                                cantDescarte
+                                cantDescarte,
+                                lPlaca: registro.lPlaca,
+                                lTapon: registro.lTapon
                             }
                         }
                     });
                     Swal.fire(
-                        'Registro actualizado, esta acción no modifica el Stock',
+                        'Se actualizo el registro y el stock',
                         ' ',
                         'success'
                     )
@@ -151,7 +124,7 @@ const EditarRegistro = () => {
                         </div>
                         <div className="flex">
                             <p className="text-gray-700 text-mm font-bold mr-1">Lote de Tapón: </p>
-                            <p className="text-gray-700 font-light ">{registro.lPlaca}</p>
+                            <p className="text-gray-700 font-light ">{registro.lTapon}</p>
                         </div>      
                         <div className="flex pb-2">
                             <p className="text-gray-700 text-mm font-bold mr-1">Llenado con: </p>
