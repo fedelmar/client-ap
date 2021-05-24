@@ -18,4 +18,4 @@ const LISTA_REGISTROS = gql `
 
 export {
   LISTA_REGISTROS,
-}
+};
