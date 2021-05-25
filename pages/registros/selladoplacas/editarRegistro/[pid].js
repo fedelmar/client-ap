@@ -5,42 +5,16 @@ import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
 import Layout from '../../../../components/Layout';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import {  useQuery, useMutation } from '@apollo/client';
+import { OBTENER_REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/selladoDePlacas';
 
-const REGISTRO = gql `
-    query obtenerRegistroSP($id: ID!){
-        obtenerRegistroSP(id: $id){
-            lote
-            loteID
-            producto
-            operario
-            sellado
-            descarte
-            auxiliar
-            observaciones
-            creado
-            modificado
-            estado
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql `
-    mutation actualizarRegistroSP($id: ID!, $input: CSPInput){
-        actualizarRegistroSP(id: $id, input: $input){
-            lote
-            sellado
-            descarte
-        }
-    }
-`;
 
 const EditarRegistro = () => {
 
     const router = useRouter();
     const { query: { id } } = router;
     const [ actualizarRegistroSP ] = useMutation(ACTUALIZAR_REGISTRO);
-    const { data, loading } = useQuery(REGISTRO, {
+    const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id
         }
@@ -103,18 +77,18 @@ const EditarRegistro = () => {
                         variables: {
                             id: id,
                             input: {
-                                lote: lote,
-                                sellado: sellado,
-                                descarte: descarte
+                                lote,
+                                sellado,
+                                descarte
                             }
                         }
                     });
                     Swal.fire(
-                        'Registro actualizado, esta acción no actualiza el Stock',
+                        'Registro y stock actualizados',
                         ' ',
                         'success'
                     )
-                    router.push('/registros/selladoplacas');
+                    //router.push('/registros/selladoplacas');
                 } catch (error) {
                     console.log(error)
                 }

@@ -8,44 +8,8 @@ import {gql, useQuery, useMutation} from '@apollo/client';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
-
-const LOTES_PLACAS = gql `
-    query obtenerStockPlacasEnProceso{
-        obtenerStockPlacasEnProceso{
-            lote
-            loteID
-            estado
-            caja
-            producto
-            cantCaja
-            cantidad
-        }
-    }
-`;
-
-const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroSP($id: ID, $input: CSPInput){
-        nuevoRegistroSP(id: $id, input: $input){
-            id
-            creado
-            lote
-            producto
-            loteID
-            sellado
-            descarte
-            operario
-            auxiliar
-            observaciones
-            modificado
-        }
-    }
-`;
-
-const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroSP($id: ID!){
-        eliminarRegistroSP(id: $id)
-    }
-`;  
+import { LOTES_PLACAS_EN_PROCESO } from '../../../servicios/stockProductos';
+import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/selladoDePlacas';
 
 const NuevoRegistroSP = () => {
 
@@ -61,7 +25,7 @@ const NuevoRegistroSP = () => {
         operario: nombre,
         cantidad: ''
     });
-    const { data, loading } = useQuery(LOTES_PLACAS, {
+    const { data, loading } = useQuery(LOTES_PLACAS_EN_PROCESO, {
         pollInterval: 500,
     });
     const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO);
@@ -92,6 +56,7 @@ const NuevoRegistroSP = () => {
         }
     });
     useEffect(() => {
+      console.log(data)
         if (data) {
             data.obtenerStockPlacasEnProceso.map(i => 
                 i.loteID === registro.loteID ?
@@ -111,7 +76,7 @@ const NuevoRegistroSP = () => {
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
     );
-    const {obtenerStockPlacasEnProceso} = data;
+    const { obtenerStockPlacasEnProceso } = data;
 
     const seleccionarLPlaca = opcion => {
         const {lote, loteID, producto, caja, cantCaja, estado, cantidad} = opcion;

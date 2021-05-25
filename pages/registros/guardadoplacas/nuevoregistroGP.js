@@ -120,7 +120,7 @@ const NuevoRegistroGP = () => {
                     });
                     Swal.fire(
                         'Se guardo el registro y se creo un nuevo lote en stock de productos',
-                        data.nuevoRegistroGP.sellado + " placas de lote " + data.nuevoRegistroGP.lote + " guardadas por " + data.nuevoRegistroGP.operario,
+                        data.nuevoRegistroGP.guardado + " placas de lote " + data.nuevoRegistroGP.lote + " guardadas por " + data.nuevoRegistroGP.operario,
                         'success'
                     )
                     router.push('/registros/guardadoplacas');
