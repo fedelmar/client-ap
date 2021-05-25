@@ -1,29 +1,12 @@
 import React, { useContext, useState } from 'react'
+import { useQuery } from '@apollo/client';
+import Link from 'next/link';
+
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
-import {gql, useQuery} from '@apollo/client';
-import Link from 'next/link';
 import Table from '../../../components/registros/selladoplacas/Table';
 import ExportarRegistro from '../../../components/registros/selladoplacas/ExportarRegistro';
-
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosSP{
-        obtenerRegistrosSP{
-            id
-            lote
-            loteID
-            producto
-            operario
-            sellado
-            descarte
-            auxiliar
-            observaciones
-            creado
-            modificado
-            estado
-        }
-    }
-`;
+import { LISTA_REGISTROS } from '../../../servicios/selladoDePlacas';
 
 const GuardadoPlacas = () => {
 

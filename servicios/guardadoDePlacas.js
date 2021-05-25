@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-const LISTA_REGISTROS = gql `
+const LISTA_REGISTROS = gql`
     query obtnerRegistrosGP{
         obtenerRegistrosGP{
             id
@@ -20,7 +20,7 @@ const LISTA_REGISTROS = gql `
     }
 `;
 
-const NUEVO_REGISTRO = gql `
+const NUEVO_REGISTRO = gql`
     mutation nuevoRegistroGP($id: ID, $input: CGPInput){
         nuevoRegistroGP(id: $id, input: $input){
             id
@@ -40,13 +40,13 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
-const ELIMINAR_REGISTRO = gql `
+const ELIMINAR_REGISTRO = gql`
     mutation eliminarRegistroGP($id: ID!){
         eliminarRegistroGP(id: $id)
     }
 `;
 
-const OBTENER_REGISTRO = gql `
+const OBTENER_REGISTRO = gql`
     query obtenerRegistroGP($id: ID!){
         obtenerRegistroGP(id: $id){
           creado
@@ -65,7 +65,7 @@ const OBTENER_REGISTRO = gql `
     }
 `;
 
-const ACTUALIZAR_REGISTRO = gql `
+const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroGP($id: ID!, $input: CGPInput){
         actualizarRegistroGP(id: $id, input: $input){
             lote

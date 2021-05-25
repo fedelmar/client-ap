@@ -14,6 +14,21 @@ const LOTES_PLACAS = gql `
     }
 `;
 
+const LOTES_PLACAS_EN_PROCESO = gql `
+    query obtenerStockPlacasEnProceso{
+        obtenerStockPlacasEnProceso{
+            lote
+            loteID
+            estado
+            caja
+            producto
+            cantCaja
+            cantidad
+        }
+    }
+`;
+
 export {
   LOTES_PLACAS,
+  LOTES_PLACAS_EN_PROCESO,
 };
