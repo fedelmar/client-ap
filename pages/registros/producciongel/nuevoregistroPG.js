@@ -1,57 +1,17 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import Select from 'react-select';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import SelectInsumo from '../../../components/registros/SelectInsumos';
-
-const PRODUCTOS = gql`
-    query obtenerProductosPorCategoria($input: String!) {
-        obtenerProductosPorCategoria(input: $input){
-            id
-            nombre
-            categoria
-            caja
-            cantCaja
-            insumos
-        }
-    }
-`;
-
-const NUEVO_REGISTRO = gql `
-    mutation nuevoRegistroCPG($id: ID, $input: CPGInput){
-        nuevoRegistroCPG(id:$id, input: $input){
-            id
-            creado
-            modificado
-            operario
-            lote
-            cliente
-            loteBolsa
-            loteBolsaID
-            loteGel
-            dobleBolsa
-            manta
-            cantDescarte
-            cantProducida
-            observaciones
-            estado
-            puesto1
-            puesto2
-        }
-    }
-`;
-
-const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroCPG($id: ID!){
-        eliminarRegistroCPG(id: $id)
-    }
-`
+import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/produccionDeGel';
+import { PRODUCTOS } from '../../../servicios/productos';
 
 const NuevoRegistroPG = () => {
 
@@ -222,8 +182,7 @@ const NuevoRegistroPG = () => {
                     console.log(error)
                 }
             }
-          })
-   
+        })   
     }
 
     // Funcion para volver a iniciar en caso de algun Error

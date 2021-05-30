@@ -4,65 +4,17 @@ import * as Yup from 'yup';
 import { format } from 'date-fns';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
 import Layout from '../../../../components/Layout';
-
-const REGISTRO = gql `
-    query obtenerRegistroCPG($id: ID!){
-        obtenerRegistroCPG(id:$id){
-            id
-            creado
-            modificado
-            producto
-            operario
-            lote
-            cliente
-            loteBolsa
-            loteBolsaID
-            loteGel
-            dobleBolsa
-            manta
-            cantDescarte
-            cantProducida
-            puesto1
-            puesto2
-            observaciones
-            estado
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroCPG($id: ID!, $input: CPGInput){
-        actualizarRegistroCPG(id: $id, input: $input){
-            id
-            creado
-            modificado
-            operario
-            lote
-            cliente
-            loteBolsa
-            loteBolsaID
-            loteGel
-            dobleBolsa
-            manta
-            cantDescarte
-            cantProducida
-            puesto1
-            puesto2
-            observaciones
-            estado
-        }
-    }
-`;
+import { ACTUALIZAR_REGISTRO, OBTENER_REGISTRO } from '../../../../servicios/produccionDeGel';
 
 const EditarRegistro = () => {
 
     const router = useRouter();
     const { query: { id } } = router;
     const [ actualizarRegistroCPG ] = useMutation(ACTUALIZAR_REGISTRO);
-    const { data, loading } = useQuery(REGISTRO, {
+    const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id
         }

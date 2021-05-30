@@ -1,10 +1,7 @@
-/* eslint-disable react/prop-types */
 import React, {useState, useEffect} from 'react';
 
 const MostrarInsumos = ({arrInsumos, insumos}) => {
-
     const [isOpen, setIsOpen] = useState(false);
-
 
     useEffect(() => {
         const handleEsc = (event) => {
