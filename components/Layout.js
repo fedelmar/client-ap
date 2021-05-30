@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, {useState, useEffect, useContext} from 'react'
 import Head from 'next/head';
 import Footer from './Footer';

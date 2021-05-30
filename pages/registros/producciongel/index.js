@@ -1,41 +1,17 @@
 import React, {useContext, useState} from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Link from 'next/link';
+
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Table from '../../../components/registros/producciongel/Table';
 import ExportarRegistro from '../../../components/registros/producciongel/ExportarRegistro';
-
-const REGISTROS = gql`
-    query obtenerRegistrosCPG{
-        obtenerRegistrosCPG{
-            id
-            creado
-            modificado
-            operario
-            producto
-            lote
-            cliente
-            loteBolsa
-            loteBolsaID
-            loteGel
-            dobleBolsa
-            manta
-            cantDescarte
-            cantProducida
-            puesto1
-            puesto2
-            observaciones
-            estado
-        }
-    }
-`
+import { OBTENER_REGISTROS } from '../../../servicios/produccionDeGel';
 
 const index = () => {
-
     const usuarioContext = useContext(UsuarioContext);
     const { rol } = usuarioContext.usuario;
-    const { data, loading } = useQuery(REGISTROS, {
+    const { data, loading } = useQuery(OBTENER_REGISTROS, {
         pollInterval: 500,
     });
     const [ activos, setActivos ] = useState(false);
