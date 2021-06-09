@@ -5,6 +5,7 @@ import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
+import MiniSpinner from '../../MiniSpiner';
 
 const NUEVA_SALIDA = gql `
     mutation nuevoRegistroSalida($input: SalidaInput){ 
@@ -45,6 +46,7 @@ const FinalizarSalida = (datos) => {
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
     const [mensaje, guardarMensaje] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [ nuevoRegistroSalida ] = useMutation(NUEVA_SALIDA, {
         update(cache, {data: { nuevoRegistroSalida }}) {
             const { obtenerRegistrosSalidas } = cache.readQuery({ query: LISTA_REGISTROS });
@@ -88,26 +90,46 @@ const FinalizarSalida = (datos) => {
             })
         });
 
-        try {
-            const { data } = await nuevoRegistroSalida({
-                variables: {
-                    input: {
-                        operario: nombre,
-                        cliente: cliente,
-                        remito: remito,
-                        lotes: lotesAGuardar
+  
+        Swal.fire({
+            title: 'Verifique los datos antes de confirmar',
+            html:   "Remitp: " + remito + "</br>" + 
+                    "Cliente: " + cliente + "</br>",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            }).then( async (result) => {
+            if (result.value) {
+                try {
+                    setLoading(true);
+                    const { data } = await nuevoRegistroSalida({
+                        variables: {
+                            input: {
+                                operario: nombre,
+                                cliente: cliente,
+                                remito: remito,
+                                lotes: lotesAGuardar
+                            }
+                        }
+                    });
+                    if (data) {
+                        setLoading(false);
                     }
-                }                
-            });
-            Swal.fire(
-                'Se creo un nuevo registro y se actualizo stock de productos',
-                ' ',
-                'success'
-            )
-            router.push('/registros/salidas');
-        } catch (error) {
-            guardarMensaje(error.message.replace('GraphQL error: ', ''));
-        }
+                    Swal.fire(
+                        'Se creo un nuevo registro y se descontaron los lotes del stock de productos',
+                        ' ',
+                        'success'
+                    )
+                    router.push('/registros/salidas');
+                } catch (error) {
+                    setLoading(false);
+                    guardarMensaje(error.message.replace('GraphQL error: ', ''));
+                }
+            }
+        })
     }
 
     // Mostrar mensaje de base de datos si hubo un error
@@ -177,7 +199,13 @@ const FinalizarSalida = (datos) => {
                                     ))
                                 ) : null}
                                 <div>
-                                    <button className="bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900" type="submit">Finalizar Registro</button>
+                                    <button
+                                        className={(loading ? "bg-gray-400 w-full mt-5 p-2 text-white uppercase font-bold" : "bg-green-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-green-900")}
+                                        type="submit"
+                                        disabled={loading}
+                                    >
+                                       {!loading ? 'Finalizar Registro' : <MiniSpinner type={"spin"} color={"#4A90E2"}/>}
+                                    </button>
                                 </div>
                             </div>
                             )}
