@@ -1,45 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Select from 'react-select';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
+
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-
-const NUEVO_INGRESO = gql`
-    mutation nuevoRegistroIngreso($input: IngresoInput){
-        nuevoRegistroIngreso(input: $input){
-            id
-            creado
-            lote
-            cantidad
-            insumo
-            remito
-            proveedor
-        }
-    }
-`;
-
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosIngresos{
-        obtenerRegistrosIngresos{
-            id
-            insumo
-            cantidad
-            proveedor
-            remito
-            creado
-            lote
-        }
-    }
-`;
+import { LISTA_REGISTROS, NUEVO_INGRESO } from '../../../servicios/ingresos';
 
 const NuevoIngreso = () => {
-
     const pedidoContext = useContext(UsuarioContext);
     const { insumos } = pedidoContext;
     const router = useRouter();
+    const [ conLoteProv, setConLoteProv ] = useState(false);
     const [mensaje, guardarMensaje] = useState(null);
     const [insumo, setInsumo] = useState();
     const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO, {
@@ -60,19 +34,24 @@ const NuevoIngreso = () => {
             proveedor: '',
             remito: '',
             lote: '',
+            loteProv: '',
+            conLoteProv: false,
             insumo: '',
             cantidad: 0
         },
         validationSchema: Yup.object({
-            proveedor: '',
-            remito: '',
-            lote: Yup.string(),
+            proveedor: Yup.string().required('Ingrese un proveedor'),
+            remito: Yup.string().required('Ingrese el remito'),
+            lote: Yup.string().required('Ingrese el lote'),
+            loteProv: Yup.string(),
             insumo: Yup.string(),
             cantidad: Yup.number()                        
         }),
         onSubmit: async valores => {
-            const { lote, cantidad, proveedor, remito } = valores;
-
+            let { lote, cantidad, proveedor, remito, loteProv } = valores;
+            if (loteProv !== '') {
+                lote = lote + ' - ' + loteProv;
+            }
             try {
                 const { data } = await nuevoRegistroIngreso({
                     variables: {
@@ -137,6 +116,41 @@ const NuevoIngreso = () => {
                                 <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                     <p className="font-bold">Error</p>
                                     <p>{formik.errors.lote}</p>
+                                </div>
+                            ) : null  }
+
+                            <div className="mb-4">
+                                <div className="flex mb-3">
+                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="loteProv">
+                                        Lote de Proveedor
+                                    </label>
+
+                                    <input
+                                        className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                        id="conLoteProv"
+                                        type="checkbox"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.conLoteProv}
+                                    />
+                                </div>
+
+                                {formik.values.conLoteProv ?
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="loteProv"
+                                        type="text"
+                                        placeholder="Lote de proveedor"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.loteProv}
+                                    /> : null}
+                            </div>
+
+                            { formik.touched.loteProv && formik.errors.loteProv ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formik.errors.loteProv}</p>
                                 </div>
                             ) : null  }
 

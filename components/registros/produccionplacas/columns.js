@@ -24,7 +24,7 @@ const columnas = [
       accessor: 'llenado',
     },
     {
-      Header: 'Placa',
+      Header: 'Placa LI/LP',
       accessor: 'lPlaca',
     },
     {

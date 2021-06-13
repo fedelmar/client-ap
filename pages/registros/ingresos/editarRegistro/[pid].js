@@ -4,37 +4,10 @@ import * as Yup from 'yup';
 import { format } from 'date-fns';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
+import { REGISTRO , ACTUALIZAR_REGISTRO } from '../../../../servicios/ingresos';
 import Layout from '../../../../components/Layout';
-
-const REGISTRO = gql `
-    query obtenerRegistroIngreso($id: ID!){
-        obtenerRegistroIngreso(id:$id){
-            id
-            insumo
-            cantidad
-            proveedor
-            remito
-            creado
-            lote
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroIngreso($id: ID!, $input: IngresoInput){
-        actualizarRegistroIngreso(id: $id, input: $input){
-            id
-            insumo
-            cantidad
-            proveedor
-            remito
-            creado
-            lote
-        }
-    }
-`;
 
 const EditarRegistro = () => {
     const router = useRouter();
