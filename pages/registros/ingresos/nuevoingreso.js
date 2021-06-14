@@ -13,7 +13,6 @@ const NuevoIngreso = () => {
     const pedidoContext = useContext(UsuarioContext);
     const { insumos } = pedidoContext;
     const router = useRouter();
-    const [ conLoteProv, setConLoteProv ] = useState(false);
     const [mensaje, guardarMensaje] = useState(null);
     const [insumo, setInsumo] = useState();
     const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO, {
@@ -45,7 +44,7 @@ const NuevoIngreso = () => {
             lote: Yup.string().required('Ingrese el lote'),
             loteProv: Yup.string(),
             insumo: Yup.string(),
-            cantidad: Yup.number()                        
+            cantidad: Yup.number().required('Ingrese la cantidad'),                    
         }),
         onSubmit: async valores => {
             let { lote, cantidad, proveedor, remito, loteProv } = valores;
@@ -206,6 +205,13 @@ const NuevoIngreso = () => {
                                 />
                             </div>
 
+                            { formik.touched.remito && formik.errors.remito ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formik.errors.remito}</p>
+                                </div>
+                            ) : null  }
+
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="proveedor">
                                     Proveedor
@@ -220,7 +226,14 @@ const NuevoIngreso = () => {
                                     onBlur={formik.handleBlur}
                                     value={formik.values.proveedor}
                                 />
-                            </div>                               
+                            </div>           
+                            
+                            { formik.touched.proveedor && formik.errors.proveedor ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{formik.errors.proveedor}</p>
+                                </div>
+                            ) : null  }                    
 
                             <input
                                 type="submit"
