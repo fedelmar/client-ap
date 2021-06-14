@@ -23,9 +23,9 @@ const EditarRegistro = () => {
         cantDescarte: 0,
     });
     const schemaValidacion = Yup.object({
+        lote: Yup.string(),
         cantProducida: Yup.number(),
-        cantDescarte: Yup.number(),
-        observaciones: Yup.string()                    
+        cantDescarte: Yup.number()                 
     });
     useEffect(() => {
         if (data) {
@@ -160,6 +160,13 @@ const EditarRegistro = () => {
                                     value={props.values.lote}
                                 />
                             </div>
+
+                            { props.touched.lote && props.errors.lote ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{props.errors.lote}</p>
+                                </div>
+                            ) : null  }
                         
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantProducida">
