@@ -107,10 +107,10 @@ const FinalizarRegistro = () => {
         },
         validationSchema: Yup.object({
             descarteBolsa: Yup.number()
-                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
+                            .max(registro.bolsaDisp, `Debe ser menor a la cantidad disponible de bolsas`)
                             .required('Ingrese el descarte generado'),
             descarteEsponja: Yup.number()
-                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
+                            .max(registro.lEsponja, `Debe ser menor a la cantidad disponible de esponjas`)
                             .required('Ingrese el descarte generado'),
             observaciones: Yup.string()               
         }),
