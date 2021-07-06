@@ -169,7 +169,6 @@ const Table = ({registros, filtros, rol}) => {
                         return (
                             <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
-                                    console.log(row.values)
                                     return (
                                         <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' ? 
