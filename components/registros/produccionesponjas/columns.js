@@ -33,15 +33,11 @@ const columnas = [
     },
     {
       Header: 'Descarte',
-      accessor: 'cantDescarte',
+      accessor: 'descarte',
     },    
     {
       Header: 'D. Bolsa',
       accessor: 'descarteBolsa',
-    },
-    {
-      Header: 'D. Esponja',
-      accessor: 'descarteEsponja',
     },
     {
       Header: 'Observaciones',

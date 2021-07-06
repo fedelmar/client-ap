@@ -21,14 +21,13 @@ const Table = ({registros, filtros, rol}) => {
     );
 
     useEffect(() => {
-        toggleHideColumn('cantDescarte');
+        toggleHideColumn('descarteBolsa');
         if (rol && rol !== 'Admin') {
             toggleHideColumn('eliminar');
             toggleHideColumn('editar');
         }
         if (registros.every(i => i.estado === true)) {
-            toggleHideColumn('descarteBolsa');
-            toggleHideColumn('descarteEsponja');
+            toggleHideColumn('descarte');
         }             
     },[rol])
 
@@ -120,10 +119,10 @@ const Table = ({registros, filtros, rol}) => {
                                     </th>                                    
                         
                             :
-                                column.id === 'cantDescarte' ? null 
+                                column.id === 'descarteBolsa' ? null 
                                 
                             : 
-                                column.id === 'descarteBolsa' || column.id === 'descarteEsponja' ?
+                                column.id === 'descarte' ?
                                     registros.every(i => i.estado === true) ?
                                         null
                                     :
@@ -170,6 +169,7 @@ const Table = ({registros, filtros, rol}) => {
                         return (
                             <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
+                                    console.log(row.values)
                                     return (
                                         <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
                                             {cell.column.id === 'eliminar' ? 
@@ -210,17 +210,18 @@ const Table = ({registros, filtros, rol}) => {
                                                         : ' finalizar'}
                                                     </th>
                                             :   
-                                                cell.column.id === 'descarteBolsa' || cell.column.id === 'descarteEsponja' ?
+                                                cell.column.id === 'descarte' ? 
+                                                    
                                                     <th 
                                                         className="border px-4 py-2"
                                                         {...cell.getCellProps()}
                                                     >
-                                                        {row.values.descarteBolsa != null  ?
+                                                        {row.values.descarte != null  ?
                                                             cell.render('Cell')
                                                         :
                                                             registros.every(i => i.estado === true) ?
                                                                 null
-                                                            : row.values.cantDescarte
+                                                            : row.values.descarteBolsa
                                                         }
                                                     </th>
                                                 :
