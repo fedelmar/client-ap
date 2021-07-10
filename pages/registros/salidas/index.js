@@ -10,7 +10,9 @@ import { LISTA_REGISTROS } from '../../../servicios/salidas';
 
 const Salidas = () => {
 
-    const { data, loading } = useQuery(LISTA_REGISTROS);
+    const { data, loading } = useQuery(LISTA_REGISTROS, {
+        pollInterval: 500,
+    });
 
     const [ pdfOpen, setPdfOpen ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);

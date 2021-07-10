@@ -23,8 +23,7 @@ const NUEVO_REGISTRO = gql`
             lBolsa
             lEsponja
             cantProducida
-            descarteBolsa
-            descarteEsponja
+            descarte
             observaciones
             estado
         }
@@ -86,8 +85,7 @@ const IniciarProduccion = () => {
         lEsponjaID: '',
         esponjaDisp: 0,
         cantProducida: 0,
-        descarteBolsa: 0,
-        descarteEsponja: 0
+        descarte: 0,
     });
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
@@ -111,17 +109,13 @@ const IniciarProduccion = () => {
     // Formato del formulario de cierre de sesion
     const formikCierre = useFormik({
         initialValues: {
-            descarteBolsa: 0,
-            descarteEsponja: 0,
+            descarte: 0,
             observaciones: ''
         },
         validationSchema: Yup.object({
-            descarteBolsa: Yup.number()
-                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
-                            .required('Ingrese el descarte generado'),
-            descarteEsponja: Yup.number()
-                            .max(registro.cantProducida, `Debe ser menor a la cantidad producida`)
-                            .required('Ingrese el descarte generado'),                
+            descarte: Yup.number()
+                            .max(registro.bolsaDisp, `Debe ser menor a la cantidad disponible de bolsas`)
+                            .required('Ingrese el descarte generado'),       
             observaciones: Yup.string()               
         }),
         onSubmit: valores => {       
@@ -179,9 +173,9 @@ const IniciarProduccion = () => {
         // Finaliza la produccion, se guarda registro en la DB y se modifican los datos de productos e insumos
 
         //Volver a planillas de produccion y modificar base de datos
-        const {observaciones, descarteBolsa, descarteEsponja} = valores;
+        const { observaciones, descarte } = valores;
     
-        setRegistro({...registro, descarteBolsa, descarteEsponja, observaciones})
+        setRegistro({...registro, descarte, observaciones})
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -191,8 +185,7 @@ const IniciarProduccion = () => {
                     "Lote de Esponja: " + registro.lEsponja + "</br>" +
                     "Lote de Bolsa: " + registro.lBolsa + "</br>" +
                     "Cantidad producida: " + registro.cantProducida + "</br>" +
-                    "Bolsas descartadas: " + descarteBolsa + "</br>" +
-                    "Esponjas descartadas: " + descarteEsponja + "</br>" +
+                    "Descarte: " + descarte + "</br>" +
                     "Observaciones: " + observaciones + "</br>",
             icon: 'warning',
             showCancelButton: true,
@@ -213,8 +206,7 @@ const IniciarProduccion = () => {
                                 cantProducida: registro.cantProducida,
                                 lBolsa: registro.lBolsa,
                                 lEsponja: registro.lEsponja,
-                                descarteBolsa,
-                                descarteEsponja,
+                                descarte,
                                 observaciones
                             }
                         }                
@@ -441,50 +433,28 @@ const IniciarProduccion = () => {
                                 onSubmit={formikCierre.handleSubmit}
                             >
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarteBolsa">
-                                        Bolsas descartadas
+                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarte">
+                                        Descarte
                                     </label>
 
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="descarteBolsa"
+                                        id="descarte"
                                         type="number"
                                         placeholder="Ingrese la cantidad bolsas descartadas..."
                                         onChange={formikCierre.handleChange}
                                         onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.descarteBolsa}
+                                        value={formikCierre.values.descarte}
                                     />
                                 </div>
 
-                                { formikCierre.touched.descarteBolsa && formikCierre.errors.descarteBolsa ? (
+                                { formikCierre.touched.descarte && formikCierre.errors.descarte ? (
                                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
                                         <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.descarteBolsa}</p>
+                                        <p>{formikCierre.errors.descarte}</p>
                                     </div>
                                 ) : null  }
 
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 font-bold mb-2" htmlFor="descarteEsponja">
-                                        Esponjas descartadas
-                                    </label>
-
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="descarteEsponja"
-                                        type="number"
-                                        placeholder="Ingrese la cantidad de esponjas descartadas..."
-                                        onChange={formikCierre.handleChange}
-                                        onBlur={formikCierre.handleBlur}
-                                        value={formikCierre.values.descarteEsponja}
-                                    />
-                                </div>
-
-                                { formikCierre.touched.descarteEsponja && formikCierre.errors.descarteEsponja ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{formikCierre.errors.descarteEsponja}</p>
-                                    </div>
-                                ) : null  }
 
                                 <div className="mb-2">
                                     <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
