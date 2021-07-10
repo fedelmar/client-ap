@@ -19,7 +19,7 @@ const LISTA_REGISTROS = gql `
             lBolsa
             lEsponja
             cantProducida
-            cantDescarte
+            descarte
             descarteBolsa
             descarteEsponja
             observaciones
