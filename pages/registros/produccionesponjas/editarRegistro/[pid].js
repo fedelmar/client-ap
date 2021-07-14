@@ -18,9 +18,7 @@ const REGISTRO = gql `
             lBolsa
             lEsponja
             cantProducida
-            cantDescarte
-            descarteEsponja
-            descarteBolsa
+            descarte
             observaciones
         }
     }
@@ -30,9 +28,7 @@ const ACTUALIZAR_REGISTRO = gql`
     mutation actualizarRegistroStockPE($id: ID!, $input: CPEInput){
             actualizarRegistroStockPE(id: $id, input: $input){
                 lote
-                cantDescarte
-                descarteBolsa
-                descarteEsponja
+                descarte
                 cantProducida         
         }
     }
@@ -53,35 +49,18 @@ const EditarRegistro = () => {
     });
     const schemaValidacion = Yup.object({
         cantProducida: Yup.number(),
-        cantDescarte: Yup.string(),
-        descarteBolsa: Yup.number(),
-        descarteEsponja: Yup.number(),
+        descarte: Yup.string(),
         observaciones: Yup.string()                    
     });
     useEffect(() => {
         if (data) {
             const { obtenerRegistroCE } = data;
-            obtenerRegistroCE.cantDescarte ?
                 setRegistro({...registro,
                     id: id,
                     lote: obtenerRegistroCE.lote,
                     producto: obtenerRegistroCE.producto,
                     cantProducida: obtenerRegistroCE.cantProducida,
-                    cantDescarte: obtenerRegistroCE.cantDescarte,
-                    creado: obtenerRegistroCE.creado,
-                    operario: obtenerRegistroCE.operario,
-                    lBolsa: obtenerRegistroCE.lBolsa,
-                    lEsponja: obtenerRegistroCE.lEsponja,
-                    observaciones: obtenerRegistroCE.observaciones
-                })
-            : 
-                setRegistro({...registro,
-                    id: id,
-                    lote: obtenerRegistroCE.lote,
-                    producto: obtenerRegistroCE.producto,
-                    cantProducida: obtenerRegistroCE.cantProducida,
-                    descarteEsponja: obtenerRegistroCE.descarteEsponja,
-                    descarteBolsa: obtenerRegistroCE.descarteBolsa,
+                    descarte: obtenerRegistroCE.descarte,
                     creado: obtenerRegistroCE.creado,
                     operario: obtenerRegistroCE.operario,
                     lBolsa: obtenerRegistroCE.lBolsa,
@@ -98,7 +77,7 @@ const EditarRegistro = () => {
     );
 
     const finalizar = async valores => {
-        const {cantProducida, cantDescarte, lote, descarteEsponja, descarteBolsa} = valores;
+        const { cantProducida, descarte, lote } = valores;
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
             html:   "Lote: " + lote + "</br>" +
@@ -112,30 +91,16 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    if (registro.cantDescarte) {
-                        const { data } = actualizarRegistroStockPE({
-                            variables: {
-                                id: id,
-                                input: {
-                                    lote,
-                                    cantProducida,
-                                    cantDescarte
-                                }
+                    const { data } = actualizarRegistroStockPE({
+                        variables: {
+                            id: id,
+                            input: {
+                                lote,
+                                cantProducida,
+                                descarte
                             }
-                        });
-                    } else {
-                        const { data } = actualizarRegistroStockPE({
-                            variables: {
-                                id: id,
-                                input: {
-                                    lote,
-                                    cantProducida,
-                                    descarteBolsa,
-                                    descarteEsponja
-                                }
-                            }
-                        });
-                    }
+                        }
+                    });
                     Swal.fire(
                         'Registro y Stock actualizados',
                         ' ',
@@ -235,81 +200,29 @@ const EditarRegistro = () => {
                                 </div>
                             ) : null  }
                             
-                            {registro.cantDescarte ?
-                                <>
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
-                                            Cantidad de descarte
-                                        </label>
 
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="cantDescarte"
-                                            type="number"
-                                            placeholder="Cantidad de descarte"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.cantDescarte}
-                                        />
-                                    </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descarte">
+                                    Cantidad de descarte
+                                </label>
 
-                                    { props.touched.cantDescarte && props.errors.cantDescarte ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{props.errors.cantDescarte}</p>
-                                        </div>
-                                    ) : null  }          
-                                </>
-                            : 
-                                <>
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descarteBolsa">
-                                            Bolsas descartadas
-                                        </label>
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="descarte"
+                                    type="number"
+                                    placeholder="Cantidad de descarte"
+                                    onChange={props.handleChange}
+                                    onBlur={props.handleBlur}
+                                    value={props.values.descarte}
+                                />
+                            </div>
 
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="descarteBolsa"
-                                            type="number"
-                                            placeholder="Cantidad de descarte"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.descarteBolsa}
-                                        />
-                                    </div>
-
-                                    { props.touched.descarteBolsa && props.errors.descarteBolsa ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{props.errors.descarteBolsa}</p>
-                                        </div>
-                                    ) : null  }
-
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descarteEsponja">
-                                            Esponjas descartadas
-                                        </label>
-
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="descarteEsponja"
-                                            type="number"
-                                            placeholder="Cantidad de descarte"
-                                            onChange={props.handleChange}
-                                            onBlur={props.handleBlur}
-                                            value={props.values.descarteEsponja}
-                                        />
-                                    </div>
-
-                                    { props.touched.descarteEsponja && props.errors.descarteEsponja ? (
-                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                            <p className="font-bold">Error</p>
-                                            <p>{props.errors.descarteEsponja}</p>
-                                        </div>
-                                    ) : null  }
-
-                                </>
-                            }
+                            { props.touched.descarte && props.errors.descarte ? (
+                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                    <p className="font-bold">Error</p>
+                                    <p>{props.errors.descarte}</p>
+                                </div>
+                            ) : null  } 
 
                             <input
                                 type="submit"
