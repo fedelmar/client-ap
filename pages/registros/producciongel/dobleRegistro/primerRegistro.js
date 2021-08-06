@@ -7,18 +7,17 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import { useQuery, useMutation } from '@apollo/client';
 
-import Layout from '../../../components/Layout';
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import SelectInsumo from '../../../components/registros/SelectInsumos';
-import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/produccionDeGel';
-import { PRODUCTOS } from '../../../servicios/productos';
+import Layout from '../../../../components/Layout';
+import UsuarioContext from '../../../../context/usuarios/UsuarioContext';
+import SelectInsumo from '../../../../components/registros/SelectInsumos';
+import { NUEVO_DOBLE_REGISTRO, ELIMINAR_REGISTRO } from '../../../../servicios/produccionDeGel';
+import { PRODUCTOS } from '../../../../servicios/productos';
 
 const NuevoRegistroPG = () => {
-
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const { nombre: operario } = usuarioContext.usuario;
-    const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
     const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
     const { data, loading } = useQuery(PRODUCTOS, {
         variables: {
@@ -33,6 +32,7 @@ const NuevoRegistroPG = () => {
         loteBolsa: '',
         loteBolsaID: '',
         loteGel: '',
+        manta: false
     });
     // Definicion de formulario de inicio de registro
     const formikInicio = useFormik({
@@ -40,6 +40,7 @@ const NuevoRegistroPG = () => {
             lote: '',
             cliente: '',
             loteGel: '',
+            manta: false
         },
         validationSchema: Yup.object({
             lote: Yup.string().required('Ingrese el Lote'),
@@ -53,22 +54,14 @@ const NuevoRegistroPG = () => {
     // Definicion de formulario de finalizacion de registro
     const formikCierre = useFormik({
         initialValues: {
-            cantProducida: 0,
             cantDescarte: 0,
             puesto1: '',
             puesto2: '',
             observaciones: ''
         },
         validationSchema: Yup.object({
-            cantProducida: Yup.number()
-                                    .max(registro.bolsasDisponibles, `Debe ser menor o igual a ${registro.bolsasDisponibles}`)
-                                    .required('Ingrese la cantidad producida'),
             cantDescarte: Yup.number()
-                                    .required('Ingrese el descarte')
-                                    .test('disponibilidad', 'No hay disponibilidad',
-                                    function(cantDescarte) {
-                                        return cantDescarte <= registro.bolsasDisponibles - cantProducida.value
-                                    }),
+                                    .required('Ingrese el descarte'),
             puesto1: Yup.string().required('Ingrese los operarios en el Puesto 1'),
             puesto2: Yup.string().required('Ingrese los operarios en el Puesto 2'),
             observaciones: Yup.string(),
@@ -87,28 +80,31 @@ const NuevoRegistroPG = () => {
 
     // Iniciar el registro cargando los primeros datos en la BD
     const iniciarRegistro = async valores => {
-        const { lote, cliente, loteGel } = valores
+        const { lote, cliente, loteGel, manta } = valores
         try {
-            const { data } = await nuevoRegistroCPG({
+            const { data } = await nuevoDobleRegistroCPG({
                 variables: {
                     input: {
-                        lote: lote,
+                        lote,
                         cliente,
                         loteGel,
                         operario,
+                        manta,
                         producto: registro.producto,
                         productoID: registro.productoID,
                         loteBolsa: registro.loteBolsa,
-                        loteBolsaID: registro.loteBolsaID
+                        loteBolsaID: registro.loteBolsaID,
+                        dobleBolsa: true,
                     }
                 }
             })
-            setSesionActiva(data.nuevoRegistroCPG);
+            setSesionActiva(data.nuevoDobleRegistroCPG);
             setRegistro({...registro, 
                 lote: lote,
                 cliente, 
-                loteGel
-            })
+                loteGel,
+                dobleBolsa: true,
+                manta})
             setSession(true);
         } catch (error) {
             console.log(error)
@@ -117,7 +113,9 @@ const NuevoRegistroPG = () => {
 
     // Finalizar el registro actualizando los datos en la BD
     const finalizarRegistro = async valores => {
-        const { cantProducida, cantDescarte, puesto1, puesto2, observaciones } = valores;
+        const { cantDescarte, puesto1, puesto2, observaciones } = valores;
+        let msjManta;
+        registro.manta ? msjManta = "Si" : msjManta = "No";
 
         Swal.fire({
             title: 'Verifique los datos antes de confirmar',
@@ -127,7 +125,7 @@ const NuevoRegistroPG = () => {
                     "Cliente: " + registro.cliente + "</br>" +
                     "Lote de Bolsa: " + registro.loteBolsa + "</br>" +
                     "Lote de Gel: " + registro.loteGel + "</br>" +
-                    "Cantidad producida: " + cantProducida + "</br>" +
+                    "Manta: " + msjManta + "</br>" +
                     "Cantidad de descarte: " + cantDescarte + "</br>" +
                     "Puesto 1: " + puesto1 + "</br>" +
                     "Puesto 2: " + puesto2 + "</br>" +
@@ -141,12 +139,11 @@ const NuevoRegistroPG = () => {
         }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = await nuevoRegistroCPG({
+                    const { data } = await nuevoDobleRegistroCPG({
                         variables: {
                             id: sesionActiva.id,
                             input: {      
-                                operario,     
-                                cantProducida,
+                                operario,
                                 cantDescarte,
                                 puesto1,
                                 puesto2,
@@ -155,13 +152,13 @@ const NuevoRegistroPG = () => {
                                 producto: registro.producto,
                                 productoID: registro.productoID,
                                 loteBolsa: registro.loteBolsa,
-                                loteBolsaID: registro.loteBolsaID
+                                loteBolsaID: registro.loteBolsaID,
                             }   
                         }                
                     });
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        data.nuevoRegistroCPG.cantProducida - data.nuevoRegistroCPG.cantDescarte + ' bolsas de gel producidas',
+                        'Primer registro creado',
                         'success'
                     )
                     router.push('/registros/producciongel');
@@ -193,7 +190,7 @@ const NuevoRegistroPG = () => {
 
     return (
         <Layout>
-            <h1 className='text-2xl text-gray-800 font-light'>Nuevo Registro de Producción de Gel (Bolsa simple)</h1>
+            <h1 className='text-2xl text-gray-800 font-light'>Nuevo Registro de Producción de Gel (Doble bolsa)</h1>
 
             <div>
                 {!session ? (
@@ -265,7 +262,7 @@ const NuevoRegistroPG = () => {
                                 {registro.productoID ? 
                                     <>
                                         <p className="block text-gray-700 font-bold mb-2">Lote de Bolsa</p>
-                                        <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Polietileno"} />
+                                        <SelectInsumo productoID={registro.productoID } funcion={seleccionarInsumo} categoria={"Polietileno"} />
                                     </>
                                 : null}
 
@@ -291,6 +288,21 @@ const NuevoRegistroPG = () => {
                                         <p>{formikInicio.errors.loteGel}</p>
                                     </div>
                                 ) : null  }
+
+                                <div className="flex mb-3">
+                                    <label className="block text-gray-700 font-bold " htmlFor="manta">
+                                        Manta:
+                                    </label>
+
+                                    <input
+                                        className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                                        id="manta"
+                                        type="checkbox"
+                                        onChange={formikInicio.handleChange}
+                                        onBlur={formikInicio.handleBlur}
+                                        value={formikInicio.values.manta}
+                                    />
+                                </div>  
 
                                 <input
                                     type="submit"
@@ -328,6 +340,14 @@ const NuevoRegistroPG = () => {
                                 <p className="text-gray-700 font-light">{registro.cliente}</p>
                             </div>
                             <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Doble Bolsa: </p>
+                                <p>{registro.dobleBolsa ? '✔' : '✘'}</p>
+                            </div>
+                            <div className="flex">
+                                <p className="text-gray-700 text-mm font-bold mr-1">Manta: </p>
+                                <p>{registro.manta ? '✔' : '✘'}</p>
+                            </div>
+                            <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Lote de Gel: </p>
                                 <p className="text-gray-700 font-light">{registro.loteGel}</p>
                             </div>
@@ -345,30 +365,7 @@ const NuevoRegistroPG = () => {
                         <form
                             className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
                             onSubmit={formikCierre.handleSubmit}
-                        >
-                            <div className="mb-4">
-                                <label className="block text-gray-700 font-bold mb-2" htmlFor="cantProducida">
-                                    Cantidad Producida
-                                </label>
-
-                                <input
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="cantProducida"
-                                    type="number"
-                                    placeholder="Ingrese la cantidad de cantProducida..."
-                                    onChange={formikCierre.handleChange}
-                                    onBlur={formikCierre.handleBlur}
-                                    value={formikCierre.values.cantProducida}
-                                />
-                            </div>
-
-                            { formikCierre.touched.cantProducida && formikCierre.errors.cantProducida ? (
-                                <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                    <p className="font-bold">Error</p>
-                                    <p>{formikCierre.errors.cantProducida}</p>
-                                </div>
-                            ) : null  }
-                            
+                        >                            
                             <div className="mb-4">
                                 <label className="block text-gray-700 font-bold mb-2" htmlFor="cantDescarte">
                                     Descarte
