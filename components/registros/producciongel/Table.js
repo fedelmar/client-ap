@@ -167,6 +167,7 @@ const Table = ({registros, rol, filtros }) => {
                         return (
                             <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
+                                    if (cell.column.id === 'cantDescarte') console.log(cell);
                                     return(
                                         <Fragment key={cell.row.original.id + cell.column.Header}>
                                             {cell.column.id === 'eliminar' ?
@@ -216,6 +217,26 @@ const Table = ({registros, rol, filtros }) => {
                                                             Continuar
                                                         </button>  
                                                     </th> 
+                                            :
+                                            cell.column.id === 'cantDescarte' ?
+                                            <th 
+                                                className="border px-4 py-2"
+                                                {...cell.getCellProps()}
+                                            >
+                                                {`Simple: ${cell.row.original.cantDescarte}`}
+                                                {cell.row.original.cantDescarteBolsaCristal ?
+                                                 ` - Cristal: ${cell.row.original.cantDescarteBolsaCristal}`: null}
+                                            </th>
+                                        :
+                                            cell.column.id === 'loteBolsa' ?
+                                                <th 
+                                                    className="border px-4 py-2"
+                                                    {...cell.getCellProps()}
+                                                >
+                                                    {`Simple: ${cell.row.original.loteBolsa}`}
+                                                    {cell.row.original.loteBolsaCristal ?
+                                                     ` - Cristal: ${cell.row.original.loteBolsaCristal}`: null}
+                                                </th>
                                             :
                                             cell.column.id === 'editar' ?
                                                 <th 

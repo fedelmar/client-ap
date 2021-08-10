@@ -12,10 +12,12 @@ const OBTENER_REGISTROS = gql`
             cliente
             loteBolsa
             loteBolsaID
+            loteBolsaCristal
             loteGel
             dobleBolsa
             manta
             cantDescarte
+            cantDescarteBolsaCristal
             cantProducida
             puesto1
             puesto2
