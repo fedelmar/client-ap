@@ -60,7 +60,9 @@ const NUEVO_REGISTRO = gql `
 const FinalizarRegistro = () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const { nombre } = usuarioContext.usuario;

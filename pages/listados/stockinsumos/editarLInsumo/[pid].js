@@ -34,7 +34,9 @@ const ACTUALIZAR_LOTE = gql `
 const EditarLoteInsumo = () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
 
     const [idInsumo, setIdInsumo] = useState();
 

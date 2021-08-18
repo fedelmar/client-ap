@@ -11,7 +11,9 @@ import { ACTUALIZAR_REGISTRO, OBTENER_REGISTRO } from '../../../../servicios/gua
 
 const EditarRegistro = () => {
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const [ actualizarRegistroGP ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {

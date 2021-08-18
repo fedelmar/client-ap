@@ -12,7 +12,9 @@ import { OBTENER_REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/sel
 const EditarRegistro = () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const [ actualizarRegistroSP ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {

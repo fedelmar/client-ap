@@ -38,7 +38,9 @@ const ACTUALIZAR_PRODUCTO = gql`
 const EditarProducto = () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const [nuevosInsumos, setNuevosInsumos] = useState([]);
 
     const pedidoContext = useContext(UsuarioContext);

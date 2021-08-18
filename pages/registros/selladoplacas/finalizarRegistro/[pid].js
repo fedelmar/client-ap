@@ -12,7 +12,9 @@ import { NUEVO_REGISTRO, OBTENER_REGISTRO } from '../../../../servicios/selladoD
 
 const FinalizarRegistro = () => {
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;
     const [ registro, setRegistro ] = useState({

@@ -11,7 +11,9 @@ import { ACTUALIZAR_REGISTRO, REGISTRO } from '../../../../servicios/produccionD
 
 const EditarRegistro = () => {
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const [ actualizarRegistroPP ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
