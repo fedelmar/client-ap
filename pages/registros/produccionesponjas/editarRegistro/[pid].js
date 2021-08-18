@@ -38,10 +38,10 @@ const EditarRegistro = () => {
 
     const router = useRouter();
     console.log(router)
-    console.log('query: ', router.query);
     const { query: { id } } = router;
-    console.log('Obtiene el id');
-    console.log(id);
+    const { query } = router;
+    if (!query) return <p>Cargando...</p>
+    const { pid: id } = query;
     const [ actualizarRegistroStockPE ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
