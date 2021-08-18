@@ -220,6 +220,18 @@ const NuevoRegistro = () => {
         }
     }
 
+    const selectValidation = () => {
+        if (
+            registro.lPcm !== undefined && 
+            registro.producto !== undefined &&
+            registro.lTapon !== undefined &&
+            registro.lPlaca !== undefined)
+            return false;
+        else 
+            return true;
+    }
+    console.log(selectValidation())
+
     return (
         <Layout>
             <h1 className=' text-2xl text-gray-800 font-light '>Iniciar Producción</h1>
@@ -330,6 +342,7 @@ const NuevoRegistro = () => {
                                     : null}
 
                                     <input
+                                        disabled={selectValidation()}
                                         type="submit"
                                         className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
                                         value="Iniciar Producción"                                        

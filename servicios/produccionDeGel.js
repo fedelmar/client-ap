@@ -12,10 +12,12 @@ const OBTENER_REGISTROS = gql`
             cliente
             loteBolsa
             loteBolsaID
+            loteBolsaCristal
             loteGel
             dobleBolsa
             manta
             cantDescarte
+            cantDescarteBolsaCristal
             cantProducida
             puesto1
             puesto2
@@ -49,6 +51,32 @@ const NUEVO_REGISTRO = gql `
     }
 `;
 
+const NUEVO_DOBLE_REGISTRO = gql `
+    mutation nuevoDobleRegistroCPG($id: ID, $input: CPGInput){
+        nuevoDobleRegistroCPG(id: $id, input: $input){
+            id
+            creado
+            modificado
+            operario
+            lote
+            cliente
+            producto
+            loteBolsa
+            loteBolsaCristal
+            loteGel
+            dobleBolsa
+            manta
+            cantProducida
+            cantDescarte
+            cantDescarteBolsaCristal
+            puesto1
+            puesto2
+            observaciones
+            estado
+        }
+    }
+`;
+
 const ELIMINAR_REGISTRO = gql `
     mutation eliminarRegistroCPG($id: ID!){
         eliminarRegistroCPG(id: $id)
@@ -66,7 +94,8 @@ const OBTENER_REGISTRO = gql `
             lote
             cliente
             loteBolsa
-            loteBolsaID
+            loteBolsaCristal
+            cantDescarteBolsaCristal
             loteGel
             dobleBolsa
             manta
@@ -104,10 +133,22 @@ const ACTUALIZAR_REGISTRO = gql`
     }
 `;
 
+const GELES_EN_PROCESO = gql`
+    query obtenerStockGelesEnProceso {
+        obtenerStockGelesEnProceso {
+            producto
+            lote
+            productoId
+        }
+    }
+`;
+
 export {
   OBTENER_REGISTROS,
   NUEVO_REGISTRO,
   ELIMINAR_REGISTRO,
   OBTENER_REGISTRO,
   ACTUALIZAR_REGISTRO,
+  NUEVO_DOBLE_REGISTRO,
+  GELES_EN_PROCESO
 };
