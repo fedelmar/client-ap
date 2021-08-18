@@ -34,10 +34,10 @@ const ACTUALIZAR_REGISTRO = gql`
     }
 `;
 
-const EditarRegistro = () => {
+const EditarRegistro = async () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query: { id } } = await router;
     console.log('Obtiene el id');
     console.log(id);
     const [ actualizarRegistroStockPE ] = useMutation(ACTUALIZAR_REGISTRO);
