@@ -15,7 +15,7 @@ const index = () => {
                     type="button"
                     className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"
                     onClick={() => router.push('/registros/producciongel/dobleRegistro/primerRegistro')}
-                >Llenado de bolsas</button>
+                >Llenado</button>
                 <button
                     type="button"
                     className="bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900"

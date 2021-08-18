@@ -158,7 +158,7 @@ const NuevoRegistroPG = () => {
                     });
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
-                        'Primer registro creado',
+                        '¡Bien hecho!',
                         'success'
                     )
                     router.push('/registros/producciongel');
