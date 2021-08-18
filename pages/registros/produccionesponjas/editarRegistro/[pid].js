@@ -37,9 +37,8 @@ const ACTUALIZAR_REGISTRO = gql`
 const EditarRegistro = () => {
 
     const router = useRouter();
-    console.log(router)
     const { query } = router;
-    if (!query) return <p>Cargando...</p>
+    if (!query) return null;
     const { pid: id } = query;
     const [ actualizarRegistroStockPE ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {

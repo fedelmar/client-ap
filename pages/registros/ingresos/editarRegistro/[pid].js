@@ -11,7 +11,9 @@ import Layout from '../../../../components/Layout';
 
 const EditarRegistro = () => {
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const [ actualizarRegistroIngreso ] = useMutation(ACTUALIZAR_REGISTRO);
     const { data, loading } = useQuery(REGISTRO, {
         variables: {

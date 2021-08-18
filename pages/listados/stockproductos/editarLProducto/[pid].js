@@ -38,7 +38,9 @@ const ACTUALIZAR_LOTE = gql `
 const EditarLoteProducto = () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
   
     const [idProducto, setIdProducto] = useState();
 

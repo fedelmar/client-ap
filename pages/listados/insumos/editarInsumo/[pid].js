@@ -30,8 +30,10 @@ const ACTUALIZAR_INSUMO = gql`
 const EditarInsumo = () => {
 
     const router = useRouter();
-    const { query: { id } } = router;
-
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
+    
     const { data, loading } = useQuery(OBTENER_INSUMO, {
         variables: {
             id

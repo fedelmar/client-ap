@@ -13,7 +13,9 @@ import { OBTENER_STOCK_CATEGORIA } from '../../../../servicios/insumos';
 
 const FinalizarRegistro = () => {
     const router = useRouter();
-    const { query: { id } } = router;
+    const { query } = router;
+    if (!query) return null;
+    const { pid: id } = query;
     const usuarioContext = useContext(UsuarioContext);
     const { productos } = usuarioContext;
     const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
