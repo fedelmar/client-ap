@@ -38,7 +38,6 @@ const EditarRegistro = () => {
 
     const router = useRouter();
     console.log(router)
-    const { query: { id } } = router;
     const { query } = router;
     if (!query) return <p>Cargando...</p>
     const { pid: id } = query;
