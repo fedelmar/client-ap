@@ -230,8 +230,6 @@ const NuevoRegistro = () => {
         else 
             return true;
     }
-    console.log(registro.lPcm)
-    console.log(selectValidation())
 
     return (
         <Layout>
