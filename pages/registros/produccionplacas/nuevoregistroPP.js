@@ -39,7 +39,8 @@ const NuevoRegistro = () => {
             pcm: ''
         },
         validationSchema: Yup.object({
-            lote: Yup.string().required('Ingrese el Lote'),                  
+            lote: Yup.string().required('Ingrese el Lote'),
+            pcm: Yup.string().required('Ingrese el Lote de Pcm'),                         
         }),
         onSubmit: valores => {     
             handleInicio(valores);            
@@ -54,7 +55,7 @@ const NuevoRegistro = () => {
             cantDescarte: 0,
             observaciones: '',
             pcmFinalizado: false,
-            auxiliar: ''
+            auxiliar: '',
         },
         validationSchema: Yup.object({
             cantProducida: Yup.number()
@@ -222,7 +223,6 @@ const NuevoRegistro = () => {
 
     const selectValidation = () => {
         if (
-            registro.lPcm !== undefined && 
             registro.producto !== undefined &&
             registro.lTapon !== undefined &&
             registro.lPlaca !== undefined)
@@ -230,7 +230,6 @@ const NuevoRegistro = () => {
         else 
             return true;
     }
-    console.log(selectValidation())
 
     return (
         <Layout>
@@ -335,7 +334,14 @@ const NuevoRegistro = () => {
                                                         onBlur={formikInicio.handleBlur}
                                                         value={formikInicio.values.pcm}
                                                     />
+                                                    { formikInicio.touched.pcm && formikInicio.errors.pcm ? (
+                                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                                            <p className="font-bold">Error</p>
+                                                            <p>{formikInicio.errors.pcm}</p>
+                                                        </div>
+                                                    ) : null  }
                                                 </div>
+
                                                 )
                                             }
                                         </>
