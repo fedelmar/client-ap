@@ -186,27 +186,28 @@ const NuevoRegistro = () => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     };    
     const seleccionarInsumo = lote => {
-        switch (lote.categoria) {
+        const { categoria, lote , cantidad, id } = lote;
+        switch (categoria) {
             case 'Placas':
                 setRegistro({...registro, 
-                    lPlaca: lote.lote, 
-                    lPlacaID: lote.id, 
-                    placaDisp: lote.cantidad
+                    lPlaca: lote, 
+                    lPlacaID: id, 
+                    placaDisp: cantidad
                 });
                 break
             case 'Polietileno':
                 setRegistro({...registro, 
-                    lTapon: lote.lote, 
-                    lTaponID: lote.id, 
-                    taponDisp: lote.cantidad
+                    lTapon: lote, 
+                    lTaponID: id, 
+                    taponDisp: cantidad
                 });
                 break
             default:
                 setRegistro({...registro, 
-                    lPcm: lote.lote, 
-                    lPcmID: lote.id
+                    lPcm: lote, 
+                    lPcmID: id
                 });
-                formikInicio.values.pcm = lote.lote;
+                formikInicio.values.pcm = lote;
                 break
         }
     };
