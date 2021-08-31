@@ -185,26 +185,33 @@ const NuevoRegistro = () => {
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     };    
-    const seleccionarInsumo = lote => {
-        lote.categoria === 'Placas' ?
-            setRegistro({...registro, 
-                lPlaca: lote.lote, 
-                lPlacaID: lote.id, 
-                placaDisp: lote.cantidad
-            })
-        : lote.categoria === 'Polietileno' ?
-            setRegistro({...registro, 
-                lTapon: lote.lote, 
-                lTaponID: lote.id, 
-                taponDisp: lote.cantidad
-            })
-        :
-            setRegistro({...registro, 
-                lPcm: lote.lote, 
-                lPcmID: lote.id
-            })            
-    }
-
+    const seleccionarInsumo = values => {
+        const { categoria, lote , cantidad, id } = values;
+        switch (categoria) {
+            case 'Placas':
+                setRegistro({...registro, 
+                    lPlaca: lote, 
+                    lPlacaID: id, 
+                    placaDisp: cantidad
+                });
+                break
+            case 'Polietileno':
+                setRegistro({...registro, 
+                    lTapon: lote, 
+                    lTaponID: id, 
+                    taponDisp: cantidad
+                });
+                break
+            default:
+                setRegistro({...registro, 
+                    lPcm: lote, 
+                    lPcmID: id
+                });
+                formikInicio.values.pcm = lote;
+                break
+        }
+    };
+        
     const seleccionarPCM = value => {
         if (value === "PCM +4º" || value === "PCM +20º") {
             setRegistro({...registro,
