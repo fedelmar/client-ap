@@ -185,8 +185,8 @@ const NuevoRegistro = () => {
     const seleccionarProducto = producto => {
         setRegistro({...registro, producto: producto.nombre, productoID: producto.id})
     };    
-    const seleccionarInsumo = lote => {
-        const { categoria, lote , cantidad, id } = lote;
+    const seleccionarInsumo = values => {
+        const { categoria, lote , cantidad, id } = values;
         switch (categoria) {
             case 'Placas':
                 setRegistro({...registro, 
