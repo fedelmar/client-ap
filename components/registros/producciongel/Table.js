@@ -68,13 +68,13 @@ const Table = ({registros, rol, filtros }) => {
     };
 
     const retomarRegistro = registro => {
-        const { dobleBolsa, manta, loteBolsaCristal, id } = registro;
-        if (dobleBolsa && manta) {
+        const { dobleBolsa, loteBolsaCristal, id } = registro;
+        if (loteBolsaCristal !== null) {
             Router.push({
                 pathname: "/registros/producciongel/dobleRegistro/finalizar/[id]",
                 query: { id }
             })
-        } else if (loteBolsaCristal !== null) {
+        } else if (dobleBolsa) {
             Router.push({
                 pathname: "/registros/producciongel/dobleRegistro/finalizar/[id]",
                 query: { id }
