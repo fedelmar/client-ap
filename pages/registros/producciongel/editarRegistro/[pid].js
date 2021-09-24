@@ -21,10 +21,7 @@ const EditarRegistro = () => {
             id
         }
     });
-    const [registro, setRegistro] = useState({
-        cantProducida: 0,
-        cantDescarte: 0
-    });
+    const [registro, setRegistro] = useState({});
     const schemaValidacion = Yup.object({
         lote: Yup.string(),
         cantProducida: Yup.number(),
@@ -34,40 +31,8 @@ const EditarRegistro = () => {
 
     useEffect(() => {
         if (data) {
-            const { 
-                    lote,
-                    producto,
-                    cantProducida,
-                    cantDescarte,
-                    creado,
-                    operario,
-                    loteBolsa,
-                    loteGel,
-                    puesto1,
-                    puesto2,
-                    cliente,
-                    dobleBolsa,
-                    manta,
-                    observaciones,        
-                } = data.obtenerRegistroCPG;
-                
-            setRegistro({...registro,
-                id,
-                lote,
-                producto,
-                cantProducida,
-                cantDescarte,
-                creado,
-                operario,
-                loteBolsa,
-                loteGel,
-                puesto1,
-                puesto2,
-                cliente,
-                dobleBolsa,
-                manta,
-                observaciones,
-            })
+            const { obtenerRegistroCPG } = data;
+            setRegistro({...registro, obtenerRegistroCPG })
         }
     }, [data])
 
@@ -94,7 +59,7 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = actualizarRegistroCPG({
+                    const { data } = await actualizarRegistroCPG({
                         variables: {
                             id: id,
                             input: {
@@ -189,28 +154,31 @@ const EditarRegistro = () => {
                                     />
                                 </div>
                             
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantProducida">
-                                        Cantidad producida
-                                    </label>
+                                {registro.cantProducida ?
+                                <>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantProducida">
+                                            Cantidad producida
+                                        </label>
 
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="cantProducida"
-                                        type="number"
-                                        placeholder="Cantidad producida"
-                                        onChange={props.handleChange}
-                                        onBlur={props.handleBlur}
-                                        value={props.values.cantProducida}
-                                    />
-                                </div>
-
-                                { props.touched.cantProducida && props.errors.cantProducida ? (
-                                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
-                                        <p className="font-bold">Error</p>
-                                        <p>{props.errors.cantProducida}</p>
+                                        <input
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="cantProducida"
+                                            type="number"
+                                            placeholder="Cantidad producida"
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}
+                                            value={props.values.cantProducida}
+                                        />
                                     </div>
-                                ) : null  }
+
+                                    { props.touched.cantProducida && props.errors.cantProducida ? (
+                                        <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" >
+                                            <p className="font-bold">Error</p>
+                                            <p>{props.errors.cantProducida}</p>
+                                        </div>
+                                    ) : null  } 
+                                </> : null}
                                 
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cantDescarte">
