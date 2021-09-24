@@ -102,6 +102,7 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
   };
 
   return (
+    <div className="flex justify-center mt-5">
       <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
         <div className="mb-2 border-b-2 border-gray-600">
           <div className="flex justify-between pb-2">
@@ -282,6 +283,7 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
         </button>
       </form>
       </div>
+    </div>
   );
 };
 
