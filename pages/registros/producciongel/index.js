@@ -38,7 +38,7 @@ const index = () => {
     const handleOpenClosePDF = () => {
         setPdfOpen(!pdfOpen);
     };
-    console.log(registrosCerrados);
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light">Produccion de Gel</h1>

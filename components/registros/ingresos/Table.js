@@ -68,15 +68,16 @@ const Table = ({registros, filtros}) => {
                 <div className="flex justify-between">
                     <input
                         className="p-1 border rounded border-gray-800"
-                        value={filtroInsumo}
-                        onChange={handleFilterChangeInsumo}
-                        placeholder={"Buscar Insumo"}
-                    />
-                    <input
-                        className="p-1 border rounded border-gray-800"
                         value={filtroLote}
                         onChange={handleFilterChangeLote}
                         placeholder={"Buscar Lote"}
+                        autoFocus
+                    />
+                    <input
+                        className="p-1 border rounded border-gray-800"
+                        value={filtroInsumo}
+                        onChange={handleFilterChangeInsumo}
+                        placeholder={"Buscar Insumo"}
                     />
                     <input
                         className="p-1 border rounded border-gray-800"
