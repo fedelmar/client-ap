@@ -52,6 +52,7 @@ const Table = ({registros, filtros, rol}) => {
                         value={filtroCliente}
                         onChange={handleFilterChangeCliente}
                         placeholder={"Buscar Cliente"}
+                        autoFocus
                     />
                     <input
                         className="p-1 border rounded border-gray-800"

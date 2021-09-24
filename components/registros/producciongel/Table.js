@@ -67,11 +67,24 @@ const Table = ({registros, rol, filtros }) => {
         })
     };
 
-    const retomarRegistro = id => {
-        Router.push({
-            pathname: "/registros/producciongel/finalizarRegistro/[id]",
-            query: { id }
-        })
+    const retomarRegistro = registro => {
+        const { dobleBolsa, manta, loteBolsaCristal, id } = registro;
+        if (dobleBolsa && manta) {
+            Router.push({
+                pathname: "/registros/producciongel/dobleRegistro/finalizar/[id]",
+                query: { id }
+            })
+        } else if (loteBolsaCristal !== null) {
+            Router.push({
+                pathname: "/registros/producciongel/dobleRegistro/finalizar/[id]",
+                query: { id }
+            })
+        } else {
+            Router.push({
+                pathname: "/registros/producciongel/finalizarRegistro/[id]",
+                query: { id }
+            })
+        }
     };
 
     return (
@@ -83,6 +96,7 @@ const Table = ({registros, rol, filtros }) => {
                         value={filtroLote}
                         onChange={handleFilterChangeLote}
                         placeholder={"Buscar Lote"}
+                        autoFocus
                     />
                     <input
                         className="p-1 border rounded border-gray-800"
@@ -167,7 +181,6 @@ const Table = ({registros, rol, filtros }) => {
                         return (
                             <tr key={row.id} {...row.getRowProps()}>
                                 {row.cells.map(cell => {
-                                    if (cell.column.id === 'cantDescarte') console.log(cell);
                                     return(
                                         <Fragment key={cell.row.original.id + cell.column.Header}>
                                             {cell.column.id === 'eliminar' ?
@@ -212,7 +225,7 @@ const Table = ({registros, rol, filtros }) => {
                                                         <button
                                                                 type="button"
                                                                 className="flex justify-center items-center bg-green-600 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold"
-                                                                onClick={() => retomarRegistro(cell.row.original.id)}
+                                                                onClick={() => retomarRegistro(cell.row.original)}
                                                         >
                                                             Continuar
                                                         </button>  

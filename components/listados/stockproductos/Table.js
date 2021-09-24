@@ -57,6 +57,7 @@ const Table = ({registros, rol, filtros}) => {
                     value={filtroLote}
                     onChange={handleFilterChangeLote}
                     placeholder={"Buscar Lote"}
+                    autoFocus
                 />
             : null}
 
