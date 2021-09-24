@@ -1,4 +1,4 @@
-import React, { usEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
@@ -10,6 +10,7 @@ import { NUEVO_DOBLE_REGISTRO } from '../../../../servicios/produccionDeGel';
 const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
   const router = useRouter(); 
   const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
+  const [registro, setRegistro] = useState({});
 
   const cierre = useFormik({
     initialValues: {
@@ -31,11 +32,17 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
     }
   });
 
+  useEffect(() => {
+    if (sesionActiva) {
+        setRegistro({...sesionActiva, cantidad: bolsaCristal.cantidad});
+    }
+  }, [sesionActiva])
+
   const finalizarRegistro = valores => {
     const { cantProducida, cantDescarteBolsaCristal, puesto1, puesto2, observaciones } = valores;
-    const { lote, producto, cantDescarte, cliente, loteBolsa, loteBolsaCristal, loteGel, id, operario } = sesionActiva;
+    const { lote, producto, cantDescarte, cliente, loteBolsa, loteBolsaCristal, loteGel, id, operario } = registro;
     let msjManta;
-    sesionActiva.manta ? msjManta = "Si" : msjManta = "No";
+    registro.manta ? msjManta = "Si" : msjManta = "No";
 
     Swal.fire({
         title: 'Verifique los datos antes de confirmar',
@@ -92,8 +99,7 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
             }
         }
     })  
-  }
-  console.log(sesionActiva);
+  };
 
   return (
       <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
@@ -101,45 +107,45 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
           <div className="flex justify-between pb-2">
             <div className="flex">
               <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-              <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'dd/MM/yy')}</p>
+              <p className="text-gray-700 font-light">{registro.creado ? format(new Date(registro.creado), 'dd/MM/yy') : null}</p>
           </div>
             <div className="flex">
               <p className="text-gray-700 text-mm font-bold mr-1">Hora de inicio: </p>
-              <p className="text-gray-700 font-light">{format(new Date(sesionActiva.creado), 'HH:mm')}</p>
+              <p className="text-gray-700 font-light">{registro.creado ?  format(new Date(registro.creado), 'HH:mm') : null}</p>
             </div>
           </div>
           <div className="flex">
             <p className="text-gray-700 text-mm font-bold mr-1">Lote: </p>
-            <p className="text-gray-700 font-light">{sesionActiva.lote}</p>
+            <p className="text-gray-700 font-light">{registro.lote}</p>
           </div>
           <div className="flex">
             <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
-            <p className="text-gray-700 font-light">{sesionActiva.producto}</p>
+            <p className="text-gray-700 font-light">{registro.producto}</p>
           </div>
           <div className="flex">
             <p className="text-gray-700 text-mm font-bold mr-1">Cliente: </p>
-            <p className="text-gray-700 font-light">{sesionActiva.cliente}</p>
+            <p className="text-gray-700 font-light">{registro.cliente}</p>
           </div>
           <div className="flex">
             <p className="text-gray-700 text-mm font-bold mr-1">Manta: </p>
-            <p>{sesionActiva.manta ? '✔' : '✘'}</p>
+            <p>{registro.manta ? '✔' : '✘'}</p>
           </div>
           <div className="flex">
             <p className="text-gray-700 text-mm font-bold mr-1">Lote de Gel: </p>
-            <p className="text-gray-700 font-light">{sesionActiva.loteGel}</p>
+            <p className="text-gray-700 font-light">{registro.loteGel}</p>
           </div>
           <div className="flex">
             <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-            <p className="text-gray-700 font-light">{sesionActiva.loteBolsa}</p>
+            <p className="text-gray-700 font-light">{registro.loteBolsa}</p>
           </div>
         <div className="flex justify-between pb-2">
           <div className="flex">
               <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa Cristal: </p>
-              <p className="text-gray-700 font-light">{sesionActiva.loteBolsaCristal}</p>
+              <p className="text-gray-700 font-light">{registro.loteBolsaCristal}</p>
           </div>
           <div className="flex">
               <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-              <p className="text-gray-700 font-light">{bolsaCristal.cantidad}</p>
+              <p className="text-gray-700 font-light">{registro.cantidad}</p>
           </div>
         </div>
         </div> 

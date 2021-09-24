@@ -21,7 +21,6 @@ const FinalizarRegistro = () => {
         }
     });
     const [ registro, setRegistro ] = useState();
-    const [ sesionActiva, setSesionActiva ] = useState();
 
     useEffect(() => {
         if (data) {
@@ -51,12 +50,12 @@ const FinalizarRegistro = () => {
         <Layout>
             <h1 className='text-2xl text-gray-800 font-light'>Finalizar registro</h1>
             {registro ?
-                <div className="flex justify-center mt-5">
+                <>
                     {!bolsaCristal ?
                         <FormLlenado registro={registro} sesionActiva={registro} volver={() => router.push('/registros/producciongel')}/>
                     :
                         <FormCristal sesionActiva={registro} volver={() => router.push('/registros/producciongel')} bolsaCristal={bolsaCristal} />}
-                </div>
+                </>
             : null}
         </Layout>
     );
