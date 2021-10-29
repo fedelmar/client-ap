@@ -18,7 +18,8 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
         cantDescarteBolsaCristal: 0,
         puesto1: '',
         puesto2: '',
-        observaciones: ''
+        observaciones: '',
+        finalizado: false,
     },
     validationSchema: Yup.object({
         cantProducida: Yup.number().required('Ingrese la cantidad producida'),
@@ -39,7 +40,7 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
   }, [sesionActiva])
 
   const finalizarRegistro = valores => {
-    const { cantProducida, cantDescarteBolsaCristal, puesto1, puesto2, observaciones } = valores;
+    const { cantProducida, cantDescarteBolsaCristal, puesto1, puesto2, observaciones, finalizado } = valores;
     const { lote, producto, cantDescarte, cliente, loteBolsa, loteBolsaCristal, loteGel, id, operario } = registro;
     let msjManta;
     registro.manta ? msjManta = "Si" : msjManta = "No";
@@ -85,7 +86,8 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
                             loteBolsaCristal,
                             loteGel,
                             cantDescarte,
-                        }   
+                        },
+                        finalizado,   
                     }                
                 });
                 Swal.fire(
@@ -245,6 +247,22 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
                 <p>{cierre.errors.puesto2}</p>
             </div>
         ) : null  }
+
+        <div className="flex mb-3">
+            <label className="block text-gray-700 font-bold " htmlFor="finalizado">
+                Lote finalizado:
+            </label>
+
+            <input
+                className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
+                id="finalizado"
+                type="checkbox"
+                placeholder="Ingrese la cantidad de finalizado..."
+                onChange={cierre.handleChange}
+                onBlur={cierre.handleBlur}
+                value={cierre.values.finalizado}
+            />
+        </div>
 
         <div className="mb-2">
             <label className="block text-gray-700 font-bold mb-2" htmlFor="observaciones">
