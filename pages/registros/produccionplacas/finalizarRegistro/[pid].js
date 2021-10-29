@@ -326,7 +326,6 @@ const FinalizarRegistro = () => {
                                     className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
                                     id="pcmFinalizado"
                                     type="checkbox"
-                                    placeholder="Ingrese la cantidad de pcmFinalizado..."
                                     onChange={formikCierre.handleChange}
                                     onBlur={formikCierre.handleBlur}
                                     value={formikCierre.values.pcmFinalizado}

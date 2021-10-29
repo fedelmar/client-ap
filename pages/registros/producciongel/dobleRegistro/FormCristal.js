@@ -257,7 +257,6 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
                 className="mt-1 ml-2 form-checkbox h-5 w-5 text-gray-600"
                 id="finalizado"
                 type="checkbox"
-                placeholder="Ingrese la cantidad de finalizado..."
                 onChange={cierre.handleChange}
                 onBlur={cierre.handleBlur}
                 value={cierre.values.finalizado}
