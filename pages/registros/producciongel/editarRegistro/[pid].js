@@ -32,7 +32,7 @@ const EditarRegistro = () => {
     useEffect(() => {
         if (data) {
             const { obtenerRegistroCPG } = data;
-            setRegistro({...registro, obtenerRegistroCPG })
+            setRegistro({...registro, ...obtenerRegistroCPG })
         }
     }, [data])
 
