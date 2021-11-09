@@ -28,10 +28,7 @@ const NuevoRegistro = () => {
     const [pcmSelecionado, setPcmSeleccionado] = useState(false);
     const [session, setSession] = useState(false);
     const [sesionActiva, setSesionActiva] = useState();
-    const [registro, setRegistro] = useState({
-        placaDisp: 0,
-        taponDisp: 0
-    });
+    const [registro, setRegistro] = useState({});
     // Formato del formulario de inicio se sesion
     const formikInicio = useFormik({
         initialValues: {
