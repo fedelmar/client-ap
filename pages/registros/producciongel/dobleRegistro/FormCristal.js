@@ -11,6 +11,7 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
   const router = useRouter(); 
   const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
   const [registro, setRegistro] = useState({});
+  const [mensaje, guardarMensaje] = useState(null);
 
   const cierre = useFormik({
     initialValues: {
@@ -98,13 +99,24 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
                 router.push('/registros/producciongel');
             } catch (error) {
                 console.log(error)
+                guardarMensaje(error.message.replace('GraphQL error: ', ''));
             }
         }
     })  
   };
+  
+    // Mostrar mensaje de base de datos si hubo un error
+    const mostrarMensaje = () => {
+        return(
+            <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+                <p>{mensaje}</p>
+            </div>
+        )
+    };
 
   return (
     <div className="flex justify-center mt-5">
+      {mensaje && mostrarMensaje()}
       <div className="w-full bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-lg">
         <div className="mb-2 border-b-2 border-gray-600">
           <div className="flex justify-between pb-2">
