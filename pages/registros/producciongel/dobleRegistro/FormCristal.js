@@ -166,7 +166,7 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
           <div className="flex">
                 <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa Cristal: </p>
                 <button 
-                    className="text-gray-700 font-light"
+                    className="text-gray-700 font-light underline"
                     onClick={() => setToggleReg(!toggleReg)}
                 >{registro.loteBolsaCristal}</button>
           </div>

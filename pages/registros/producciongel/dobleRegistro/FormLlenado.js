@@ -170,7 +170,7 @@ const FormLlenado = ({registro, sesionActiva, volver}) => {
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
                                 <button 
-                                    className="text-gray-700 font-light"
+                                    className="text-gray-700 font-light underline"
                                     onClick={() => setToggleReg(!toggleReg)}
                                 >{registro.loteBolsa}</button>
                             </div>
@@ -180,7 +180,7 @@ const FormLlenado = ({registro, sesionActiva, volver}) => {
                             </div>
                         </div>
                         {toggleReg ? 
-                            <SelectInsumo productoID={registro.productoID } funcion={seleccionarInsumo} categoria={"Polietileno"} />
+                            <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Polietileno"} />
                         : null}
                 </div>
                 <form
