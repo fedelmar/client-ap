@@ -21,7 +21,7 @@ const ULTIMOS_LOTES = gql `
 const Index = () => {
   
   const {data, loading} = useQuery(ULTIMOS_LOTES, {
-    pollInterval: 500,
+    pollInterval: 5000,
   });
 
   if(loading) return (

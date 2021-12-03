@@ -40,7 +40,7 @@ const index = () => {
   };
 
   const iniciarProduccion = async () => {
-    const { producto, lote } = loteGel;
+    const { producto, lote, productoId } = loteGel;
     try {
       const { data } = await nuevoDobleRegistroCPG({
         variables: {
@@ -52,7 +52,7 @@ const index = () => {
           }
         }
       })
-      setSesionActiva({ ...data.nuevoDobleRegistroCPG });
+      setSesionActiva({ ...data.nuevoDobleRegistroCPG, productoId });
     } catch (error) {
       console.log(error)
     }

@@ -6,12 +6,15 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import { useMutation } from '@apollo/client';
 import { NUEVO_DOBLE_REGISTRO } from '../../../../servicios/produccionDeGel';
+import SelectInsumo from '../../../../components/registros/SelectInsumos';
+
 
 const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
   const router = useRouter(); 
   const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
   const [registro, setRegistro] = useState({});
   const [mensaje, guardarMensaje] = useState(null);
+  const [toggleReg, setToggleReg] = useState(false);
 
   const cierre = useFormik({
     initialValues: {
@@ -114,6 +117,12 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
         )
     };
 
+    const seleccionarInsumo = lote => {
+        registro.cantidad = lote.cantidad;
+        registro.loteBolsaCristal = lote.lote;        
+        setToggleReg(!toggleReg)
+    }
+
   return (
     <div className="flex justify-center mt-5">
       {mensaje && mostrarMensaje()}
@@ -155,14 +164,20 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
           </div>
         <div className="flex justify-between pb-2">
           <div className="flex">
-              <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa Cristal: </p>
-              <p className="text-gray-700 font-light">{registro.loteBolsaCristal}</p>
+                <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa Cristal: </p>
+                <button 
+                    className="text-gray-700 font-light underline"
+                    onClick={() => setToggleReg(!toggleReg)}
+                >{registro.loteBolsaCristal}</button>
           </div>
           <div className="flex">
               <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
               <p className="text-gray-700 font-light">{registro.cantidad}</p>
           </div>
         </div>
+            {toggleReg ? 
+                <SelectInsumo productoID={registro.productoId} funcion={seleccionarInsumo} categoria={"Polietileno"} />
+            : null}
         </div> 
         <form
           className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"

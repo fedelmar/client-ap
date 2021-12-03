@@ -20,6 +20,7 @@ const NuevoRegistroPG = () => {
     const { nombre: operario } = usuarioContext.usuario;
     const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
     const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
+    const [toggleReg, setToggleReg] = useState(false);
     const { data, loading } = useQuery(PRODUCTOS, {
         variables: {
             input: "Geles"
@@ -159,6 +160,7 @@ const NuevoRegistroPG = () => {
                             }   
                         }                
                     });
+                    console.log(data)
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',
                         data.nuevoRegistroCPG.cantProducida - data.nuevoRegistroCPG.cantDescarte + ' bolsas de gel producidas',
@@ -190,6 +192,10 @@ const NuevoRegistroPG = () => {
     const seleccionarInsumo = lote => {
         setRegistro({...registro, loteBolsa: lote.lote, loteBolsaID: lote.id, bolsasDisponibles: lote.cantidad })
     };
+    const selectAndToggleReg = lote => {
+        seleccionarInsumo(lote);
+        setToggleReg(!toggleReg)    
+    }
 
     return (
         <Layout>
@@ -332,15 +338,21 @@ const NuevoRegistroPG = () => {
                                 <p className="text-gray-700 font-light">{registro.loteGel}</p>
                             </div>
                             <div className="flex justify-between pb-2">
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-                                        <p className="text-gray-700 font-light">{registro.loteBolsa}</p>
-                                    </div>
-                                    <div className="flex">
-                                        <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
-                                        <p className="text-gray-700 font-light">{registro.bolsasDisponibles}</p>
-                                    </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
+                                    <button 
+                                        className="text-gray-700 font-light underline"
+                                        onClick={() => setToggleReg(!toggleReg)}
+                                    >{registro.loteBolsa}</button>
                                 </div>
+                                <div className="flex">
+                                    <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
+                                    <p className="text-gray-700 font-light">{registro.bolsasDisponibles}</p>
+                                </div>
+                            </div>
+                            {toggleReg ? 
+                                <SelectInsumo productoID={registro.productoID} funcion={selectAndToggleReg} categoria={"Polietileno"} />
+                            : null}
                         </div>
                         <form
                             className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
