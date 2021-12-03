@@ -8,11 +8,13 @@ import { useRouter } from 'next/router';
 import { NUEVO_DOBLE_REGISTRO } from '../../../../servicios/produccionDeGel';
 import { LOTE_INSUMO } from '../../../../servicios/stockInsumos';
 import { OBTENER_PRODUCTO_POR_NOMBRE } from '../../../../servicios/productos';
+import SelectInsumo from '../../../../components/registros/SelectInsumos';
 
 const FormLlenado = ({registro, sesionActiva, volver}) => {
     const router = useRouter();
     const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
     const [mensaje, guardarMensaje] = useState(null);
+    const [toggleReg, setToggleReg] = useState(false);
     const { data, loading } = useQuery(LOTE_INSUMO, {
         variables: {
             input: registro ? registro.loteBolsa : '',
@@ -118,6 +120,13 @@ const FormLlenado = ({registro, sesionActiva, volver}) => {
         )
     };
 
+    const seleccionarInsumo = lote => {
+        registro.loteBolsa = lote.lote;
+        registro.loteBolsaID = lote.id;
+        registro.bolsasDisponibles = lote.cantidad;
+        setToggleReg(!toggleReg)
+    }
+
     return (
         <div className="flex justify-center mt-5">
             {mensaje && mostrarMensaje()}
@@ -160,13 +169,19 @@ const FormLlenado = ({registro, sesionActiva, volver}) => {
                     <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Lote de Bolsa: </p>
-                                <p className="text-gray-700 font-light">{registro.loteBolsa}</p>
+                                <button 
+                                    className="text-gray-700 font-light"
+                                    onClick={() => setToggleReg(!toggleReg)}
+                                >{registro.loteBolsa}</button>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Disponibles: </p>
                                 <p className="text-gray-700 font-light">{registro.bolsasDisponibles ? registro.bolsasDisponibles : obtenerInsumoPorLote.cantidad }</p>
                             </div>
                         </div>
+                        {toggleReg ? 
+                            <SelectInsumo productoID={registro.productoID } funcion={seleccionarInsumo} categoria={"Polietileno"} />
+                        : null}
                 </div>
                 <form
                     className="bg-white shadow-md px-8 pt-2 pb-8 mb-2"
