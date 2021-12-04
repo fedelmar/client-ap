@@ -1,5 +1,31 @@
 import { gql } from '@apollo/client';
 
+const OBTENER_PRODUCTO = gql`
+    query obtenerProducto($id: ID!) {
+        obtenerProducto(id: $id) {
+            id
+            nombre
+            categoria
+            caja
+            cantCaja
+            insumos
+        }
+    }
+`; 
+
+const ACTUALIZAR_PRODUCTO = gql`
+    mutation actualizarProducto($id: ID!, $input: ProductoInput) {
+        actualizarProducto(id: $id, input: $input) {
+            id
+            nombre
+            categoria
+            caja
+            cantCaja
+            insumos
+        }
+}
+`;
+
 const OBTENER_PRODUCTO_POR_NOMBRE = gql`
     query obtenerProductoPorNombre($nombre: String!) {
         obtenerProductoPorNombre(nombre: $nombre){
@@ -27,6 +53,8 @@ const PRODUCTOS = gql`
 `;
 
 export {
-  PRODUCTOS,
-  OBTENER_PRODUCTO_POR_NOMBRE,
+    OBTENER_PRODUCTO,
+    ACTUALIZAR_PRODUCTO,
+    PRODUCTOS,
+    OBTENER_PRODUCTO_POR_NOMBRE,
 };
