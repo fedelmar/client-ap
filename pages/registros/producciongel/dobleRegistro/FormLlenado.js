@@ -180,7 +180,7 @@ const FormLlenado = ({registro, sesionActiva, volver}) => {
                             </div>
                         </div>
                         {toggleReg ? 
-                            <SelectInsumo productoID={registro.productoID} funcion={seleccionarInsumo} categoria={"Polietileno"} />
+                            <SelectInsumo productoID={registro.productoID ? registro.productoID : registro.productoId} funcion={seleccionarInsumo} categoria={"Polietileno"} />
                         : null}
                 </div>
                 <form

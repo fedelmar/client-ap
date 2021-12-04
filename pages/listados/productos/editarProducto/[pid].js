@@ -3,37 +3,12 @@ import React, {useState, useContext} from 'react';
 import { useRouter} from 'next/router'
 import Layout from '../../../../components/Layout';
 import { Formik } from 'formik'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import * as Yup from 'yup'
 import Swal from 'sweetalert2';
 import UsuarioContext from '../../../../context/usuarios/UsuarioContext';
 import Select from 'react-select';
-
-const OBTENER_PRODUCTO = gql`
-    query obtenerProducto($id: ID!) {
-        obtenerProducto(id: $id) {
-            id
-            nombre
-            categoria
-            caja
-            cantCaja
-            insumos
-        }
-    }
-`; 
-
-const ACTUALIZAR_PRODUCTO = gql`
-    mutation actualizarProducto($id: ID!, $input: ProductoInput) {
-        actualizarProducto(id: $id, input: $input) {
-            id
-            nombre
-            categoria
-            caja
-            cantCaja
-            insumos
-        }
-}
-`;
+import { OBTENER_PRODUCTO, ACTUALIZAR_PRODUCTO } from '../../../../servicios/productos';
 
 const EditarProducto = () => {
 
