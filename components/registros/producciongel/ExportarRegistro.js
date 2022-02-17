@@ -22,13 +22,14 @@ const ExportarRegistro = ({registros}) => {
         doc.autoTable({
             tableWidth: 'auto',
             margin: {top: 15, right: 5, bottom: 10, left: 5},
-            styles: { fontSize: 8 },
+            styles: { fontSize: 8, fontSize: 7 },
             head: [
                 ['Fecha',
                 'Lote',
                 "Inicio",
                 "Cierre",
                 "Operario",
+                "Producto",
                 "Cliente",
                 "Bolsa",
                 "Gel",
@@ -46,6 +47,7 @@ const ExportarRegistro = ({registros}) => {
                 format(new Date(i.creado), 'HH:mm'),
                 format(new Date(i.modificado), 'HH:mm'),
                 i.operario,
+                i.producto,
                 i.cliente,
                 i.loteBolsa,
                 i.loteGel,
