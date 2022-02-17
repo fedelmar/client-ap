@@ -24,7 +24,7 @@ const ExportarRegistro = ({registros}) => {
         doc.autoTable({
             tableWidth: 'auto',
             margin: {top: 15, right: 5, bottom: 10, left: 5},
-            styles: { fontSize: 8 },
+            styles: { fontSize: 7 },
             head: [
                 ['Fecha',
                 'Operario',
@@ -36,7 +36,8 @@ const ExportarRegistro = ({registros}) => {
                 "Tapón",
                 "PCM",
                 "Produccion",
-                "Descarte"]
+                "Descarte",
+                "Observaciones"]
             ],
             body: registrosExportados.map (i => [
                 format(new Date(i.creado), 'dd/MM/yy'),
@@ -49,7 +50,8 @@ const ExportarRegistro = ({registros}) => {
                 i.lTapon,
                 i.lPcm,
                 i.cantProducida,
-                i.cantDescarte
+                i.cantDescarte,
+                i.observaciones
             ]),
             didDrawPage: function (data) {
                 // Header
@@ -67,7 +69,7 @@ const ExportarRegistro = ({registros}) => {
             },
         })
            
-        doc.save('registro.pdf')    
+        doc.save('Produccion Placas.pdf')    
     }
 
     return (

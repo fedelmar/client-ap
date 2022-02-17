@@ -55,7 +55,7 @@ const ExportarRegistro = ({registros}) => {
             },
         })
            
-        doc.save('registro.pdf')    
+        doc.save('Ingresos.pdf')    
     }
     return (
         <div className="flex flex-row justify-center">

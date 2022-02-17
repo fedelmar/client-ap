@@ -67,7 +67,7 @@ const ExportarRegistro = ({registros}) => {
             },
         })
            
-        doc.save('registro.pdf')    
+        doc.save('Produccion Esponjas.pdf')    
     }
 
     return (

@@ -22,7 +22,7 @@ const ExportarRegistro = ({registros}) => {
         doc.autoTable({
             tableWidth: 'auto',
             margin: {top: 15, right: 5, bottom: 10, left: 5},
-            styles: { fontSize: 8, fontSize: 6 },
+            styles: { fontSize: 6 },
             head: [
                 ['Fecha',
                 'Lote',
@@ -75,7 +75,7 @@ const ExportarRegistro = ({registros}) => {
             },
         })
            
-        doc.save('registro.pdf')    
+        doc.save('Produccion Gel.pdf')    
     }
     return (
         <div className="flex flex-row justify-center">
