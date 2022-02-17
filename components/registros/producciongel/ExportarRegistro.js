@@ -22,7 +22,7 @@ const ExportarRegistro = ({registros}) => {
         doc.autoTable({
             tableWidth: 'auto',
             margin: {top: 15, right: 5, bottom: 10, left: 5},
-            styles: { fontSize: 8, fontSize: 7 },
+            styles: { fontSize: 8, fontSize: 6 },
             head: [
                 ['Fecha',
                 'Lote',
