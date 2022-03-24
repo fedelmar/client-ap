@@ -1,31 +1,7 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import { gql, useMutation } from '@apollo/client';
-
-const ELIMINAR_REGISTRO = gql `
-    mutation eliminarRegistroCE($id: ID!){
-        eliminarRegistroCE(id: $id)
-    }
-`;
-
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosCE {
-        obtenerRegistrosCE{
-            id
-            creado
-            modificado
-            operario
-            lote
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
-            cantDescarte
-            observaciones
-            estado
-        }
-    }
-`;
+import { useMutation } from '@apollo/client';
+import { LISTA_REGISTROS, ELIMINAR_REGISTRO } from '../../../servicios/produccionDeEsponjas';
 
 const EliminarRegistro = ({props}) => {
 
@@ -34,14 +10,12 @@ const EliminarRegistro = ({props}) => {
     const [eliminarRegistroCE] = useMutation(ELIMINAR_REGISTRO, {
         update(cache) {
             // Obtener copia de registros
-            const { obtenerRegistrosCE } = cache.readQuery({ query: LISTA_REGISTROS });
-
-
+            const { obtenerRegistrosPE } = cache.readQuery({ query: LISTA_REGISTROS });
             // Actualizar cache
             cache.writeQuery({
                 query: LISTA_REGISTROS,
                 data: {
-                    obtenerRegistrosCE: obtenerRegistrosCE.filter( registroActual => registroActual.id !== id )
+                    obtenerRegistrosPE: obtenerRegistrosPE.filter( registroActual => registroActual.id !== id )
                 }
             })
         }
