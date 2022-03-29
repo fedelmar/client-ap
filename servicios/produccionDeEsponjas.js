@@ -46,9 +46,38 @@ const ELIMINAR_REGISTRO = gql `
   }
 `;
 
+const REGISTRO = gql `
+    query obtenerRegistroCE($id: ID!){
+        obtenerRegistroCE(id: $id){
+            creado
+            modificado
+            operario
+            lote
+            producto
+            lBolsa
+            lEsponja
+            cantProducida
+            descarte
+            observaciones
+        }
+    }
+`;
+
+const ACTUALIZAR_REGISTRO = gql`
+    mutation actualizarRegistroStockPE($id: ID!, $input: CPEInput){
+            actualizarRegistroStockPE(id: $id, input: $input){
+                lote
+                descarte
+                cantProducida         
+        }
+    }
+`;
+
 
 export {
   LISTA_REGISTROS,
   LISTA_REGISTROS_ABIERTOS,
   ELIMINAR_REGISTRO,
+  REGISTRO,
+  ACTUALIZAR_REGISTRO,
 };

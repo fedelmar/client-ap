@@ -23,11 +23,11 @@ const ProduccionEsponjas = () => {
       variables: {
         page: pages,
       }
-    })
+    });
 
     useEffect(() => {
       if (data) setRegistros([...registros, ...data.obtenerRegistrosPE]);
-    },[data, pages])
+    },[data, pages]);
 
     if(loading || loadAbiertos) return (
         <Layout>
