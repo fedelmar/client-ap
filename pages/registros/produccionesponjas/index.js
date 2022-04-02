@@ -38,6 +38,7 @@ const ProduccionEsponjas = () => {
     const handleOpenClose = (funct, state) => {
       funct(!state);
     };
+    console.log(pdfOpen)
 
     return (
       <Layout>

@@ -4,8 +4,9 @@ import { useRouter } from 'next/router';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
-import Layout from '../../../../components/Layout';
 import { useQuery, useMutation } from '@apollo/client';
+
+import Layout from '../../../../components/Layout';
 import { REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/guardadoDeEsponjas';
 
 const EditarRegistro = () => {
@@ -29,7 +30,8 @@ const EditarRegistro = () => {
     useEffect(() => {
         if (data) {
             const { obtenerRegistroGE } = data;
-            setRegistro({...registro,
+            setRegistro({
+                ...registro,
                 id,
                 ...obtenerRegistroGE,
             })
