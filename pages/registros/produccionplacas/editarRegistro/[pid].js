@@ -10,7 +10,7 @@ import Layout from '../../../../components/Layout';
 import { ACTUALIZAR_REGISTRO, REGISTRO } from '../../../../servicios/produccionDePlacas';
 
 const EditarRegistro = () => {
-    const router = useRouter();
+    const router = useRouter(); 
     const { query } = router;
     if (!query) return null;
     const { pid: id } = query;
@@ -20,10 +20,7 @@ const EditarRegistro = () => {
             id
         }
     });
-    const [registro, setRegistro] = useState({
-        cantProducida: 0,
-        cantDescarte: 0,
-    });
+    const [registro, setRegistro] = useState();
     const schemaValidacion = Yup.object({
         lote: Yup.string(),
         cantProducida: Yup.number(),
@@ -32,24 +29,14 @@ const EditarRegistro = () => {
     useEffect(() => {
         if (data) {
             const { obtenerRegistroPP } = data;
-            setRegistro({...registro,
-                id: id,
-                lote: obtenerRegistroPP.lote,
-                producto: obtenerRegistroPP.producto,
-                cantProducida: obtenerRegistroPP.cantProducida,
-                cantDescarte: obtenerRegistroPP.cantDescarte,
-                creado: obtenerRegistroPP.creado,
-                operario: obtenerRegistroPP.operario,
-                lPcm: obtenerRegistroPP.lPcm,
-                tipoPCM: obtenerRegistroPP.tipoPCM,
-                lPlaca: obtenerRegistroPP.lPlaca,
-                lTapon: obtenerRegistroPP.lTapon,
-                observaciones: obtenerRegistroPP.observaciones
+            console.log(obtenerRegistroPP)
+            setRegistro({
+                ...obtenerRegistroPP
             })
         }
     }, [data])
 
-    if(loading) return (
+    if(loading || !registro) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -106,13 +93,13 @@ const EditarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroPP.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroPP.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'HH:mm',)}</p>
                                 <p className="text-gray-700 font-light mx-1">a</p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroPP.modificado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
                         

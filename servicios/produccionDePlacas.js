@@ -62,8 +62,8 @@ const ELIMINAR_REGISTRO = gql `
 `;
 
 const LISTA_REGISTROS = gql `
-    query obtenerRegistrosPP{
-        obtenerRegistrosPP{
+    query obtenerRegistrosPP($page: Int){
+        obtenerRegistrosPP(page: $page){
             id
             creado
             modificado
@@ -83,10 +83,34 @@ const LISTA_REGISTROS = gql `
     }
 `;
 
+const LISTA_REGISTROS_ABIERTOS = gql `
+    query obtenerRegistrosAbiertosPP{
+        obtenerRegistrosAbiertosPP{
+            id
+            creado
+            modificado
+            producto
+            operario
+            lote
+            lTapon
+            lPcm
+            tipoPCM
+            lPlaca
+            cantDescarte
+            cantProducida
+            auxiliar
+            observaciones
+            estado
+        }
+    }
+`;
+
+
 export {
   REGISTRO,
   ACTUALIZAR_REGISTRO,
   ELIMINAR_REGISTRO,
   NUEVO_REGISTRO,
   LISTA_REGISTROS,
+  LISTA_REGISTROS_ABIERTOS,
 };
