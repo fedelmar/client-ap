@@ -39,7 +39,7 @@ const GuardadoPlacas = () => {
     const handleOpenClose = (funct, state) => {
         funct(!state);
     };
-console.log(pages)
+
     return (
         <Layout>
             <h1 className="text-2xl text-gray-800 font-light" >Sellado de Placas</h1>
