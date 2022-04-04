@@ -143,6 +143,22 @@ const GELES_EN_PROCESO = gql`
     }
 `;
 
+const LISTA_REGISTROS_PREPARACION = gql `
+    query obtenerRegistrosPG{
+        obtenerRegistrosPG{
+            id
+            creado
+            lote
+            llenado
+            cantidad
+            loteInsumo
+            tanque
+            operario
+            observaciones    
+        }
+    }
+`;
+
 export {
   OBTENER_REGISTROS,
   NUEVO_REGISTRO,
@@ -150,5 +166,6 @@ export {
   OBTENER_REGISTRO,
   ACTUALIZAR_REGISTRO,
   NUEVO_DOBLE_REGISTRO,
-  GELES_EN_PROCESO
+  GELES_EN_PROCESO,
+  LISTA_REGISTROS_PREPARACION,
 };
