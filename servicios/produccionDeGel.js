@@ -1,8 +1,35 @@
 import { gql } from '@apollo/client';
 
 const OBTENER_REGISTROS = gql`
-    query obtenerRegistrosCPG{
-        obtenerRegistrosCPG{
+    query obtenerRegistrosCPG($page: Int){
+        obtenerRegistrosCPG(page: $page){
+            id
+            creado
+            modificado
+            operario
+            producto
+            lote
+            cliente
+            loteBolsa
+            loteBolsaID
+            loteBolsaCristal
+            loteGel
+            dobleBolsa
+            manta
+            cantDescarte
+            cantDescarteBolsaCristal
+            cantProducida
+            puesto1
+            puesto2
+            observaciones
+            estado
+        }
+    }
+`;
+
+const OBTENER_REGISTROS_ABIERTOS = gql`
+    query obtenerRegistrosAbiertosCPG{
+        obtenerRegistrosAbiertosCPG{
             id
             creado
             modificado
@@ -161,6 +188,7 @@ const LISTA_REGISTROS_PREPARACION = gql `
 
 export {
   OBTENER_REGISTROS,
+  OBTENER_REGISTROS_ABIERTOS,
   NUEVO_REGISTRO,
   ELIMINAR_REGISTRO,
   OBTENER_REGISTRO,

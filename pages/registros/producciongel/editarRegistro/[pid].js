@@ -21,7 +21,7 @@ const EditarRegistro = () => {
             id
         }
     });
-    const [registro, setRegistro] = useState({});
+    const [registro, setRegistro] = useState();
     const schemaValidacion = Yup.object({
         lote: Yup.string(),
         cantProducida: Yup.number(),
@@ -32,11 +32,11 @@ const EditarRegistro = () => {
     useEffect(() => {
         if (data) {
             const { obtenerRegistroCPG } = data;
-            setRegistro({...registro, ...obtenerRegistroCPG })
+            setRegistro({ ...obtenerRegistroCPG })
         }
     }, [data])
 
-    if(loading) return (
+    if(loading || !registro) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -94,13 +94,13 @@ const EditarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCPG.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCPG.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'HH:mm',)}</p>
                                 <p className="text-gray-700 font-light mx-1">a</p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCPG.modificado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
                         
