@@ -62,8 +62,7 @@ const Table = ({registros, rol, filtros }) => {
 
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/producciongel/editarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/producciongel/editarRegistro/${id}`,
         })
     };
 
@@ -71,18 +70,15 @@ const Table = ({registros, rol, filtros }) => {
         const { dobleBolsa, loteBolsaCristal, id } = registro;
         if (loteBolsaCristal !== null) {
             Router.push({
-                pathname: "/registros/producciongel/dobleRegistro/finalizar/[id]",
-                query: { id }
+                pathname: `/registros/producciongel/dobleRegistro/finalizar/${id}`,
             })
         } else if (dobleBolsa) {
             Router.push({
-                pathname: "/registros/producciongel/dobleRegistro/finalizar/[id]",
-                query: { id }
+                pathname: `/registros/producciongel/dobleRegistro/finalizar/${id}`,
             })
         } else {
             Router.push({
-                pathname: "/registros/producciongel/finalizarRegistro/[id]",
-                query: { id }
+                pathname: `/registros/producciongel/finalizarRegistro/${id}`,
             })
         }
     };

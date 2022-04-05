@@ -56,8 +56,7 @@ const Table = ({registros, filtros}) => {
 
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/ingresos/editarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/ingresos/editarRegistro/${id}`,
         })
     }
 

@@ -38,8 +38,7 @@ const Table = ({registros, rol, filtros}) => {
 
     const editarLote = id => {
         Router.push({
-            pathname: "/listados/stockproductos/editarLProducto/[id]",
-            query: { id }
+            pathname: `/listados/stockproductos/editarLProducto/${id}`,
         })
     }
 

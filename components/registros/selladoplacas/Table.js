@@ -61,15 +61,13 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/selladoplacas/finalizarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/selladoplacas/finalizarRegistro/${id}`,
         })
     }
     
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/selladoplacas/editarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/selladoplacas/editarRegistro/${id}`,
         })
     }
 
