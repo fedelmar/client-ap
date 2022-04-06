@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const LISTA_REGISTROS = gql `
-  query obtenerRegistrosIngresos{
-    obtenerRegistrosIngresos{
+  query obtenerRegistrosIngresos($page: Int){
+    obtenerRegistrosIngresos(page: $page){
       id
       insumo
       cantidad

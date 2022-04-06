@@ -29,24 +29,8 @@ const EditarRegistro = () => {
     });
 
     useEffect(() => {
-        if (data) {
-            const { 
-                    lote,
-                    creado,
-                    cantidad,
-                    insumo,
-                    proveedor,
-                    remito,       
-            } = data.obtenerRegistroIngreso;
-                
-            setRegistro({...registro,
-                lote,
-                creado,
-                cantidad,
-                insumo,
-                proveedor,
-                remito,
-            })
+        if (data) {                
+            setRegistro({ ...data.obtenerRegistroIngreso })
         }
     }, [data])
 
