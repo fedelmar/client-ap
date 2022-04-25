@@ -8,8 +8,10 @@ const exportar = (datos, modelo) => {
   switch(modelo) {
     case 'PRODUCCION_ESPONJAS':
       modelFormat = PRODUCCION_ESPONJAS.export;
+      break;
     case 'GUARDADO_ESPONJAS':
       modelFormat = GUARDADO_ESPONJAS.export;
+      break;
     default:
       break;
   }
