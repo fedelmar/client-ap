@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { GUARDADO_ESPONJAS } from '../../../constants/GuardadoEsponjas';
+
+const { columnas } = GUARDADO_ESPONJAS;
 
 const Table = ({registros, filtros, rol}) => {
 
@@ -33,7 +35,6 @@ const Table = ({registros, filtros, rol}) => {
     },[rol])
 
     const {
-        getTableProps,
         getTableBodyProps,
         headers,
         rows,

@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { PRODUCCION_ESPONJAS } from '../../../constants/ProduccionEsponjas';
+
+const { columnas } = PRODUCCION_ESPONJAS;
 
 const Table = ({registros, filtros, rol}) => {
     const [filtroLote, setFiltroLote] = useState("");

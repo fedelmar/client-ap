@@ -1,11 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react'
-import UsuarioContext from '../../../context/usuarios/UsuarioContext';
-import Layout from '../../../components/Layout';
 import {useQuery} from '@apollo/client';
 import Link from 'next/link';
-import ExportarRegistro from '../../../components/registros/guardadoesponjas/ExportarRegistroGE';
+
+import UsuarioContext from '../../../context/usuarios/UsuarioContext';
+import Layout from '../../../components/Layout';
 import Table from '../../../components/registros/guardadoesponjas/Table';
 import { LISTA_REGISTROS, LISTA_REGISTROS_ABIERTOS } from '../../../servicios/guardadoDeEsponjas';
+import FechaSelect from '../../../components/registros/FechaSelect';
+import RegistrosPorFecha from '../../../components/registros/guardadoesponjas/RegistrosPorFecha';
+import ExportarPDF from '../../../components/registros/ExportarDatos';
 
 const GuardadoEsponjas = () => {
     const usuarioContext = useContext(UsuarioContext);
@@ -16,6 +19,10 @@ const GuardadoEsponjas = () => {
     const [ filtros, setFiltros ] = useState(false);
     const [ activos, setActivos ] = useState(false);
     const [registros, setRegistros] = useState([]);
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [regs, setRegs] = useState(null);
 
     const { data, loading } = useQuery(LISTA_REGISTROS,{
         pollInterval: 500,
@@ -64,11 +71,24 @@ const GuardadoEsponjas = () => {
                 </div>             
             </div>
 
-            {pdfOpen ? (
-                <ExportarRegistro 
-                    registros={registros}
-                />
-            ) : null }
+            {pdfOpen ?
+                <div className="flex flex-row justify-center">
+                    <FechaSelect setEndDate={setEndDate} setStartDate={setStartDate} />
+                    {startDate && endDate ?
+                        <>
+                            <RegistrosPorFecha 
+                                start={startDate}
+                                end={endDate}
+                                setRegs={setRegs}
+                            />
+                            <ExportarPDF 
+                                regs={regs}
+                                modelo={'GUARDADO_ESPONJAS'}
+                            />
+                        </>
+                    : null}
+                </div>
+            : null}
 
             {activos && regAbiertos.obtenerRegistrosAbiertosGE.length > 0 ? 
                 <Table 

@@ -73,10 +73,30 @@ const ACTUALIZAR_REGISTRO = gql`
     }
 `;
 
+const LISTA_REGISTROS_POR_FECHA = gql`
+    query getRegsByDatePE($input: DateRange!) {
+        getRegsByDatePE(input: $input){
+            id
+            creado
+            modificado
+            operario
+            lote
+            producto
+            lBolsa
+            lEsponja
+            cantProducida
+            descarte
+            descarteBolsa
+            observaciones
+            estado
+        }
+    }
+`
 
 export {
   LISTA_REGISTROS,
   LISTA_REGISTROS_ABIERTOS,
+  LISTA_REGISTROS_POR_FECHA,
   ELIMINAR_REGISTRO,
   REGISTRO,
   ACTUALIZAR_REGISTRO,
