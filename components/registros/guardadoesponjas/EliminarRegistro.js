@@ -12,11 +12,10 @@ const LISTA_REGISTROS = gql `
     query obtenerRegistrosGE{
         obtenerRegistrosGE{
             id
-            fecha
+            creado
             operario
             lote
-            horaInicio
-            horaCierre
+			modificado
             caja
             descCajas
             guardado
