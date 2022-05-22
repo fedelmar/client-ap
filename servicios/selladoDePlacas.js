@@ -90,11 +90,31 @@ const LISTA_REGISTROS_ABIERTOS = gql `
     }
 `;
 
+const LISTA_REGISTROS_POR_FECHA = gql`
+    query getRegsByDateSP($input: DateRange!) {
+        getRegsByDateSP(input: $input){
+            id
+            lote
+            loteID
+            producto
+            operario
+            sellado
+            descarte
+            auxiliar
+            observaciones
+            creado
+            modificado
+            estado
+        }
+    }
+`;
+
 export {
   LISTA_REGISTROS,
   NUEVO_REGISTRO,
   ELIMINAR_REGISTRO,
   OBTENER_REGISTRO,
   ACTUALIZAR_REGISTRO,
-  LISTA_REGISTROS_ABIERTOS
+  LISTA_REGISTROS_ABIERTOS,
+  LISTA_REGISTROS_POR_FECHA,
 };

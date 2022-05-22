@@ -170,21 +170,33 @@ const GELES_EN_PROCESO = gql`
     }
 `;
 
-const LISTA_REGISTROS_PREPARACION = gql `
-    query obtenerRegistrosPG{
-        obtenerRegistrosPG{
+const LISTA_REGISTROS_POR_FECHA = gql`
+    query getRegsByDateCPG($input: DateRange!) {
+        getRegsByDateCPG(input: $input){
             id
             creado
-            lote
-            llenado
-            cantidad
-            loteInsumo
-            tanque
+            modificado
             operario
-            observaciones    
+            producto
+            lote
+            cliente
+            loteBolsa
+            loteBolsaID
+            loteBolsaCristal
+            loteGel
+            dobleBolsa
+            manta
+            cantDescarte
+            cantDescarteBolsaCristal
+            cantProducida
+            puesto1
+            puesto2
+            observaciones
+            estado
         }
     }
 `;
+
 
 export {
   OBTENER_REGISTROS,
@@ -195,5 +207,5 @@ export {
   ACTUALIZAR_REGISTRO,
   NUEVO_DOBLE_REGISTRO,
   GELES_EN_PROCESO,
-  LISTA_REGISTROS_PREPARACION,
+  LISTA_REGISTROS_POR_FECHA,
 };

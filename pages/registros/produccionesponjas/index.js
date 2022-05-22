@@ -19,6 +19,7 @@ const ProduccionEsponjas = () => {
     const [filtros, setFiltros] = useState(false);
     const [activos, setActivos] = useState(false);
     const [registros, setRegistros] = useState([]);
+
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [regs, setRegs] = useState(null);

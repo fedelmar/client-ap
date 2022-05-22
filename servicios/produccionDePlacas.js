@@ -105,6 +105,27 @@ const LISTA_REGISTROS_ABIERTOS = gql `
     }
 `;
 
+const LISTA_REGISTROS_POR_FECHA = gql`
+    query getRegsByDatePP($input: DateRange!) {
+        getRegsByDatePP(input: $input){
+            id
+            creado
+            modificado
+            producto
+            operario
+            lote
+            lTapon
+            lPcm
+            tipoPCM
+            lPlaca
+            cantDescarte
+            cantProducida
+            auxiliar
+            observaciones
+            estado
+        }
+    }
+`;
 
 export {
   REGISTRO,
@@ -113,4 +134,5 @@ export {
   NUEVO_REGISTRO,
   LISTA_REGISTROS,
   LISTA_REGISTROS_ABIERTOS,
+  LISTA_REGISTROS_POR_FECHA,
 };

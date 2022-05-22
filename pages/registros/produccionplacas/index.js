@@ -5,7 +5,9 @@ import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Table from '../../../components/registros/produccionplacas/Table';
-import ExportarRegistro from '../../../components/registros/produccionplacas/ExportarRegistroPP';
+import FechaSelect from '../../../components/registros/FechaSelect';
+import ExportarPDF from '../../../components/registros/ExportarDatos';
+import RegistrosPorFecha from '../../../components/registros/produccionplacas/RegistrosPorFecha';
 import { LISTA_REGISTROS, LISTA_REGISTROS_ABIERTOS } from '../../../servicios/produccionDePlacas';
 
 const ProduccionPlacas = () => {
@@ -17,6 +19,10 @@ const ProduccionPlacas = () => {
     const [ filtros, setFiltros ] = useState(false);
     const [ activos, setActivos ] = useState(false);
     const [registros, setRegistros] = useState([]);
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [regs, setRegs] = useState(null);
 
     const { data: regAbiertos, loading: loadAbiertos } = useQuery(LISTA_REGISTROS_ABIERTOS);
     const { data, loading } = useQuery(LISTA_REGISTROS, {
@@ -66,14 +72,27 @@ const ProduccionPlacas = () => {
             </div>
 
             {pdfOpen ?
-                <ExportarRegistro 
-                    registros={registros}
-                />
-            : null }
+                <div className="flex flex-row justify-center">
+                    <FechaSelect setEndDate={setEndDate} setStartDate={setStartDate} />
+                    {startDate && endDate ?
+                    <>
+                        <RegistrosPorFecha 
+                        start={startDate}
+                        end={endDate}
+                        setRegs={setRegs}
+                        />
+                        <ExportarPDF 
+                        regs={regs}
+                        modelo={'PRODUCCION_PLACAS'}
+                        />
+                    </>
+                    : null}
+                    </div>
+            : null}
 
             {activos && regAbiertos.obtenerRegistrosAbiertosPP.length > 0 ? 
                 <Table 
-                    registros={regAbiertos.obtenerRegistrosAbiertosPP}
+                    registros={regAbiertos.obtenerRegistrosAbiertosPP} 
                     filtros={filtros}
                     rol={rol}
                 />

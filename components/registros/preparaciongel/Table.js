@@ -1,9 +1,11 @@
 import React, { useMemo, useState, Fragment }  from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
-import columnas from './columns';
 import EliminarRegistro from './EliminarRegistro';
 import MostrarObser from '../MostrarObser';
+import { PREPARACION_GEL } from '../../../constants/PreparacionGel';
+
+const { columnas } = PREPARACION_GEL;
 
 const Table = ({registros, filtros, rol}) => {
 
@@ -24,7 +26,6 @@ const Table = ({registros, filtros, rol}) => {
         rows,
         prepareRow,
         setFilter,
-        toggleHideColumn
     } = tableInstance;
 
     const handleFilterChangeLote = e => {

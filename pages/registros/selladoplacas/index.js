@@ -5,7 +5,9 @@ import Link from 'next/link';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import Table from '../../../components/registros/selladoplacas/Table';
-import ExportarRegistro from '../../../components/registros/selladoplacas/ExportarRegistro';
+import RegistrosPorFecha from '../../../components/registros/selladoplacas/RegistrosPorFecha';
+import ExportarPDF from '../../../components/registros/ExportarDatos';
+import FechaSelect from '../../../components/registros/FechaSelect';
 import { LISTA_REGISTROS, LISTA_REGISTROS_ABIERTOS } from '../../../servicios/selladoDePlacas';
 
 const GuardadoPlacas = () => {
@@ -17,6 +19,10 @@ const GuardadoPlacas = () => {
     const [ filtros, setFiltros ] = useState(false);
     const [ activos, setActivos ] = useState(false);
     const [registros, setRegistros] = useState([]);
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [regs, setRegs] = useState(null);
 
     const { data: regAbiertos, loading: loadAbiertos } = useQuery(LISTA_REGISTROS_ABIERTOS);
     const { data, loading } = useQuery(LISTA_REGISTROS, {
@@ -65,11 +71,24 @@ const GuardadoPlacas = () => {
                 </div>             
             </div>
 
-            {pdfOpen ? (
-                <ExportarRegistro 
-                    registros={registros}
-                />
-            ) : null }
+            {pdfOpen ?
+                <div className="flex flex-row justify-center">
+                    <FechaSelect setEndDate={setEndDate} setStartDate={setStartDate} />
+                    {startDate && endDate ?
+                    <>
+                        <RegistrosPorFecha 
+                        start={startDate}
+                        end={endDate}
+                        setRegs={setRegs}
+                        />
+                        <ExportarPDF 
+                        regs={regs}
+                        modelo={'SELLADO_PLACAS'}
+                        />
+                    </>
+                    : null}
+                    </div>
+            : null}
 
             {activos && regAbiertos.obtenerRegistrosAbiertosSP.length > 0 ? 
                 <Table 

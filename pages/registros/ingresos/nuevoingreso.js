@@ -15,18 +15,7 @@ const NuevoIngreso = () => {
     const router = useRouter();
     const [mensaje, guardarMensaje] = useState(null);
     const [insumo, setInsumo] = useState();
-    const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO, {
-        update(cache, {data: { nuevoRegistroIngreso }}) {
-            const { obtenerRegistrosIngresos } = cache.readQuery({ query: LISTA_REGISTROS});
-
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosIngresos: [...obtenerRegistrosIngresos, nuevoRegistroIngreso]
-                }
-            })
-        }
-    })
+    const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO)
 
     const formik = useFormik({
         initialValues: {

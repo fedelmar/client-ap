@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { GUARDADO_PLACAS } from '../../../constants/GuardadoPlacas';
+
+const { columnas } = GUARDADO_PLACAS; 
 
 const Table = ({registros, filtros, rol}) => {
 

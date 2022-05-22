@@ -4,7 +4,10 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { PRODUCCION_PLACAS } from '../../../constants/ProduccionPlacas';
+
+const { columnas } = PRODUCCION_PLACAS;
+
 
 const Table = ({registros, filtros, rol}) => {
 

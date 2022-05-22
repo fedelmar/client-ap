@@ -4,8 +4,10 @@ import Link from 'next/link';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
 import Table from '../../../components/registros/preparaciongel/Table';
-import ExportarRegistro from '../../../components/registros/preparaciongel/ExportarRegistro';
-import { LISTA_REGISTROS_PREPARACION } from '../../../servicios/produccionDeGel';
+import { LISTA_REGISTROS } from '../../../servicios/preparacionDeGel';
+import ExportarPDF from '../../../components/registros/ExportarDatos';
+import FechaSelect from '../../../components/registros/FechaSelect';
+import RegistrosPorFecha from '../../../components/registros/preparaciongel/RegistrosPorFecha';
 
 
 const PreparacionGel = () => {
@@ -17,7 +19,11 @@ const PreparacionGel = () => {
     const [ filtros, setFiltros ] = useState(false);
     const [registros, setRegistros] = useState([]);
 
-    const { data, loading } = useQuery(LISTA_REGISTROS_PREPARACION, {
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [regs, setRegs] = useState(null);
+
+    const { data, loading } = useQuery(LISTA_REGISTROS, {
         pollInterval: 500,
         variables: {
             page: pages,
@@ -65,10 +71,23 @@ const PreparacionGel = () => {
             </div>
             
             {pdfOpen ?
-                <ExportarRegistro 
-                    registros={registros}
-                />
-            : null }
+                <div className="flex flex-row justify-center">
+                    <FechaSelect setEndDate={setEndDate} setStartDate={setStartDate} />
+                    {startDate && endDate ?
+                    <>
+                        <RegistrosPorFecha 
+                        start={startDate}
+                        end={endDate}
+                        setRegs={setRegs}
+                        />
+                        <ExportarPDF
+                        regs={regs}
+                        modelo={'PREPARACION_GEL'}
+                        />
+                    </>
+                    : null}
+                    </div>
+            : null}
 
             {registros.length > 0 ? 
                 <>

@@ -2,10 +2,11 @@ import React, {Fragment, useMemo, useEffect, useState} from 'react';
 import { useTable, useFilters, useSortBy } from "react-table";
 import { format } from 'date-fns';
 import Router from 'next/router';
-import columnas from './columns';
 import EliminarRegistro from './EliminarRegistro';
 import MostrarObser from '../MostrarObser';
+import { PRODUCCION_GEL } from '../../../constants/ProduccionGel';
 
+const { columnas } = PRODUCCION_GEL;
 
 const Table = ({registros, rol, filtros }) => {
 

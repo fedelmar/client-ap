@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Table from '../../../components/registros/producciongel/Table';
-import ExportarRegistro from '../../../components/registros/producciongel/ExportarRegistro';
 import { OBTENER_REGISTROS, OBTENER_REGISTROS_ABIERTOS } from '../../../servicios/produccionDeGel';
+import ExportarPDF from '../../../components/registros/ExportarDatos';
+import FechaSelect from '../../../components/registros/FechaSelect';
+import RegistrosPorFecha from '../../../components/registros/producciongel/RegistrosPorFecha';
 
 const index = () => {
     const usuarioContext = useContext(UsuarioContext);
@@ -17,6 +19,10 @@ const index = () => {
     const [ filtros, setFiltros ] = useState(false);
     const [ activos, setActivos ] = useState(false);
     const [registros, setRegistros] = useState([]);
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [regs, setRegs] = useState(null);
 
     const { data: regAbiertos, loading: loadAbiertos } = useQuery(OBTENER_REGISTROS_ABIERTOS);
     const { data, loading } = useQuery(OBTENER_REGISTROS, {
@@ -66,10 +72,23 @@ const index = () => {
             </div>
 
             {pdfOpen ?
-                <ExportarRegistro 
-                    registros={registros}
-                />
-            : null }
+                <div className="flex flex-row justify-center">
+                    <FechaSelect setEndDate={setEndDate} setStartDate={setStartDate} />
+                    {startDate && endDate ?
+                    <>
+                        <RegistrosPorFecha 
+                        start={startDate}
+                        end={endDate}
+                        setRegs={setRegs}
+                        />
+                        <ExportarPDF 
+                        regs={regs}
+                        modelo={'PRODUCCION_GEL'}
+                        />
+                    </>
+                    : null}
+                    </div>
+            : null}
 
             {activos && regAbiertos.obtenerRegistrosAbiertosCPG.length > 0 ? 
                 <Table 
