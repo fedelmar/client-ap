@@ -4,39 +4,12 @@ import { useRouter } from 'next/router';
 import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
+import { useQuery, useMutation } from '@apollo/client';
+
 import Layout from '../../../../components/Layout';
-import { gql, useQuery, useMutation } from '@apollo/client';
-
-const REGISTRO = gql `
-    query obtenerRegistroGE($id: ID!){
-        obtenerRegistroGE(id: $id){
-            creado
-            modificado
-            operario
-            lote
-            caja
-            descCajas
-            guardado
-            descarte
-            auxiliar
-            observaciones
-            producto
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql `
-    mutation actualizarRegistroGE($id: ID!, $input: CGEInput){
-        actualizarRegistroGE(id: $id, input: $input){
-            lote
-            guardado
-            descarte
-        }
-    }
-`;
+import { REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/guardadoDeEsponjas';
 
 const EditarRegistro = () => {
-
     const router = useRouter();
     const { query } = router;
     if (!query) return null;
@@ -47,43 +20,25 @@ const EditarRegistro = () => {
             id
         }
     });
-    const [registro, setRegistro] = useState({
-        lote: '',
-        producto: '',
-        guardado: 0,
-        descarte: 0,
-        descCajas: 0,
-        operario: '',
-        caja: '',
-        descCajas: '',
-        observaciones: '',
-        auxiliar: ''
-    });
+    const [registro, setRegistro] = useState();
+
     const schemaValidacion = Yup.object({
         guardado: Yup.number(),
         descarte: Yup.number()
     });
+
     useEffect(() => {
         if (data) {
             const { obtenerRegistroGE } = data;
-            setRegistro({...registro,
-                id: id,
-                lote: obtenerRegistroGE.lote,
-                producto: obtenerRegistroGE.producto,
-                guardado: obtenerRegistroGE.guardado,
-                descarte: obtenerRegistroGE.descarte,
-                creado: obtenerRegistroGE.creado,
-                modificado: obtenerRegistroGE.modificado,
-                operario: obtenerRegistroGE.operario,
-                caja: obtenerRegistroGE.caja,
-                descCajas: obtenerRegistroGE.descCajas,
-                observaciones: obtenerRegistroGE.observaciones,
-                auxiliar: obtenerRegistroGE.auxiliar
+            setRegistro({
+                ...registro,
+                id,
+                ...obtenerRegistroGE,
             })
         }
     }, [data])
 
-    if(loading) return (
+    if(loading || !registro) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -107,7 +62,7 @@ const EditarRegistro = () => {
                 try {
                     const { data } = actualizarRegistroGE({
                         variables: {
-                            id: id,
+                            id,
                             input: {
                                 lote: lote,
                                 guardado: guardado,
@@ -126,7 +81,7 @@ const EditarRegistro = () => {
                 }
             }
         }); 
-    }
+    };
 
     return (
         <Layout>
@@ -138,13 +93,13 @@ const EditarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'HH:mm',)}</p>
                                 <p className="text-gray-700 font-light mx-1">a</p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroGE.modificado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
 

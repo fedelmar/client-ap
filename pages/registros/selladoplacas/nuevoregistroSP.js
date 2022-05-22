@@ -4,7 +4,7 @@ import Layout from '../../../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
-import {gql, useQuery, useMutation} from '@apollo/client';
+import {useQuery, useMutation} from '@apollo/client';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';

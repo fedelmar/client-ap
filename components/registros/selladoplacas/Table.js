@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { SELLADO_PLACAS } from '../../../constants/SelladoPlacas';
+
+const { columnas } = SELLADO_PLACAS;
 
 const Table = ({registros, filtros, rol}) => {
 
@@ -61,15 +63,13 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/selladoplacas/finalizarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/selladoplacas/finalizarRegistro/${id}`,
         })
     }
     
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/selladoplacas/editarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/selladoplacas/editarRegistro/${id}`,
         })
     }
 

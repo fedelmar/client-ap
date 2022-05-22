@@ -4,7 +4,9 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { PRODUCCION_ESPONJAS } from '../../../constants/ProduccionEsponjas';
+
+const { columnas } = PRODUCCION_ESPONJAS;
 
 const Table = ({registros, filtros, rol}) => {
     const [filtroLote, setFiltroLote] = useState("");
@@ -60,15 +62,13 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/produccionesponjas/finalizarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/produccionesponjas/finalizarRegistro/${id}`,
         })
     }
 
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/produccionesponjas/editarRegistro/[id]",
-            query: { id }
+            pathname: `/registros/produccionesponjas/editarRegistro/${id}`,
         })
     }
 

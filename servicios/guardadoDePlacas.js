@@ -1,8 +1,28 @@
 import { gql } from '@apollo/client';
 
 const LISTA_REGISTROS = gql`
-    query obtnerRegistrosGP{
-        obtenerRegistrosGP{
+    query obtenerRegistrosGP($page: Int){
+        obtenerRegistrosGP(page: $page){
+            id
+            creado
+            modificado
+            operario
+            lote
+            producto
+            loteID
+            guardado
+            descarte
+            pallet
+            auxiliar
+            observaciones
+            estado
+        }
+    }
+`;
+
+const LISTA_REGISTROS_ABIERTOS = gql`
+    query obtenerRegistrosAbiertosGP{
+        obtenerRegistrosAbiertosGP{
             id
             creado
             modificado
@@ -75,8 +95,32 @@ const ACTUALIZAR_REGISTRO = gql`
     }
 `;
 
+const LISTA_REGISTROS_POR_FECHA = gql`
+    query getRegsByDateGP  ($input: DateRange!) {
+        getRegsByDateGP(input: $input){
+            id
+            creado
+            modificado
+            operario
+            lote
+            producto
+            loteID
+            guardado
+            descarte
+            pallet
+            auxiliar
+            observaciones
+            estado
+        }
+    }
+`;
+
+
+
 export {
   LISTA_REGISTROS,
+  LISTA_REGISTROS_ABIERTOS,
+  LISTA_REGISTROS_POR_FECHA,
   ELIMINAR_REGISTRO,
   NUEVO_REGISTRO,
   OBTENER_REGISTRO,

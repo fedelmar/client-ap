@@ -5,37 +5,10 @@ import { Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
 import Layout from '../../../../components/Layout';
-import { gql, useQuery, useMutation } from '@apollo/client';
-
-const REGISTRO = gql `
-    query obtenerRegistroCE($id: ID!){
-        obtenerRegistroCE(id: $id){
-            creado
-            modificado
-            operario
-            lote
-            producto
-            lBolsa
-            lEsponja
-            cantProducida
-            descarte
-            observaciones
-        }
-    }
-`;
-
-const ACTUALIZAR_REGISTRO = gql`
-    mutation actualizarRegistroStockPE($id: ID!, $input: CPEInput){
-            actualizarRegistroStockPE(id: $id, input: $input){
-                lote
-                descarte
-                cantProducida         
-        }
-    }
-`;
+import { useQuery, useMutation } from '@apollo/client';
+import { REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/produccionDeEsponjas';
 
 const EditarRegistro = () => {
-
     const router = useRouter();
     const { query } = router;
     if (!query) return null;
@@ -46,33 +19,25 @@ const EditarRegistro = () => {
             id
         }
     });
-    const [registro, setRegistro] = useState({
-        cantProducida: '',
-    });
+    const [registro, setRegistro] = useState();
+
     const schemaValidacion = Yup.object({
         cantProducida: Yup.number(),
         descarte: Yup.string(),
         observaciones: Yup.string()                    
     });
+
     useEffect(() => {
         if (data) {
             const { obtenerRegistroCE } = data;
                 setRegistro({...registro,
-                    id: id,
-                    lote: obtenerRegistroCE.lote,
-                    producto: obtenerRegistroCE.producto,
-                    cantProducida: obtenerRegistroCE.cantProducida,
-                    descarte: obtenerRegistroCE.descarte,
-                    creado: obtenerRegistroCE.creado,
-                    operario: obtenerRegistroCE.operario,
-                    lBolsa: obtenerRegistroCE.lBolsa,
-                    lEsponja: obtenerRegistroCE.lEsponja,
-                    observaciones: obtenerRegistroCE.observaciones
+                    id,
+                    ...obtenerRegistroCE,
                 })
         }
     }, [data])
 
-    if(loading) return (
+    if(loading || !registro) return (
         <Layout>
           <p className="text-2xl text-gray-800 font-light" >Cargando...</p>
         </Layout>
@@ -95,7 +60,7 @@ const EditarRegistro = () => {
                 try {
                     const { data } = actualizarRegistroStockPE({
                         variables: {
-                            id: id,
+                            id,
                             input: {
                                 lote,
                                 cantProducida,
@@ -126,13 +91,13 @@ const EditarRegistro = () => {
                         <div className="flex justify-between pb-2">
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'dd/MM/yy')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'dd/MM/yy')}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-700 text-mm font-bold mr-1">Horario: </p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.creado), 'HH:mm',)}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.creado), 'HH:mm',)}</p>
                                 <p className="text-gray-700 font-light mx-1">a</p>
-                                <p className="text-gray-700 font-light">{format(new Date(data.obtenerRegistroCE.modificado), 'HH:mm')}</p>
+                                <p className="text-gray-700 font-light">{format(new Date(registro.modificado), 'HH:mm')}</p>
                             </div>
                         </div>
                         

@@ -2,9 +2,10 @@ import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import fetch from 'node-fetch';
 import { setContext } from 'apollo-link-context';
 
+const URI = process.env.URI;
+
 const httpLink = createHttpLink({
-    uri: 'https://secure-river-43686.herokuapp.com/',
-  //uri: 'http://localhost:4000/',
+    uri: URI,
     fetch
 });
 

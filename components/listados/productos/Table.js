@@ -37,8 +37,7 @@ const Table = ({registros, rol, filtros}) => {
     
     const editarProducto = id => {
         Router.push({
-            pathname: "/listados/productos/editarProducto/[id]",
-            query: { id }
+            pathname: `/listados/productos/editarProducto/${id}`,
         })
     }
 

@@ -4,7 +4,10 @@ import { format } from 'date-fns';
 import Router from 'next/router';
 import MostrarObser from '../MostrarObser';
 import EliminarRegistro from './EliminarRegistro';
-import columnas from './columns';
+import { PRODUCCION_PLACAS } from '../../../constants/ProduccionPlacas';
+
+const { columnas } = PRODUCCION_PLACAS;
+
 
 const Table = ({registros, filtros, rol}) => {
 
@@ -61,15 +64,13 @@ const Table = ({registros, filtros, rol}) => {
 
     const retomarRegistro = id => {
         Router.push({
-            pathname: "/registros/produccionplacas/finalizarRegistro/[id]",
-            query: { id }
+            pathname:`/registros/produccionplacas/finalizarRegistro/${id}`,
         })
     }
 
     const editarRegistro = id => {
         Router.push({
-            pathname: "/registros/produccionplacas/editarRegistro/[id]",
-            query: { id }
+            pathname:`/registros/produccionplacas/editarRegistro/${id}`,
         })
     }
 
