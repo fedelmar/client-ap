@@ -92,7 +92,7 @@ const index = () => {
 
             {activos && regAbiertos.obtenerRegistrosAbiertosCPG.length > 0 ? 
                 <Table 
-                    registros={registrosAbiertos}
+                    registros={regAbiertos.obtenerRegistrosAbiertosCPG}
                     rol={rol}
                     filtros={filtros}
                 />

@@ -90,8 +90,8 @@ const FormCristal = ({sesionActiva, volver, bolsaCristal}) => {
                             loteBolsaCristal,
                             loteGel,
                             cantDescarte,
+                            finalizado,
                         },
-                        finalizado,   
                     }                
                 });
                 Swal.fire(
