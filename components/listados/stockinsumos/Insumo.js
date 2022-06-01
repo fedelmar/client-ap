@@ -1,27 +1,24 @@
-import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import React from "react";
+import { useQuery, gql } from "@apollo/client";
 
 const LISTADO_INSUMOS = gql`
-    query obtenerInsumos {
-        obtenerInsumos{
-            id
-            nombre
-        }
+  query obtenerInsumos {
+    obtenerInsumos {
+      id
+      nombre
     }
+  }
 `;
 
-const Insumo = ({id}) => {
+const Insumo = ({ id }) => {
+  const { data, loading } = useQuery(LISTADO_INSUMOS);
 
-    const {data, loading} = useQuery(LISTADO_INSUMOS);
+  if (loading) return null;
 
-    if (loading) return null;
+  // Buscar dentro de lista de insumos el nombre
+  const { nombre } = data.obtenerInsumos.find((i) => i.id === id);
 
-    // Buscar dentro de lista de insumos el nombre
-    const {nombre} = data.obtenerInsumos.find(i => i.id === id);
-
-    return (
-        <th className="border px-4 py-2">{nombre}</th>
-    );
-}
+  return <th className="border px-4 py-2">{nombre}</th>;
+};
 
 export default Insumo;
