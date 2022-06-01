@@ -79,8 +79,8 @@ const NUEVO_REGISTRO = gql `
 `;
 
 const NUEVO_DOBLE_REGISTRO = gql `
-    mutation nuevoDobleRegistroCPG($id: ID, $input: CPGInput, $finalizado: Boolean){
-        nuevoDobleRegistroCPG(id: $id, input: $input, finalizado: $finalizado){
+    mutation nuevoDobleRegistroCPG($id: ID, $input: CPGInput){
+        nuevoDobleRegistroCPG(id: $id, input: $input){
             id
             creado
             modificado
