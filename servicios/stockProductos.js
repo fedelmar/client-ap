@@ -52,9 +52,21 @@ const LOTES_PLACAS_EN_PROCESO = gql `
     }
 `;
 
+const OBTENER_PRODUCTOS_TERMINADOS = gql`
+    query obtenerProductosTerminados{
+        obtenerProductosTerminados{
+            loteID
+            lote
+            producto
+            cantidad
+        }
+    }
+`;
+
 export {
   LOTE_PRODUCTO,
   OBTENER_PRODUCTO_POR_LOTE,
   LOTES_PLACAS,
   LOTES_PLACAS_EN_PROCESO,
+  OBTENER_PRODUCTOS_TERMINADOS,
 };
