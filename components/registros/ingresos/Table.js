@@ -19,14 +19,8 @@ const Table = ({ registros, filtros }) => {
     useSortBy
   );
 
-  const {
-    getTableBodyProps,
-    headers,
-    rows,
-    prepareRow,
-    setFilter,
-    toggleHideColumn,
-  } = tableInstance;
+  const { getTableBodyProps, headers, rows, prepareRow, setFilter } =
+    tableInstance;
 
   const handleFilterChangeProveedor = (e) => {
     const value = e.target.value || undefined;
