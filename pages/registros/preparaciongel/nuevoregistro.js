@@ -131,7 +131,6 @@ const NuevoRegistro = () => {
                                 }
                             }
                         });
-                        //console.log(data.nuevoRegistroPG);                    
                         Swal.fire(
                         'Se guardo el registro', 
                         'Se actualizo el stock de insumo',

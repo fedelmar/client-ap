@@ -65,6 +65,10 @@ const PREPARACION_GEL = {
       accessor: 'observaciones',
     },
     {
+      Header: 'Editar',
+      accessor: 'editar'
+    },
+    {
       Header: 'Eliminar',
       accessor: 'eliminar'
     },
