@@ -23,7 +23,6 @@ const PreparacionGel = () => {
   const [regs, setRegs] = useState(null);
 
   const { data, loading } = useQuery(LISTA_REGISTROS, {
-    pollInterval: 500,
     variables: {
       page: pages,
     },

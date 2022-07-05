@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const LISTA_REGISTROS = gql`
-  query obtenerRegistrosPG {
-    obtenerRegistrosPG {
+  query obtenerRegistrosPG($page: Int) {
+    obtenerRegistrosPG(page: $page) {
       id
       creado
       lote
