@@ -1,4 +1,4 @@
-const columnas = [
+export const columnasUltimosLotes = [
     {
         Header: 'Lote',
         accessor: 'lote',
@@ -12,4 +12,18 @@ const columnas = [
         accessor: 'cantidad',
     }
   ]
-export default columnas;
+
+  export const columnasInsumosFaltantes = [
+    {
+        Header: 'Insumo',
+        accessor: 'insumo',
+    },
+    {
+        Header: 'Categoria',
+        accessor: 'categoria',
+    },
+    {
+        Header: 'Cantidad',
+        accessor: 'cantidad',
+    }
+  ]

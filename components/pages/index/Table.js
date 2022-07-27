@@ -1,9 +1,8 @@
 import React, { useMemo, Fragment } from 'react';
 import { useTable, useSortBy } from "react-table";
-import columnas from './columns';
 import Producto from '../../listados/stockproductos/Producto';
 
-const Table = ({registros}) => {
+const Table = ({registros, columnas}) => {
 
     const columns = useMemo(
         () => columnas,
@@ -48,7 +47,7 @@ const Table = ({registros}) => {
                             <tr key={row.id}{...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     return (
-                                        <Fragment key={cell.row.original.id.concat(cell.column.Header)}>
+                                        <Fragment key={cell.row.original.id?.concat(cell.column.Header)}>
                                             {cell.column.id === 'producto' ?
                                                 <Producto id={cell.value} />
                                             :
