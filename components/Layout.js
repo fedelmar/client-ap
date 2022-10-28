@@ -103,14 +103,6 @@ const Layout = ({ children }) => {
       <Head>
         <link rel="icon" type="image/ico" href="/favicon.ico" />
         <title>Sistema AP</title>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-        />
-        <link
-          href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
-          rel="stylesheet"
-        />
       </Head>
       {router.pathname === "/login" || router.pathname === "/registro" ? (
         <div className="bg-gray-800 min-h-screen flex flex-col justify-center">
