@@ -1,55 +1,55 @@
-import React, { useContext, useState, useEffect } from "react";
-import UsuarioContext from "../../../context/usuarios/UsuarioContext";
-import Layout from "../../../components/Layout";
-import { useQuery } from "@apollo/client";
-import Link from "next/link";
-import Table from "../../../components/registros/guardadoplacas/Table";
-import FechaSelect from "../../../components/registros/FechaSelect";
-import ExportarPDF from "../../../components/registros/ExportarDatos";
-import RegistrosPorFecha from "../../../components/registros/guardadoplacas/RegistrosPorFecha";
+import React, { useContext, useState, useEffect } from 'react'
+import UsuarioContext from '../../../context/usuarios/UsuarioContext'
+import Layout from '../../../components/Layout'
+import { useQuery } from '@apollo/client'
+import Link from 'next/link'
+import Table from '../../../components/registros/guardadoplacas/Table'
+import FechaSelect from '../../../components/registros/FechaSelect'
+import ExportarPDF from '../../../components/registros/ExportarDatos'
+import RegistrosPorFecha from '../../../components/registros/guardadoplacas/RegistrosPorFecha'
 import {
   LISTA_REGISTROS,
-  LISTA_REGISTROS_ABIERTOS,
-} from "../../../servicios/guardadoDePlacas";
+  LISTA_REGISTROS_ABIERTOS
+} from '../../../servicios/guardadoDePlacas'
 
 const GuardadoPlacas = () => {
-  const usuarioContext = useContext(UsuarioContext);
-  const { rol } = usuarioContext.usuario;
+  const usuarioContext = useContext(UsuarioContext)
+  const { rol } = usuarioContext.usuario
 
-  const [pages, setPages] = useState(1);
-  const [pdfOpen, setPdfOpen] = useState(false);
-  const [filtros, setFiltros] = useState(false);
-  const [activos, setActivos] = useState(false);
-  const [registros, setRegistros] = useState([]);
+  const [pages, setPages] = useState(1)
+  const [pdfOpen, setPdfOpen] = useState(false)
+  const [filtros, setFiltros] = useState(false)
+  const [activos, setActivos] = useState(false)
+  const [registros, setRegistros] = useState([])
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [regs, setRegs] = useState(null);
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [regs, setRegs] = useState(null)
 
   const { data: regAbiertos, loading: loadAbiertos } = useQuery(
     LISTA_REGISTROS_ABIERTOS
-  );
+  )
   const { data, loading } = useQuery(LISTA_REGISTROS, {
     pollInterval: 500,
     variables: {
-      page: pages,
-    },
-  });
+      page: pages
+    }
+  })
 
   useEffect(() => {
-    if (data) setRegistros([...registros, ...data.obtenerRegistrosGP]);
-  }, [data, pages]);
+    if (data) setRegistros([...registros, ...data.obtenerRegistrosGP])
+  }, [data, pages])
 
   if (loading || loadAbiertos)
     return (
       <Layout>
         <p className="text-2xl text-gray-800 font-light">Cargando...</p>
       </Layout>
-    );
+    )
 
   const handleOpenClose = (funct, state) => {
-    funct(!state);
-  };
+    funct(!state)
+  }
 
   return (
     <Layout>
@@ -57,10 +57,11 @@ const GuardadoPlacas = () => {
 
       <div className="flex justify-between">
         <div>
-          <Link href="/registros/guardadoplacas/nuevoregistroGP">
-            <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
-              Iniciar Registro
-            </a>
+          <Link
+            className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center"
+            href="/registros/guardadoplacas/nuevoregistroGP"
+          >
+            Iniciar Registro
           </Link>
           <button onClick={() => handleOpenClose(setActivos, activos)}>
             <a className="bg-blue-800 py-2 px-5 mt-1 ml-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
@@ -74,7 +75,7 @@ const GuardadoPlacas = () => {
               Buscar
             </a>
           </button>
-          {rol === "Admin" ? (
+          {rol === 'Admin' ? (
             <button onClick={() => handleOpenClose(setPdfOpen, pdfOpen)}>
               <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
                 Exportar en pdf
@@ -94,7 +95,7 @@ const GuardadoPlacas = () => {
                 end={endDate}
                 setRegs={setRegs}
               />
-              <ExportarPDF regs={regs} modelo={"GUARDADO_PLACAS"} />
+              <ExportarPDF regs={regs} modelo={'GUARDADO_PLACAS'} />
             </>
           ) : null}
         </div>
@@ -131,7 +132,7 @@ const GuardadoPlacas = () => {
         </div>
       )}
     </Layout>
-  );
-};
+  )
+}
 
-export default GuardadoPlacas;
+export default GuardadoPlacas

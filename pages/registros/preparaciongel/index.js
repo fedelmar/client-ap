@@ -1,47 +1,47 @@
-import React, { useState, useContext, useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
-import Link from "next/link";
-import UsuarioContext from "../../../context/usuarios/UsuarioContext";
-import Layout from "../../../components/Layout";
-import Table from "../../../components/registros/preparaciongel/Table";
-import { LISTA_REGISTROS } from "../../../servicios/preparacionDeGel";
-import ExportarPDF from "../../../components/registros/ExportarDatos";
-import FechaSelect from "../../../components/registros/FechaSelect";
-import RegistrosPorFecha from "../../../components/registros/preparaciongel/RegistrosPorFecha";
+import React, { useState, useContext, useEffect } from 'react'
+import { gql, useQuery } from '@apollo/client'
+import Link from 'next/link'
+import UsuarioContext from '../../../context/usuarios/UsuarioContext'
+import Layout from '../../../components/Layout'
+import Table from '../../../components/registros/preparaciongel/Table'
+import { LISTA_REGISTROS } from '../../../servicios/preparacionDeGel'
+import ExportarPDF from '../../../components/registros/ExportarDatos'
+import FechaSelect from '../../../components/registros/FechaSelect'
+import RegistrosPorFecha from '../../../components/registros/preparaciongel/RegistrosPorFecha'
 
 const PreparacionGel = () => {
-  const usuarioContext = useContext(UsuarioContext);
-  const { rol } = usuarioContext.usuario;
+  const usuarioContext = useContext(UsuarioContext)
+  const { rol } = usuarioContext.usuario
 
-  const [pages, setPages] = useState(1);
-  const [pdfOpen, setPdfOpen] = useState(false);
-  const [filtros, setFiltros] = useState(false);
-  const [registros, setRegistros] = useState([]);
+  const [pages, setPages] = useState(1)
+  const [pdfOpen, setPdfOpen] = useState(false)
+  const [filtros, setFiltros] = useState(false)
+  const [registros, setRegistros] = useState([])
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [regs, setRegs] = useState(null);
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [regs, setRegs] = useState(null)
 
   const { data, loading } = useQuery(LISTA_REGISTROS, {
     variables: {
-      page: pages,
-    },
-  });
+      page: pages
+    }
+  })
 
   useEffect(() => {
-    if (data) setRegistros([...registros, ...data.obtenerRegistrosPG]);
-  }, [data, pages]);
+    if (data) setRegistros([...registros, ...data.obtenerRegistrosPG])
+  }, [data, pages])
 
   if (loading)
     return (
       <Layout>
         <p className="text-2xl text-gray-800 font-light">Cargando...</p>
       </Layout>
-    );
+    )
 
   const handleOpenClose = (funct, state) => {
-    funct(!state);
-  };
+    funct(!state)
+  }
 
   return (
     <Layout>
@@ -50,10 +50,11 @@ const PreparacionGel = () => {
       </h1>
 
       <div className="flex justify-between">
-        <Link href="/registros/preparaciongel/nuevoregistro">
-          <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
-            Iniciar registro
-          </a>
+        <Link
+          className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center"
+          href="/registros/preparaciongel/nuevoregistro"
+        >
+          Iniciar registro
         </Link>
         <div>
           <button onClick={() => handleOpenClose(setFiltros, filtros)}>
@@ -61,7 +62,7 @@ const PreparacionGel = () => {
               Buscar
             </a>
           </button>
-          {rol === "Admin" ? (
+          {rol === 'Admin' ? (
             <button onClick={() => handleOpenClose(setPdfOpen, pdfOpen)}>
               <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
                 Exportar en pdf
@@ -81,7 +82,7 @@ const PreparacionGel = () => {
                 end={endDate}
                 setRegs={setRegs}
               />
-              <ExportarPDF regs={regs} modelo={"PREPARACION_GEL"} />
+              <ExportarPDF regs={regs} modelo={'PREPARACION_GEL'} />
             </>
           ) : null}
         </div>
@@ -106,7 +107,7 @@ const PreparacionGel = () => {
         </div>
       )}
     </Layout>
-  );
-};
+  )
+}
 
-export default PreparacionGel;
+export default PreparacionGel
