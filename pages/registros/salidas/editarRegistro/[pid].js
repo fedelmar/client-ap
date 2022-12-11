@@ -7,34 +7,32 @@ import * as Yup from 'yup'
 import { useQuery, useMutation } from '@apollo/client'
 
 import Layout from '../../../../components/Layout'
-import {
-  ACTUALIZAR_REGISTRO,
-  REGISTRO
-} from '../../../../servicios/produccionDePlacas'
+
+import { EDITAR_SALIDA, OBTENER_REGISTRO } from '../../../../servicios/salidas'
 
 const EditarRegistro = () => {
   const router = useRouter()
   const { query } = router
   if (!query) return null
   const { pid: id } = query
-  const [actualizarRegistroPP] = useMutation(ACTUALIZAR_REGISTRO)
-  const { data, loading } = useQuery(REGISTRO, {
+  console.log
+  const [actualizarRegistroSalida] = useMutation(EDITAR_SALIDA)
+  const { data, loading } = useQuery(OBTENER_REGISTRO, {
     variables: {
       id
     }
   })
   const [registro, setRegistro] = useState()
   const schemaValidacion = Yup.object({
-    lote: Yup.string(),
-    cantProducida: Yup.number(),
-    cantDescarte: Yup.number()
+    cliente: Yup.string(),
+    remito: Yup.string()
   })
   useEffect(() => {
     if (data) {
-      const { obtenerRegistroPP } = data
-      console.log(obtenerRegistroPP)
+      const { obtenerRegistroSalida } = data
+      console.log(obtenerRegistroSalida)
       setRegistro({
-        ...obtenerRegistroPP
+        ...obtenerRegistroSalida
       })
     }
   }, [data])
@@ -47,19 +45,10 @@ const EditarRegistro = () => {
     )
 
   const finalizar = async (valores) => {
-    const { cantProducida, cantDescarte, lote } = valores
+    const { cliente, remito } = valores
     Swal.fire({
       title: 'Verifique los datos antes de confirmar',
-      html:
-        'Lote: ' +
-        lote +
-        '</br>' +
-        'Cantidad producida: ' +
-        cantProducida +
-        '</br>' +
-        'Cantidad de descarte: ' +
-        cantDescarte +
-        '</br>',
+      html: 'Cliente: ' + cliente + '</br>' + 'Remito: ' + remito + '</br>',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -69,21 +58,18 @@ const EditarRegistro = () => {
     }).then(async (result) => {
       if (result.value) {
         try {
-          const { data } = actualizarRegistroPP({
+          const { data } = actualizarRegistroSalida({
             variables: {
               id,
               input: {
-                lote,
-                cantProducida,
-                cantDescarte,
-                lPlaca: registro.lPlaca,
-                lTapon: registro.lTapon
+                cliente,
+                remito
               }
             }
           })
           console.log(data)
           Swal.fire('Se actualizo el registro y el stock', ' ', 'success')
-          router.push('/registros/produccionplacas')
+          router.push("/registros/salidas");
         } catch (error) {
           console.log(error)
         }
@@ -102,46 +88,17 @@ const EditarRegistro = () => {
               <div className="flex">
                 <p className="text-gray-700 text-mm font-bold mr-1">Dia: </p>
                 <p className="text-gray-700 font-light">
-                  {format(new Date(registro.creado), 'dd/MM/yy')}
+                  {format(new Date(registro.fecha), "dd/MM/yy")}
                 </p>
               </div>
               <div className="flex">
                 <p className="text-gray-700 text-mm font-bold mr-1">
-                  Horario:{' '}
+                  Horario:{" "}
                 </p>
                 <p className="text-gray-700 font-light">
-                  {format(new Date(registro.creado), 'HH:mm')}
-                </p>
-                <p className="text-gray-700 font-light mx-1">a</p>
-                <p className="text-gray-700 font-light">
-                  {format(new Date(registro.modificado), 'HH:mm')}
+                  {format(new Date(registro.fecha), "HH:mm")}
                 </p>
               </div>
-            </div>
-
-            <div className="flex">
-              <p className="text-gray-700 text-mm font-bold mr-1">Producto: </p>
-              <p className="text-gray-700 font-light">{registro.producto}</p>
-            </div>
-            <div className="flex">
-              <p className="text-gray-700 text-mm font-bold mr-1">
-                Lote de Placa:{' '}
-              </p>
-              <p className="text-gray-700 font-light ">{registro.lPlaca}</p>
-            </div>
-            <div className="flex">
-              <p className="text-gray-700 text-mm font-bold mr-1">
-                Lote de Tapón:{' '}
-              </p>
-              <p className="text-gray-700 font-light ">{registro.lTapon}</p>
-            </div>
-            <div className="flex pb-2">
-              <p className="text-gray-700 text-mm font-bold mr-1">
-                Llenado con:{' '}
-              </p>
-              <p className="text-gray-700 font-light ">
-                {registro.tipoPCM + ' L: ' + registro.lPcm}
-              </p>
             </div>
           </div>
 
@@ -150,7 +107,7 @@ const EditarRegistro = () => {
             enableReinitialize
             initialValues={registro}
             onSubmit={(valores) => {
-              finalizar(valores)
+              finalizar(valores);
             }}
           >
             {(props) => {
@@ -164,24 +121,24 @@ const EditarRegistro = () => {
                       className="block text-gray-700 text-sm font-bold mb-2"
                       htmlFor="lote"
                     >
-                      Lote
+                      Cliente
                     </label>
 
                     <input
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="lote"
+                      id="cliente"
                       type="string"
-                      placeholder="Lote"
+                      placeholder="Cliente"
                       onChange={props.handleChange}
                       onBlur={props.handleBlur}
-                      value={props.values.lote}
+                      value={props.values.cliente}
                     />
                   </div>
 
-                  {props.touched.lote && props.errors.lote ? (
+                  {props.touched.cliente && props.errors.cliente ? (
                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
                       <p className="font-bold">Error</p>
-                      <p>{props.errors.lote}</p>
+                      <p>{props.errors.cliente}</p>
                     </div>
                   ) : null}
 
@@ -190,50 +147,24 @@ const EditarRegistro = () => {
                       className="block text-gray-700 text-sm font-bold mb-2"
                       htmlFor="cantProducida"
                     >
-                      Cantidad producida
+                      Remito
                     </label>
 
                     <input
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="cantProducida"
-                      type="number"
-                      placeholder="Cantidad producida"
+                      id="remito"
+                      type="string"
+                      placeholder="Remito"
                       onChange={props.handleChange}
                       onBlur={props.handleBlur}
-                      value={props.values.cantProducida}
+                      value={props.values.remito}
                     />
                   </div>
 
-                  {props.touched.cantProducida && props.errors.cantProducida ? (
+                  {props.touched.remito && props.errors.remito ? (
                     <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
                       <p className="font-bold">Error</p>
-                      <p>{props.errors.cantProducida}</p>
-                    </div>
-                  ) : null}
-
-                  <div className="mb-4">
-                    <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                      htmlFor="cantDescarte"
-                    >
-                      Cantidad de descarte
-                    </label>
-
-                    <input
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="cantDescarte"
-                      type="number"
-                      placeholder="Cantidad de descarte"
-                      onChange={props.handleChange}
-                      onBlur={props.handleBlur}
-                      value={props.values.cantDescarte}
-                    />
-                  </div>
-
-                  {props.touched.cantDescarte && props.errors.cantDescarte ? (
-                    <div className="my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
-                      <p className="font-bold">Error</p>
-                      <p>{props.errors.cantDescarte}</p>
+                      <p>{props.errors.remito}</p>
                     </div>
                   ) : null}
 
@@ -243,7 +174,7 @@ const EditarRegistro = () => {
                     value="Editar Registro"
                   />
                 </form>
-              )
+              );
             }}
           </Formik>
         </div>
