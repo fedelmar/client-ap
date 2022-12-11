@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 const LISTA_REGISTROS = gql`
   query obtenerRegistrosSalidas($page: Int) {
@@ -14,7 +14,7 @@ const LISTA_REGISTROS = gql`
       }
     }
   }
-`;
+`
 
 const LISTA_REGISTROS_POR_FECHA = gql`
   query getRegsByDateSalidas($input: DateRange!) {
@@ -30,7 +30,7 @@ const LISTA_REGISTROS_POR_FECHA = gql`
       }
     }
   }
-`;
+`
 
 const NUEVA_SALIDA = gql`
   mutation nuevoRegistroSalida($input: SalidaInput) {
@@ -46,6 +46,44 @@ const NUEVA_SALIDA = gql`
       }
     }
   }
-`;
+`
 
-export { LISTA_REGISTROS, LISTA_REGISTROS_POR_FECHA, NUEVA_SALIDA };
+const EDITAR_SALIDA = gql`
+  mutation actualizarRegistroSalida($id: ID!, $input: SalidaInput) {
+    actualizarRegistroSalida(id: $id, input: $input) {
+      id
+      fecha
+      cliente
+      remito
+      lotes {
+        lote
+        producto
+        cantidad
+      }
+    }
+  }
+`
+
+const OBTENER_REGISTRO = gql`
+  query obtenerRegistroSalida($id: ID!) {
+    obtenerRegistroSalida(id: $id) {
+      id
+      fecha
+      cliente
+      remito
+      lotes {
+        producto
+        lote
+        cantidad
+      }
+    }
+  }
+`
+
+export {
+  LISTA_REGISTROS,
+  LISTA_REGISTROS_POR_FECHA,
+  NUEVA_SALIDA,
+  OBTENER_REGISTRO,
+  EDITAR_SALIDA
+}

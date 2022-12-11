@@ -38,6 +38,10 @@ const SALIDAS = {
       accessor: 'lotes',
     },
     {
+      Header: 'Editar',
+      accessor: 'editar',
+    },
+    {
       Header: 'Eliminar',
       accessor: 'eliminar',
     },
