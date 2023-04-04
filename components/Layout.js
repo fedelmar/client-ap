@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import Head from "next/head";
-import Footer from "./Footer";
-import Header from "../components/Header";
-import { useRouter } from "next/router";
-import { gql, useQuery } from "@apollo/client";
-import UsuarioContext from "../context/usuarios/UsuarioContext";
-import Spinner from "./Spinner";
+import React, { useState, useEffect, useContext } from 'react'
+import Head from 'next/head'
+import Footer from './Footer'
+import Header from '../components/Header'
+import { useRouter } from 'next/router'
+import { gql, useQuery } from '@apollo/client'
+import UsuarioContext from '../context/usuarios/UsuarioContext'
+import Spinner from './Spinner'
 
 const OBTENER_USUARIO = gql`
   query obtenerUsuario {
@@ -17,7 +17,7 @@ const OBTENER_USUARIO = gql`
       rol
     }
   }
-`;
+`
 
 const OBTENER_INSUMOS = gql`
   query obtenerInsumos {
@@ -27,7 +27,7 @@ const OBTENER_INSUMOS = gql`
       categoria
     }
   }
-`;
+`
 
 const OBTENER_PRODUCTOS = gql`
   query obtenerProductos {
@@ -40,55 +40,55 @@ const OBTENER_PRODUCTOS = gql`
       insumos
     }
   }
-`;
+`
 
 const Layout = ({ children }) => {
   // Routing de next
-  const router = useRouter();
-  const [usuario, setUsuario] = useState();
+  const router = useRouter()
+  const [usuario, setUsuario] = useState()
   const {
     data: dataUsuario,
     loading: loadingUsuario,
-    error,
-  } = useQuery(OBTENER_USUARIO);
+    error
+  } = useQuery(OBTENER_USUARIO)
   const { data: dataInsumos, loading: loadingInsumos } =
-    useQuery(OBTENER_INSUMOS);
+    useQuery(OBTENER_INSUMOS)
   const { data: dataProductos, loading: loadingProductos } =
-    useQuery(OBTENER_PRODUCTOS);
+    useQuery(OBTENER_PRODUCTOS)
 
-  const usuarioContext = useContext(UsuarioContext);
-  const { agregarUsuario, agregarInsumos, agregarProductos } = usuarioContext;
+  const usuarioContext = useContext(UsuarioContext)
+  const { agregarUsuario, agregarInsumos, agregarProductos } = usuarioContext
 
   useEffect(() => {
     const getUser = () => {
-      if (loadingUsuario) return "Cargando...";
+      if (loadingUsuario) return 'Cargando...'
 
-      if (error) return error;
+      if (error) return error
 
       if (!dataUsuario || !dataUsuario.obtenerUsuario) {
-        return router.push("/login");
+        return router.push('/login')
       }
-      agregarUsuario(dataUsuario.obtenerUsuario);
-      setUsuario(dataUsuario.obtenerUsuario);
-    };
+      agregarUsuario(dataUsuario.obtenerUsuario)
+      setUsuario(dataUsuario.obtenerUsuario)
+    }
 
     const getInsumos = () => {
-      if (loadingInsumos) return "Cargando...";
+      if (loadingInsumos) return 'Cargando...'
 
-      const { obtenerInsumos } = dataInsumos;
-      agregarInsumos(obtenerInsumos);
-    };
+      const { obtenerInsumos } = dataInsumos
+      agregarInsumos(obtenerInsumos)
+    }
 
     const getProductos = () => {
-      if (loadingProductos) return "Cargando...";
+      if (loadingProductos) return 'Cargando...'
 
-      const { obtenerProductos } = dataProductos;
-      agregarProductos(obtenerProductos);
-    };
+      const { obtenerProductos } = dataProductos
+      agregarProductos(obtenerProductos)
+    }
 
-    getUser();
-    getInsumos();
-    getProductos();
+    getUser()
+    getInsumos()
+    getProductos()
   }, [
     dataUsuario,
     loadingUsuario,
@@ -96,8 +96,8 @@ const Layout = ({ children }) => {
     dataInsumos,
     error,
     loadingProductos,
-    dataProductos,
-  ]);
+    dataProductos
+  ])
   return (
     <>
       <Head>
@@ -107,19 +107,16 @@ const Layout = ({ children }) => {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
         />
-        <link
-          href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
-          rel="stylesheet"
-        />
+        <script src="https://cdn.tailwindcss.com"></script>
       </Head>
-      {router.pathname === "/login" || router.pathname === "/registro" ? (
+      {router.pathname === '/login' || router.pathname === '/registro' ? (
         <div className="bg-gray-800 min-h-screen flex flex-col justify-center">
           <div>{children}</div>
         </div>
       ) : (
         <div className="flex flex-col justify-between h-auto pb-10">
           {!usuario ? (
-            <Spinner type={"spin"} color={"#4A90E2"} />
+            <Spinner type={'spin'} color={'#4A90E2'} />
           ) : (
             <>
               <Header usuario={usuario} />
@@ -134,7 +131,7 @@ const Layout = ({ children }) => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout
