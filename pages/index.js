@@ -41,7 +41,6 @@ const Index = () => {
   const insumosFaltantes = obtenerInsumosFaltantes
     .filter((i) => i.categoria !== "Placas")
     .filter((i) => i.categoria !== "Quimico");
-  console.log(insumosFaltantes);
 
   return (
     <Layout>
@@ -49,7 +48,7 @@ const Index = () => {
         <img src="/imagenAP.png" />
       </div>
 
-      <div className="flex justify-center space-between mt-3">
+      <div className="flex flex-col justify-center space-between mt-3 mx-6 space-y-6">
         {data.obtenerUltimosModificados.length > 0 && (
           <div className="colum">
             <h1 className="text-2xl pl-2 text-gray-800 font-light">
@@ -63,7 +62,7 @@ const Index = () => {
         )}
 
         {insumosFaltantes.length > 0 && (
-          <div className="colum ml-10">
+          <div className="colum">
             <h1 className="text-2xl pl-2 text-gray-800 font-light">
               Insumos con faltante
             </h1>
