@@ -44,12 +44,12 @@ const Productos = () => {
       <Layout>
         <h1 className="text-2xl text-gray-800 font-light">Productos</h1>
         
-        <div className="flex justify-between">
+        <div className="flex justify-stretch">
           <Link href="/listados/productos/nuevoproducto">
-            <a className="bg-blue-800 py-2 px-5 mt-3 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Nuevo Producto</a>
+            <a className="bg-blue-800 py-2 mt-3 mr-5 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">Nuevo Producto</a>
           </Link>
           <button onClick={() => handleOpenClose()}>
-              <a className="bg-blue-800 py-2 px-5  inline-block text-white rounded text-sm hover:bg-gray-800 uppercase font-bold w-full lg:w-auto text-center">Buscar</a>
+              <a className="bg-blue-800 py-2 px-5 inline-block text-white rounded text-sm hover:bg-gray-800 uppercase font-bold w-full lg:w-auto text-center">Buscar</a>
           </button>
         </div>
 
