@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useQuery } from "@apollo/client";
 
@@ -14,6 +14,7 @@ const Ingresos = () => {
   const [pdfOpen, setPdfOpen] = useState(false);
   const [filtros, setFiltros] = useState(false);
   const [registros, setRegistros] = useState([]);
+  const isLoadingMoreRef = useRef(false);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -27,10 +28,21 @@ const Ingresos = () => {
   });
 
   useEffect(() => {
-    if (data) setRegistros([...registros, ...data.obtenerRegistrosIngresos]);
-  }, [data, pages]);
+    if (!data) return;
+    if (isLoadingMoreRef.current) {
+      isLoadingMoreRef.current = false;
+      setRegistros(prev => [...prev, ...data.obtenerRegistrosIngresos]);
+    } else {
+      setRegistros(data.obtenerRegistrosIngresos);
+    }
+  }, [data]);
 
-  if (loading || !registros)
+  const handleLoadMore = () => {
+    isLoadingMoreRef.current = true;
+    setPages(pages + 1);
+  };
+
+  if (loading && registros.length === 0)
     return (
       <Layout>
         <p className="text-2xl text-gray-800 font-light">Cargando...</p>
@@ -87,7 +99,7 @@ const Ingresos = () => {
         <>
           <Table registros={registros} filtros={filtros} />
           <div className="flex justify-center mt-2">
-            <button onClick={() => setPages(pages + 1)}>
+            <button onClick={handleLoadMore}>
               <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
                 Más registros...
               </a>

@@ -8,40 +8,12 @@ const ELIMINAR_REGISTRO = gql `
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosSalidas{
-        obtenerRegistrosSalidas{
-            id
-            fecha
-            cliente
-            remito
-            lotes {
-                lote
-                cantidad
-                producto
-            }
-        }
-    }
-`;
-
 const EliminarRegistro = (props) => {
 
     const id = props.props;
 
     const [eliminarRegistroSalida] = useMutation(ELIMINAR_REGISTRO, {
-        update(cache) {
-            // Obtener copia de registros
-            const { obtenerRegistrosSalidas } = cache.readQuery({ query: LISTA_REGISTROS });
-
-
-            // Actualizar cache
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosSalidas: obtenerRegistrosSalidas.filter( registroActual => registroActual.id !== id )
-                }
-            })
-        }
+        refetchQueries: ['obtenerRegistrosSalidas']
     })
 
     const confimarEliminarRegistro = () => {
