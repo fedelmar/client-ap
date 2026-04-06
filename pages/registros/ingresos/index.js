@@ -20,7 +20,7 @@ const Ingresos = () => {
   const [regs, setRegs] = useState(null);
 
   const { data, loading } = useQuery(LISTA_REGISTROS, {
-    pollInterval: 500,
+    pollInterval: 5000,
     variables: {
       page: pages,
     },

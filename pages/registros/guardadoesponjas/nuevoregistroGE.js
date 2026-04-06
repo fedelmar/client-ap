@@ -73,7 +73,7 @@ const NuevoRegistroGE = () => {
   const usuarioContext = useContext(UsuarioContext);
   const { nombre } = usuarioContext.usuario;
   const { data, loading } = useQuery(LOTES_ESPONJAS, {
-    pollInterval: 500,
+    pollInterval: 5000,
   });
   const [nuevoRegistroGE] = useMutation(NUEVO_REGISTRO, {
     update(cache, { data: { nuevoRegistroGE } }) {

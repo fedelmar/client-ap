@@ -14,7 +14,7 @@ const index = () => {
   const usuarioContext = useContext(UsuarioContext);
   const { nombre: operario } = usuarioContext.usuario;
   const { data, loading } = useQuery(GELES_EN_PROCESO, {
-    pollInterval: 500,
+    pollInterval: 5000,
   });
   const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
   const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);

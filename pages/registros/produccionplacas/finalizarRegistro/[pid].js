@@ -82,13 +82,13 @@ const FinalizarRegistro = () => {
         variables: {
             input: registro.lTapon
         },
-        pollInterval: 500
+        pollInterval: 5000
     });
     const { data: dataPlaca, loading: loadingPlaca } = useQuery(LOTE_INSUMO, {
         variables: {
             input: registro.lPlaca
         },
-        pollInterval: 500
+        pollInterval: 5000   
     });
     const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
     // Formato del formulario de cierre de sesion

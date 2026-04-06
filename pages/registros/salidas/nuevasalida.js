@@ -20,7 +20,7 @@ const NuevaSalida = () => {
   const { data: dataStock, loading: loadingStock } = useQuery(
     OBTENER_PRODUCTOS_TERMINADOS,
     {
-      pollInterval: 500,
+      pollInterval: 5000,
     }
   );
   const [cliente, setCliente] = useState();

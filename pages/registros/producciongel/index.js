@@ -31,7 +31,7 @@ const index = () => {
     OBTENER_REGISTROS_ABIERTOS
   );
   const { data, loading } = useQuery(OBTENER_REGISTROS, {
-    pollInterval: 500,
+    pollInterval: 5000,
     variables: {
       page: pages,
     },

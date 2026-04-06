@@ -27,7 +27,7 @@ const FinalizarRegistro = () => {
         }
     });
     const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS, {
-        pollInterval: 500,
+        pollInterval: 5000,
     });
     const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({

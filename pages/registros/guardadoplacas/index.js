@@ -30,7 +30,7 @@ const GuardadoPlacas = () => {
     LISTA_REGISTROS_ABIERTOS
   );
   const { data, loading } = useQuery(LISTA_REGISTROS, {
-    pollInterval: 500,
+    pollInterval: 5000,
     variables: {
       page: pages,
     },

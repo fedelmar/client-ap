@@ -26,7 +26,7 @@ const NuevoRegistroGP = () => {
         cantidad: ''
     });
     const { data, loading } = useQuery(LOTES_PLACAS, {
-        pollInterval: 500,
+        pollInterval: 5000,
     });
     const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
     const [ eliminarRegistroGP ] = useMutation(ELIMINAR_REGISTRO);

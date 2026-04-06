@@ -31,12 +31,12 @@ const LISTA_STOCK_SUMADOS = gql`
 
 const StockInsumos = () => {
   const { data, loading } = useQuery(LISTA_STOCK, {
-    pollInterval: 500,
+    pollInterval: 5000,
   });
   const { data: dataSumados, loading: loadingSumados } = useQuery(
     LISTA_STOCK_SUMADOS,
     {
-      pollInterval: 500,
+      pollInterval: 5000,
     }
   );
   const [filtros, setFiltros] = useState(false);
