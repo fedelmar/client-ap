@@ -2,6 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import Select from 'react-select';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation } from '@apollo/client';
+import { LISTA_REGISTROS } from '../../../servicios/produccionDeEsponjas';
 import { format } from 'date-fns';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -209,7 +210,9 @@ const IniciarProduccion = () => {
                                 descarte,
                                 observaciones
                             }
-                        }                
+                        },
+                        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+                        awaitRefetchQueries: true
                     });
                     Swal.fire(
                         'Se guardo el registro y se actualizo el stock de productos',

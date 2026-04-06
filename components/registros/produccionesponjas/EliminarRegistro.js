@@ -1,24 +1,14 @@
 import React from 'react';
 import Swal from 'sweetalert2';
 import { useMutation } from '@apollo/client';
-import { LISTA_REGISTROS, ELIMINAR_REGISTRO } from '../../../servicios/produccionDeEsponjas';
+import { ELIMINAR_REGISTRO } from '../../../servicios/produccionDeEsponjas';
 
 const EliminarRegistro = ({props}) => {
 
     const id = props;
 
     const [eliminarRegistroCE] = useMutation(ELIMINAR_REGISTRO, {
-        update(cache) {
-            // Obtener copia de registros
-            const { obtenerRegistrosPE } = cache.readQuery({ query: LISTA_REGISTROS });
-            // Actualizar cache
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosPE: obtenerRegistrosPE.filter( registroActual => registroActual.id !== id )
-                }
-            })
-        }
+        refetchQueries: ['obtenerRegistrosPE']
     })
 
     const confimarEliminarRegistro = () => {

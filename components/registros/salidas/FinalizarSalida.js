@@ -15,7 +15,10 @@ const FinalizarSalida = (datos) => {
   const { nombre } = usuarioContext.usuario;
   const [mensaje, guardarMensaje] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [nuevoRegistroSalida] = useMutation(NUEVA_SALIDA);
+  const [nuevoRegistroSalida] = useMutation(NUEVA_SALIDA, {
+    refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+    awaitRefetchQueries: true
+  });
 
   const schema = Yup.object().shape({
     friends: Yup.array().of(
