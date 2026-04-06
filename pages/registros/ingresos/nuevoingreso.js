@@ -15,7 +15,10 @@ const NuevoIngreso = () => {
     const router = useRouter();
     const [mensaje, guardarMensaje] = useState(null);
     const [insumo, setInsumo] = useState();
-    const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO)
+    const [nuevoRegistroIngreso] = useMutation(NUEVO_INGRESO, {
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    })
 
     const formik = useFormik({
         initialValues: {

@@ -9,38 +9,12 @@ const ELIMINAR_REGISTRO = gql `
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosIngresos{
-        obtenerRegistrosIngresos{
-            id
-            insumo
-            cantidad
-            proveedor
-            remito
-            creado
-            lote
-        }
-    }
-`;
-
 const EliminarRegistro = ({props}) => {
 
     const id = props;
 
     const [eliminarRegistroIngreso] = useMutation(ELIMINAR_REGISTRO, {
-        update(cache) {
-            // Obtener copia de registros
-            const { obtenerRegistrosIngresos } = cache.readQuery({ query: LISTA_REGISTROS });
-
-
-            // Actualizar cache
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosIngresos: obtenerRegistrosIngresos.filter( registroActual => registroActual.id !== id )
-                }
-            })
-        }
+        refetchQueries: ['obtenerRegistrosIngresos']
     })
 
     const confimarEliminarRegistro = () => {
