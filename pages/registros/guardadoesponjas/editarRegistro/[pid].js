@@ -7,14 +7,17 @@ import * as Yup from 'yup';
 import { useQuery, useMutation } from '@apollo/client';
 
 import Layout from '../../../../components/Layout';
-import { REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/guardadoDeEsponjas';
+import { REGISTRO, ACTUALIZAR_REGISTRO, LISTA_REGISTROS } from '../../../../servicios/guardadoDeEsponjas';
 
 const EditarRegistro = () => {
     const router = useRouter();
     const { query } = router;
     if (!query) return null;
     const { pid: id } = query;
-    const [ actualizarRegistroGE ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroGE ] = useMutation(ACTUALIZAR_REGISTRO, {
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    });
     const { data, loading } = useQuery(REGISTRO, {
         variables: {
             id
@@ -60,7 +63,7 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = actualizarRegistroGE({
+                    const { data } = await actualizarRegistroGE({
                         variables: {
                             id,
                             input: {

@@ -31,19 +31,7 @@ const EliminarRegistro = (props) => {
     const id = props.props;
 
     const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO, {
-        update(cache) {
-            // Obtener copia de registros
-            const { obtenerRegistrosGE } = cache.readQuery({ query: LISTA_REGISTROS });
-
-
-            // Actualizar cache
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosGE: obtenerRegistrosGE.filter( registroActual => registroActual.id !== id )
-                }
-            })
-        }
+        refetchQueries: ['obtenerRegistrosGE', 'obtenerRegistrosAbiertosGE']
     })
 
     const confimarEliminarRegistro = () => {

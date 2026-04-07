@@ -9,7 +9,7 @@ import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 import { LOTES_PLACAS_EN_PROCESO } from '../../../servicios/stockProductos';
-import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/selladoDePlacas';
+import { NUEVO_REGISTRO, ELIMINAR_REGISTRO, LISTA_REGISTROS } from '../../../servicios/selladoDePlacas';
 
 const NuevoRegistroSP = () => {
 
@@ -28,7 +28,10 @@ const NuevoRegistroSP = () => {
     const { data, loading } = useQuery(LOTES_PLACAS_EN_PROCESO, {
         pollInterval: 5000,
     });
-    const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    });
     const [ eliminarRegistroSP ] = useMutation(ELIMINAR_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {

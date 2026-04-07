@@ -15,7 +15,10 @@ const EditarRegistro = () => {
     const { query } = router;
     if (!query) return null;
     const { pid: id } = query;
-    const [ actualizarRegistroCPG ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroCPG ] = useMutation(ACTUALIZAR_REGISTRO, {
+        refetchQueries: ['obtenerRegistrosCPG'],
+        awaitRefetchQueries: true
+    });
     const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id
@@ -24,7 +27,7 @@ const EditarRegistro = () => {
     const [registro, setRegistro] = useState();
     const schemaValidacion = Yup.object({
         lote: Yup.string(),
-        cantProducida: Yup.number(),
+        cantProducida: data?.obtenerRegistroCPG?.dobleBolsa ? null : Yup.number(),
         cantDescarte: Yup.number(),
         loteBolsa: Yup.string(),                   
     });
@@ -59,15 +62,12 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
+                    const input = { lote, cantDescarte, loteGel };
+                    if (cantProducida != null) input.cantProducida = cantProducida;
                     const { data } = await actualizarRegistroCPG({
                         variables: {
                             id: id,
-                            input: {
-                                lote,
-                                cantProducida,
-                                cantDescarte,
-                                loteGel,
-                            }
+                            input
                         }
                     });
                     Swal.fire(
