@@ -30,15 +30,8 @@ const LISTA_STOCK_SUMADOS = gql`
 `;
 
 const StockInsumos = () => {
-  const { data, loading } = useQuery(LISTA_STOCK, {
-    pollInterval: 5000,
-  });
-  const { data: dataSumados, loading: loadingSumados } = useQuery(
-    LISTA_STOCK_SUMADOS,
-    {
-      pollInterval: 5000,
-    }
-  );
+  const { data, loading } = useQuery(LISTA_STOCK);
+  const { data: dataSumados, loading: loadingSumados } = useQuery(LISTA_STOCK_SUMADOS);
   const [filtros, setFiltros] = useState(false);
   const [vistaPorLotes, setVistaPorLotes] = useState(false);
   const pedidoContext = useContext(UsuarioContext);

@@ -51,7 +51,6 @@ const NuevoRegistro = () => {
         cantidad: 0
     });
     const { data: dataQuimico, loading: loadingQuimico } = useQuery(LISTA_STOCK_CATEGORIA, {
-        pollInterval: 5000,
         variables: {
             input: "Quimico"
         }

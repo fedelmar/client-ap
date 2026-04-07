@@ -18,10 +18,7 @@ const OBTENER_PRODUCTOS_TERMINADOS = gql`
 
 const NuevaSalida = () => {
   const { data: dataStock, loading: loadingStock } = useQuery(
-    OBTENER_PRODUCTOS_TERMINADOS,
-    {
-      pollInterval: 5000,
-    }
+    OBTENER_PRODUCTOS_TERMINADOS
   );
   const [cliente, setCliente] = useState();
   const [remito, setRemito] = useState();

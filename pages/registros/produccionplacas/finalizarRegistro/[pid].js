@@ -81,16 +81,17 @@ const FinalizarRegistro = () => {
     const { data: dataTapon, loading: loadingTapon } = useQuery(LOTE_INSUMO, {
         variables: {
             input: registro.lTapon
-        },
-        pollInterval: 5000
+        }
     });
     const { data: dataPlaca, loading: loadingPlaca } = useQuery(LOTE_INSUMO, {
         variables: {
             input: registro.lPlaca
-        },
-        pollInterval: 5000   
+        }
     });
-    const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: ['obtenerRegistrosPP'],
+        awaitRefetchQueries: true
+    });
     // Formato del formulario de cierre de sesion
     let menor;
     registro.taponDisp <= registro.placaDisp ? menor = registro.taponDisp : menor = registro.placaDisp;

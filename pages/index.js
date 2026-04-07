@@ -23,9 +23,7 @@ const ULTIMOS_LOTES = gql`
 `;
 
 const Index = () => {
-  const { data, loading } = useQuery(ULTIMOS_LOTES, {
-    pollInterval: 5000,
-  });
+  const { data, loading } = useQuery(ULTIMOS_LOTES);
   const { data: insumos, loading: loadingInsunmos } = useQuery(
     OBTENER_INSUMOS_FALTANTES
   );

@@ -13,9 +13,7 @@ const index = () => {
   const router = useRouter();  
   const usuarioContext = useContext(UsuarioContext);
   const { nombre: operario } = usuarioContext.usuario;
-  const { data, loading } = useQuery(GELES_EN_PROCESO, {
-    pollInterval: 5000,
-  });
+  const { data, loading } = useQuery(GELES_EN_PROCESO);
   const [ nuevoDobleRegistroCPG ] = useMutation(NUEVO_DOBLE_REGISTRO);
   const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
   const [loteGel, setLoteGel] = useState({});
