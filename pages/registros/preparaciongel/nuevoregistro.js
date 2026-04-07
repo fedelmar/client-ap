@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
+import { LISTA_REGISTROS } from '../../../servicios/preparacionDeGel';
 import Select from 'react-select';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -38,22 +39,6 @@ const NUEVO_REGISTRO = gql`
     }
 `;
 
-const LISTA_REGISTROS = gql `
-    query obtenerRegistrosPG{
-        obtenerRegistrosPG{
-            id
-            creado
-            lote
-            llenado
-            cantidad
-            loteInsumo
-            tanque
-            operario
-            observaciones    
-        }
-    }
-`;
-
 const NuevoRegistro = () => {
 
     const router = useRouter();
@@ -72,17 +57,8 @@ const NuevoRegistro = () => {
         }
     });
     const [ nuevoRegistroPG ] = useMutation(NUEVO_REGISTRO, {
-        update(cache, {data: { nuevoRegistroPG }}) {
-            
-            const { obtenerRegistrosPG } = cache.readQuery({ query: LISTA_REGISTROS });
-
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosPG: [...obtenerRegistrosPG, nuevoRegistroPG ]
-                }
-            })
-        }
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
     })
     const formik = useFormik({
         initialValues: {

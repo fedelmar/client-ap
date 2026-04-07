@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { format } from "date-fns";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import { LISTA_REGISTROS } from "../../../servicios/guardadoDeEsponjas";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
@@ -19,25 +20,6 @@ const LOTES_ESPONJAS = gql`
       caja
       cantCaja
       cantidad
-    }
-  }
-`;
-
-const LISTA_REGISTROS = gql`
-  query obtenerRegistrosGE {
-    obtenerRegistrosGE {
-      id
-      creado
-      operario
-      lote
-      caja
-      descCajas
-      guardado
-      descarte
-      auxiliar
-      observaciones
-      producto
-      estado
     }
   }
 `;
@@ -76,18 +58,8 @@ const NuevoRegistroGE = () => {
     pollInterval: 5000,
   });
   const [nuevoRegistroGE] = useMutation(NUEVO_REGISTRO, {
-    update(cache, { data: { nuevoRegistroGE } }) {
-      const { obtenerRegistrosGE } = cache.readQuery({
-        query: LISTA_REGISTROS,
-      });
-
-      cache.writeQuery({
-        query: LISTA_REGISTROS,
-        data: {
-          obtenerRegistrosGE: [...obtenerRegistrosGE, nuevoRegistroGE],
-        },
-      });
-    },
+    refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+    awaitRefetchQueries: true
   });
   const [eliminarRegistroGE] = useMutation(ELIMINAR_REGISTRO);
   const [mensaje, guardarMensaje] = useState(null);

@@ -10,7 +10,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import SelectInsumo from '../../../components/registros/SelectInsumos';
-import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/produccionDeGel';
+import { NUEVO_REGISTRO, ELIMINAR_REGISTRO, OBTENER_REGISTROS } from '../../../servicios/produccionDeGel';
 import { PRODUCTOS } from '../../../servicios/productos';
 
 const NuevoRegistroPG = () => {
@@ -18,7 +18,10 @@ const NuevoRegistroPG = () => {
     const router = useRouter();
     const usuarioContext = useContext(UsuarioContext);
     const { nombre: operario } = usuarioContext.usuario;
-    const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroCPG ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: [{ query: OBTENER_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    });
     const [ eliminarRegistroCPG ] = useMutation(ELIMINAR_REGISTRO);
     const [toggleReg, setToggleReg] = useState(false);
     const { data, loading } = useQuery(PRODUCTOS, {

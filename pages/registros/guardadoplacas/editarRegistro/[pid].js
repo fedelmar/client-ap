@@ -14,7 +14,10 @@ const EditarRegistro = () => {
     const { query } = router;
     if (!query) return null;
     const { pid: id } = query;
-    const [ actualizarRegistroGP ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroGP ] = useMutation(ACTUALIZAR_REGISTRO, {
+        refetchQueries: ['obtenerRegistrosGP'],
+        awaitRefetchQueries: true
+    });
     const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id

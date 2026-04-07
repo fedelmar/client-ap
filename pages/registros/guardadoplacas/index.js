@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import UsuarioContext from "../../../context/usuarios/UsuarioContext";
 import Layout from "../../../components/Layout";
 import { useQuery } from "@apollo/client";
@@ -21,6 +21,7 @@ const GuardadoPlacas = () => {
   const [filtros, setFiltros] = useState(false);
   const [activos, setActivos] = useState(false);
   const [registros, setRegistros] = useState([]);
+  const isLoadingMoreRef = useRef(false);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -30,15 +31,25 @@ const GuardadoPlacas = () => {
     LISTA_REGISTROS_ABIERTOS
   );
   const { data, loading } = useQuery(LISTA_REGISTROS, {
-    pollInterval: 5000,
     variables: {
       page: pages,
     },
   });
 
   useEffect(() => {
-    if (data) setRegistros([...registros, ...data.obtenerRegistrosGP]);
-  }, [data, pages]);
+    if (!data) return;
+    if (isLoadingMoreRef.current) {
+      isLoadingMoreRef.current = false;
+      setRegistros(prev => [...prev, ...data.obtenerRegistrosGP]);
+    } else {
+      setRegistros(data.obtenerRegistrosGP);
+    }
+  }, [data]);
+
+  const handleLoadMore = () => {
+    isLoadingMoreRef.current = true;
+    setPages(pages + 1);
+  };
 
   if (loading || loadAbiertos)
     return (
@@ -118,7 +129,7 @@ const GuardadoPlacas = () => {
         <>
           <Table registros={registros} filtros={filtros} rol={rol} />
           <div className="flex justify-center mt-2">
-            <button onClick={() => setPages(pages + 1)}>
+            <button onClick={handleLoadMore}>
               <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
                 Más registros...
               </a>
