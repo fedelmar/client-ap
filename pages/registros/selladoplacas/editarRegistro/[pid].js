@@ -9,7 +9,7 @@ import {  useQuery, useMutation } from '@apollo/client';
 import { OBTENER_REGISTRO, ACTUALIZAR_REGISTRO, LISTA_REGISTROS } from '../../../../servicios/selladoDePlacas';
 
 
-const EditarRegistro = () => {
+const EditarRegistro = () => { 
     const router = useRouter();
     const { query } = router;
     if (!query) return null;
