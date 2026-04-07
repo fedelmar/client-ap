@@ -33,7 +33,7 @@ const EliminarRegistro = (props) => {
     const id = props.props;
 
     const [eliminarRegistroGP] = useMutation(ELIMINAR_REGISTRO, {
-        refetchQueries: ['obtenerRegistrosGP']
+        refetchQueries: ['obtenerRegistrosGP', 'obtenerRegistrosAbiertosGP']
     })
 
     const confimarEliminarRegistro = () => {
