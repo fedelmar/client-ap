@@ -27,7 +27,6 @@ const ProduccionEsponjas = () => {
 
     const { data: regAbiertos, loading: loadAbiertos } = useQuery(LISTA_REGISTROS_ABIERTOS);
     const { data, loading } = useQuery(LISTA_REGISTROS,{
-      pollInterval: 5000,
       variables: {
         page: pages,
       }

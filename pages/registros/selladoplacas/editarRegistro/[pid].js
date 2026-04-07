@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import * as Yup from 'yup';
 import Layout from '../../../../components/Layout';
 import {  useQuery, useMutation } from '@apollo/client';
-import { OBTENER_REGISTRO, ACTUALIZAR_REGISTRO } from '../../../../servicios/selladoDePlacas';
+import { OBTENER_REGISTRO, ACTUALIZAR_REGISTRO, LISTA_REGISTROS } from '../../../../servicios/selladoDePlacas';
 
 
 const EditarRegistro = () => {
@@ -14,7 +14,10 @@ const EditarRegistro = () => {
     const { query } = router;
     if (!query) return null;
     const { pid: id } = query;
-    const [ actualizarRegistroSP ] = useMutation(ACTUALIZAR_REGISTRO);
+    const [ actualizarRegistroSP ] = useMutation(ACTUALIZAR_REGISTRO, {
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    });
     const { data, loading } = useQuery(OBTENER_REGISTRO, {
         variables: {
             id
@@ -58,7 +61,7 @@ const EditarRegistro = () => {
           }).then( async (result) => {
             if (result.value) {
                 try {
-                    const { data } = actualizarRegistroSP({
+                    const { data } = await actualizarRegistroSP({
                         variables: {
                             id: id,
                             input: {
@@ -73,7 +76,7 @@ const EditarRegistro = () => {
                         ' ',
                         'success'
                     )
-                    //router.push('/registros/selladoplacas');
+                    router.push('/registros/selladoplacas');
                 } catch (error) {
                     console.log(error)
                 }

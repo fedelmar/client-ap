@@ -38,19 +38,7 @@ const EliminarRegistro = (props) => {
     const id = props.props;
 
     const [eliminarRegistroCPG] = useMutation(ELIMINAR_REGISTRO, {
-        update(cache) {
-            // Obtener copia de registros
-            const { obtenerRegistrosCPG } = cache.readQuery({ query: LISTA_REGISTROS });
-
-
-            // Actualizar cache
-            cache.writeQuery({
-                query: LISTA_REGISTROS,
-                data: {
-                    obtenerRegistrosCPG: obtenerRegistrosCPG.filter( registroActual => registroActual.id !== id )
-                }
-            })
-        }
+        refetchQueries: ['obtenerRegistrosCPG']
     })
 
     const confimarEliminarRegistro = () => {

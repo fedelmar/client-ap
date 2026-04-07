@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { gql, useQuery } from "@apollo/client";
 import Link from "next/link";
 import UsuarioContext from "../../../context/usuarios/UsuarioContext";
@@ -17,6 +17,7 @@ const PreparacionGel = () => {
   const [pdfOpen, setPdfOpen] = useState(false);
   const [filtros, setFiltros] = useState(false);
   const [registros, setRegistros] = useState([]);
+  const isLoadingMoreRef = useRef(false);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -29,8 +30,19 @@ const PreparacionGel = () => {
   });
 
   useEffect(() => {
-    if (data) setRegistros([...registros, ...data.obtenerRegistrosPG]);
-  }, [data, pages]);
+    if (!data) return;
+    if (isLoadingMoreRef.current) {
+      isLoadingMoreRef.current = false;
+      setRegistros(prev => [...prev, ...data.obtenerRegistrosPG]);
+    } else {
+      setRegistros(data.obtenerRegistrosPG);
+    }
+  }, [data]);
+
+  const handleLoadMore = () => {
+    isLoadingMoreRef.current = true;
+    setPages(pages + 1);
+  };
 
   if (loading)
     return (
@@ -91,7 +103,7 @@ const PreparacionGel = () => {
         <>
           <Table registros={registros} filtros={filtros} rol={rol} />
           <div className="flex justify-center mt-2">
-            <button onClick={() => setPages(pages + 1)}>
+            <button onClick={handleLoadMore}>
               <a className="bg-blue-800 py-2 px-5 mt-1 inline-block text-white rounded text-sm hover:bg-gray-800 mb-3 uppercase font-bold w-full lg:w-auto text-center">
                 Más registros...
               </a>

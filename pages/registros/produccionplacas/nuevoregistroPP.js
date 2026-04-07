@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import Layout from '../../../components/Layout';
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import SelectInsumo from '../../../components/registros/SelectInsumos';
-import { ELIMINAR_REGISTRO, NUEVO_REGISTRO } from '../../../servicios/produccionDePlacas';
+import { ELIMINAR_REGISTRO, NUEVO_REGISTRO, LISTA_REGISTROS } from '../../../servicios/produccionDePlacas';
 import { PRODUCTOS } from '../../../servicios/productos';
 
 const NuevoRegistro = () => {
@@ -21,7 +21,10 @@ const NuevoRegistro = () => {
             input: "Placas"
         }
     });
-    const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroPP ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    });
     const [ eliminarRegistroPP ] = useMutation(ELIMINAR_REGISTRO);
     const usuarioContext = useContext(UsuarioContext);
     const { nombre } = usuarioContext.usuario;

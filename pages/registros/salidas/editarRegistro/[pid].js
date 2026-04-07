@@ -16,7 +16,10 @@ const EditarRegistro = () => {
   if (!query) return null
   const { pid: id } = query
   console.log
-  const [actualizarRegistroSalida] = useMutation(EDITAR_SALIDA)
+  const [actualizarRegistroSalida] = useMutation(EDITAR_SALIDA, {
+    refetchQueries: ['obtenerRegistrosSalidas'],
+    awaitRefetchQueries: true
+  })
   const { data, loading } = useQuery(OBTENER_REGISTRO, {
     variables: {
       id

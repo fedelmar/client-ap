@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 
 import UsuarioContext from '../../../context/usuarios/UsuarioContext';
 import Layout from '../../../components/Layout';
-import { NUEVO_REGISTRO, ELIMINAR_REGISTRO } from '../../../servicios/guardadoDePlacas';
+import { NUEVO_REGISTRO, ELIMINAR_REGISTRO, LISTA_REGISTROS } from '../../../servicios/guardadoDePlacas';
 import { LOTES_PLACAS } from '../../../servicios/stockProductos';
 
 const NuevoRegistroGP = () => {
@@ -28,7 +28,10 @@ const NuevoRegistroGP = () => {
     const { data, loading } = useQuery(LOTES_PLACAS, {
         pollInterval: 5000,
     });
-    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
+    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
+        awaitRefetchQueries: true
+    });
     const [ eliminarRegistroGP ] = useMutation(ELIMINAR_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
@@ -47,7 +50,7 @@ const NuevoRegistroGP = () => {
                                 .required('Ingrese el descarte generado')
                                 .test('disponibilidad', 'No hay disponibilidad',
                                 function(cantDescarte) {
-                                    return cantDescarte <= registro.cantidad - cantGuardada.value
+                                    return cantDescarte <= registro.cantidad - this.parent.cantGuardada
                                 }),
             pallet: Yup.string().required('Ingrese el pallet'),
             auxiliar: Yup.string(),
