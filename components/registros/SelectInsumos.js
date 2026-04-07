@@ -18,7 +18,6 @@ const STOCK_SEGUN_PRODUCTO = gql `
 
 const SelectInsumo = ({productoID, funcion, categoria}) => {
     const { data, loading } = useQuery(STOCK_SEGUN_PRODUCTO, {
-        pollInterval: 5000,
         variables: {
             id: productoID
         }

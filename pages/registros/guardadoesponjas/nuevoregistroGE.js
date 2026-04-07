@@ -54,9 +54,7 @@ const NuevoRegistroGE = () => {
   const router = useRouter();
   const usuarioContext = useContext(UsuarioContext);
   const { nombre } = usuarioContext.usuario;
-  const { data, loading } = useQuery(LOTES_ESPONJAS, {
-    pollInterval: 5000,
-  });
+  const { data, loading } = useQuery(LOTES_ESPONJAS);
   const [nuevoRegistroGE] = useMutation(NUEVO_REGISTRO, {
     refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
     awaitRefetchQueries: true

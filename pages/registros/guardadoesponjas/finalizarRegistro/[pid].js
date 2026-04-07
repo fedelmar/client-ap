@@ -72,10 +72,11 @@ const FinalizarRegistro = () => {
             id
         }
     });
-    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_ESPONJAS, {
-        pollInterval: 5000,
+    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_ESPONJAS);
+    const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: ['obtenerRegistrosGE'],
+        awaitRefetchQueries: true
     });
-    const [ nuevoRegistroGE ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
             cantGuardada: '',
