@@ -33,12 +33,8 @@ const STOCK_TOTAL =  gql `
 
 const StockProductos = () => {
 
-    const {data, loading} = useQuery(OBTENER_STOCK, {
-        pollInterval: 5000,
-    });
-    const {data: dataTotal, loading: loadingTotal} = useQuery(STOCK_TOTAL, {
-        pollInterval: 5000,
-    });
+    const {data, loading} = useQuery(OBTENER_STOCK);
+    const {data: dataTotal, loading: loadingTotal} = useQuery(STOCK_TOTAL);
     const [ vistaPorLotes, setVistaPorLotes ] = useState(false);
     const [ filtros, setFiltros ] = useState(false);
     const pedidoContext = useContext(UsuarioContext);

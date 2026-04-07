@@ -26,10 +26,11 @@ const FinalizarRegistro = () => {
             id
         }
     });
-    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS, {
-        pollInterval: 5000,
+    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS);
+    const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: ['obtenerRegistrosSP'],
+        awaitRefetchQueries: true
     });
-    const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
             sellado: '',

@@ -26,10 +26,11 @@ const FinalizarRegistro = () => {
             id
         }
     });
-    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS, {
-        pollInterval: 5000,
+    const { data: dataLote, loading: loadingLote } = useQuery(LOTES_PLACAS);
+    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO, {
+        refetchQueries: ['obtenerRegistrosGP'],
+        awaitRefetchQueries: true
     });
-    const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO);
     const formikCierre = useFormik({
         initialValues: {
             guardado: '',

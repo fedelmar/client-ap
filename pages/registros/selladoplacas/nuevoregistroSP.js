@@ -25,9 +25,7 @@ const NuevoRegistroSP = () => {
         operario: nombre,
         cantidad: ''
     });
-    const { data, loading } = useQuery(LOTES_PLACAS_EN_PROCESO, {
-        pollInterval: 5000,
-    });
+    const { data, loading } = useQuery(LOTES_PLACAS_EN_PROCESO);
     const [ nuevoRegistroSP ] = useMutation(NUEVO_REGISTRO, {
         refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
         awaitRefetchQueries: true

@@ -25,9 +25,7 @@ const NuevoRegistroGP = () => {
         operario: nombre,
         cantidad: ''
     });
-    const { data, loading } = useQuery(LOTES_PLACAS, {
-        pollInterval: 5000,
-    });
+    const { data, loading } = useQuery(LOTES_PLACAS);
     const [ nuevoRegistroGP ] = useMutation(NUEVO_REGISTRO, {
         refetchQueries: [{ query: LISTA_REGISTROS, variables: { page: 1 } }],
         awaitRefetchQueries: true
