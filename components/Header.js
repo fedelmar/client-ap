@@ -58,7 +58,7 @@ const Header = ({usuario}) => {
                             className="uppercase shadow-md text-white text-xs sm:w-auto p-1 font-black bg-red-700 rounded w-full lg:w-auto text-center" 
                             type="button"
                         >
-                            Cerrar Sessión
+                            Cerrar Sesión
                         </button>
                     </div>
                 </div>

@@ -193,7 +193,7 @@ const NuevoRegistroGP = () => {
                                     options={obtenerStockPlacas}
                                     onChange={opcion => seleccionarLPlaca(opcion)}
                                     getOptionValue={ opciones => opciones.loteId }
-                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad} ${opciones.estado === 'Reproceso' ? '- Placas en repreceso' : ''}`}
+                                    getOptionLabel={ opciones => `${opciones.lote} ${opciones.producto} Disp: ${opciones.cantidad} ${opciones.estado === 'Reproceso' ? '- Placas en reproceso' : ''}`}
                                     placeholder="Lote..."
                                     noOptionsMessage={() => "No hay resultados"}
                                     isMulti={false}
